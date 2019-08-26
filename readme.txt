@@ -11,6 +11,8 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Easily embed GitHub repositories in Gutenberg Editor.
 
+This plugin is being developed in [GitHub](https://github.com/audrasjb/embed-block-for-github). Contributions welcome!
+
 == Description ==
 
 This plugin adds a GitHub Repository Embed Block to the Block Editor.
