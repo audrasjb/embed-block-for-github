@@ -19,9 +19,10 @@ This plugin adds a GitHub Repository Embed Block to the Block Editor.
 
 == Screenshots ==
 
-1. Insert GiHub Repo Block.
-1. Embed your GitHub Repositories in your Post content.
-2. Integrates well with your theme stylesheet.
+1. Easy to use!
+2. Insert GiHub Repo Block.
+3. Embed your GitHub Repositories in your Post content.
+4. Integrates well with your theme stylesheet.
 
 == Installation ==
 
