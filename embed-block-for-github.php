@@ -2,9 +2,9 @@
 /**
  * @link              https://jeanbaptisteaudras.com
  * @since             0.1
- * @package           GitHub Embed Block
+ * @package           Embed Block for GitHub
  *
- * Plugin Name:       GitHub Embed Block
+ * Plugin Name:       Embed Block for GitHub
  * Plugin URI:        https://jeanbaptisteaudras.com/embed-block-for-github-gutenberg-wordpress/
  * Description:       Easily embed GitHub repositories in Gutenberg Editor.
  * Version:           0.1
