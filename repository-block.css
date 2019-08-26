@@ -1,0 +1,102 @@
+.ebg-br-wrapper {
+	position: relative;
+	display: flex;
+	margin: 1em 0 1.5em 0;
+	padding: 1em;
+	border: 1px solid #eee;
+	border-radius: .5em;	
+	font-family: 'Helvetica Neue', arial, sans-serif !important;
+	color: #333;
+}
+.ebg-br-wrapper .ebg-br-header-logo {
+	position: absolute;
+	top: 0.5em;
+	right: 0.5em;
+	width: 20px;
+	height: 20px;
+}
+.ebg-br-wrapper .ebg-br-avatar {
+	display: inline-block;
+	margin: 0 1em 0 0;
+	min-width: 150px;
+}
+.ebg-br-wrapper .ebg-br-header-avatar {
+	max-width: 150px;
+	border-radius: 50%;
+}
+.ebg-br-wrapper .ebg-br-header {
+	margin: 0;
+	padding: 0;
+	font-size: 1em;
+	text-transform: uppercase;
+}
+.ebg-br-wrapper .ebg-br-avatar .ebg-br-header-avatar {
+}
+.ebg-br-wrapper .ebg-br-main {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+}
+.ebg-br-wrapper .ebg-br-title {
+	margin: 0;
+	padding: 0;
+	font-size: 1em;
+	line-height: 1.2em;
+}
+.ebg-br-wrapper .ebg-br-title strong {
+	display: block;
+}
+.ebg-br-wrapper .ebg-br-title em {
+	display: block;
+	font-size: 0.7em;	
+}
+.ebg-br-wrapper .ebg-br-title a {
+}
+.ebg-br-wrapper .ebg-br-title a:hover, .ebg-br-title a:focus, ebg-br-title a:active {
+}
+.ebg-br-wrapper .ebg-br-description {
+	margin: .5em 0 0;
+	padding: 0;
+	font-size: 0.8em;
+	line-height: 1.2em;
+}
+.ebg-br-wrapper .ebg-br-footer {
+	margin: .5em 0 0;
+	padding: 0;
+	font-size: 0.7em;
+	line-height: 1.2em;
+}
+.ebg-br-wrapper .ebg-br-subscribers img {
+	position: relative;
+	top: 2px;
+	width: 16px;	
+	height: 16px;
+}
+.ebg-br-wrapper .ebg-br-watchers img {
+	position: relative;
+	top: 2px;
+	width: 16px;	
+	height: 16px;
+}
+.ebg-br-wrapper .ebg-br-forks img {
+	position: relative;
+	top: 2px;
+	width: 16px;	
+	height: 16px;
+}
+.ebg-br-wrapper .ebg-br-link {
+	display: block;
+	margin: .5em 0 0;	
+}
+.ebg-br-wrapper .screen-reader-text {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  word-wrap: normal !important;
+}
