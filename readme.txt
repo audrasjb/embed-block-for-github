@@ -4,18 +4,21 @@ Donate link: https://www.paypal.me/audrasjb
 Tags: GitHub, embed, block, Gutenberg, bloc, gist, git, repository, card
 Requires at least: 5.2
 Tested up to: 5.3
-Stable tag: 0.1.1
+Stable tag: 0.2
 Requires PHP: 5.6
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Easily embed GitHub repositories in Gutenberg Editor.
 
-This plugin is developed on [GitHub](https://github.com/audrasjb/embed-block-for-github). Contributions welcome!
-
 == Description ==
 
 This plugin adds a GitHub Repository Embed Block to the Block Editor.
+
+It is developed on [GitHub](https://github.com/audrasjb/embed-block-for-github). Contributions welcome!
+
+Special thanks:
+- [@pedro-mendonca](https://github.com/pedro-mendonca) for i18n/l10n fixes and portuguese translation.
 
 == Screenshots ==
 
@@ -31,6 +34,12 @@ This plugin adds a GitHub Repository Embed Block to the Block Editor.
 3. Add the URL of the repository and see the magic happen.
 
 == Changelog ==
+
+= 0.2 =
+* Localization/internationalization fixes. Props @pedro-mendoza: https://github.com/audrasjb/embed-block-for-github/pull/1
+
+= 0.1.1 =
+* Small fixes
 
 = 0.1 =
 * Plugin initial commit. Works fine :)
