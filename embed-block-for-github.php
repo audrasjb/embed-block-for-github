@@ -25,7 +25,7 @@ function ebg_embed_repository( $attributes ) {
 	$github_url = trim( $attributes['github_url'] );
 
 	if ( '' === trim( $github_url ) ) {
-		$content = '<p>Use the Sidebar to add the URL of the GitHub Repository to embed.</p>';
+		$content = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
 	} else {
 		if ( filter_var( $github_url, FILTER_VALIDATE_URL ) ) {
 			if ( strpos( $github_url, 'https://github.com/' ) === 0 ) {
@@ -40,21 +40,21 @@ function ebg_embed_repository( $attributes ) {
 	<div class="ebg-br-main">
 		<p class="ebg-br-title">
 			<strong><a target="_blank" rel="noopener noreferrer" href="' . $data->html_url . '">' . $data->name . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a></strong>
-			<em>by <a target="_blank" rel="noopener noreferrer" href="' . $data->owner->html_url . '">' . $data->owner->login . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a></em>
+			<em>' . esc_html__( 'by', 'embed-block-for-github' ) . ' <a target="_blank" rel="noopener noreferrer" href="' . $data->owner->html_url . '">' . $data->owner->login . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a></em>
 		</p>
 		<p class="ebg-br-description">' . $data->description . '</p>
 		<p class="ebg-br-footer">
 			<span class="ebg-br-subscribers">
 				<img src="' . plugin_dir_url( __FILE__ ) . '/images/subscribe.svg" alt="" /> 
-				' . $data->subscribers_count . ' ' . esc_html__( 'Subscribers', 'embed-block-for-github' ) . '
+				' . esc_html( sprintf( _n( '%s Subscriber', '%s Subscribers', $data->subscribers_count, 'embed-block-for-github' ), $data->subscribers_count ) ) . '
 			</span>
 			<span class="ebg-br-watchers">
 				<img src="' . plugin_dir_url( __FILE__ ) . '/images/watch.svg" alt="" /> 
-				' . $data->watchers_count . ' ' . esc_html__( 'Watchers', 'embed-block-for-github' ) . '
+				' . esc_html( sprintf( _n( '%s Watcher', '%s Watchers', $data->watchers_count, 'embed-block-for-github' ), $data->watchers_count ) ) . '
 			</span>
 			<span class="ebg-br-forks">
 				<img src="' . plugin_dir_url( __FILE__ ) . '/images/fork.svg" alt="" /> 
-				' . $data->forks_count . ' ' . esc_html__( 'Forks', 'embed-block-for-github' ) . '
+				' . esc_html( sprintf( _n( '%s Fork', '%s Forks', $data->forks_count, 'embed-block-for-github' ), $data->forks_count ) ) . '
 			</span>
 			<a target="_blank" rel="noopener noreferrer" class="ebg-br-link" href="' . $data->html_url . '">' . esc_html__( 'Check out this repository on GitHub.com', 'embed-block-for-github' ) . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a>
 		</p>
@@ -77,21 +77,21 @@ function ebg_embed_repository( $attributes ) {
 	<div class="ebg-br-main">
 		<p class="ebg-br-title">
 			<strong><a target="_blank" rel="noopener noreferrer" href="' . $data->html_url . '">' . $data->name . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a></strong>
-			<em>by <a target="_blank" rel="noopener noreferrer" href="' . $data->owner->html_url . '">' . $data->owner->login . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a></em>
+			<em>' . esc_html__( 'by', 'embed-block-for-github' ) . ' <a target="_blank" rel="noopener noreferrer" href="' . $data->owner->html_url . '">' . $data->owner->login . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a></em>
 		</p>
 		<p class="ebg-br-description">' . $data->description . '</p>
 		<p class="ebg-br-footer">
 			<span class="ebg-br-subscribers">
 				<img src="' . plugin_dir_url( __FILE__ ) . '/images/subscribe.svg" alt="" /> 
-				' . $data->subscribers_count . ' ' . esc_html__( 'Subscribers', 'embed-block-for-github' ) . '
+				' . esc_html( sprintf( _n( '%s Subscriber', '%s Subscribers', $data->subscribers_count, 'embed-block-for-github' ), $data->subscribers_count ) ) . '
 			</span>
 			<span class="ebg-br-watchers">
 				<img src="' . plugin_dir_url( __FILE__ ) . '/images/watch.svg" alt="" /> 
-				' . $data->watchers_count . ' ' . esc_html__( 'Watchers', 'embed-block-for-github' ) . '
+				' . esc_html( sprintf( _n( '%s Watcher', '%s Watchers', $data->watchers_count, 'embed-block-for-github' ), $data->watchers_count ) ) . '
 			</span>
 			<span class="ebg-br-forks">
 				<img src="' . plugin_dir_url( __FILE__ ) . '/images/fork.svg" alt="" /> 
-				' . $data->forks_count . ' ' . esc_html__( 'Forks', 'embed-block-for-github' ) . '
+				' . esc_html( sprintf( _n( '%s Fork', '%s Forks', $data->forks_count, 'embed-block-for-github' ), $data->forks_count ) ) . '
 			</span>
 			<a target="_blank" rel="noopener noreferrer" class="ebg-br-link" href="' . $data->html_url . '">' . esc_html__( 'Check out this repository on GitHub.com', 'embed-block-for-github' ) . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a>
 		</p>
