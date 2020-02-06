@@ -45,7 +45,7 @@ class embed_block_for_github {
 		);
 		wp_register_style(
 			'ebg-repository-editor',
-			$this->plugin_url('repository-block.css'),
+			$this->plugin_url('repository-block-editor.css'),
 			array(),
 			$this->plugin_file_ver('repository-block.css')
 		);
@@ -107,7 +107,6 @@ class embed_block_for_github {
 	}
 
 	private function check_message($message) {
-	
 		if ($message == "Not Found") {
 			return '<p>' . esc_html__( 'Error: Reposity not found. Please check your URL.', 'embed-block-for-github' ) . '</p>';
 		} else {
@@ -120,19 +119,7 @@ class embed_block_for_github {
 		$darck_mode = (in_array("darck_mode", $attributes) ? $attributes['darck_mode'] : false);
 		
 		$a_remplace = [];
-		if ($darck_mode) {
-			$a_remplace['%%_WRAPPER_DARK_MODE_%%'] = "ebg-br-wrapper-dark-mode-on";
-			$a_remplace['%%_FILE_IMG_ICO_GITHUB_%%'] = $this->plugin_url("images/github_white.png");
-			$a_remplace['%%_FILE_IMG_SUBSCRIBE_%%'] = $this->plugin_url("images/subscribe_white.svg");
-			$a_remplace['%%_FILE_IMG_WATCH_%%'] = $this->plugin_url("images/watch_white.svg");
-			$a_remplace['%%_FILE_IMG_FORK_%%'] = $this->plugin_url("images/fork_white.svg");
-		} else {
-			$a_remplace['%%_WRAPPER_DARK_MODE_%%'] = "ebg-br-wrapper-dark-mode-off";
-			$a_remplace['%%_FILE_IMG_ICO_GITHUB_%%'] = $this->plugin_url("images/github.png");
-			$a_remplace['%%_FILE_IMG_SUBSCRIBE_%%'] = $this->plugin_url("images/subscribe.svg");
-			$a_remplace['%%_FILE_IMG_WATCH_%%'] = $this->plugin_url("images/watch.svg");
-			$a_remplace['%%_FILE_IMG_FORK_%%'] = $this->plugin_url("images/fork.svg");
-		}
+		$a_remplace['%%_WRAPPER_DARK_MODE_%%'] = "ebg-br-wrapper-dark-mode-" . ($darck_mode ? "on" : "off");
 		
 		if ( '' === trim( $github_url ) ) {
 			$content = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';

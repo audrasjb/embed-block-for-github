@@ -1,0 +1,16 @@
+@import 'repository-block.css';
+
+ .ebg-br-wrapper-dark-mode-on, .ebg-br-wrapper-dark-mode-off {
+	border: 1px solid #eee !important;
+	background-image: url('images/github.png') !important;
+}
+
+.ebg-br-wrapper .ebg-br-footer span.ebg-br-subscribers {
+	background-image: url('images/subscribe.svg') !important;
+}
+.ebg-br-wrapper .ebg-br-footer span.ebg-br-watchers {
+	background-image: url('images/watch.svg') !important;
+}
+.ebg-br-wrapper .ebg-br-footer span.ebg-br-forks {
+	background-image: url('images/fork.svg') !important;
+}
