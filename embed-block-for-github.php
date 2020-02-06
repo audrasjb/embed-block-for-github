@@ -20,125 +20,185 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-function ebg_embed_repository( $attributes ) {
 
-	$github_url = trim( $attributes['github_url'] );
+// INFO: https://github.com/leewillis77/wp-github-oembed/blob/master/github-embed.php
+class embed_block_for_github {
 
-	if ( '' === trim( $github_url ) ) {
-		$content = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
-	} else {
-		if ( filter_var( $github_url, FILTER_VALIDATE_URL ) ) {
-			if ( strpos( $github_url, 'https://github.com/' ) === 0 ) {
-				if ( get_transient( '_ebg_repository_' . sanitize_title_with_dashes( $github_url ) ) ) {
-					$data = json_decode( get_transient( '_ebg_repository_' . sanitize_title_with_dashes( $github_url ) ) );
-					$content = '
-<div class="ebg-br-wrapper">
-	<img class="ebg-br-header-logo" src="' . plugin_dir_url( __FILE__ ) . '/images/github.svg" alt="' . esc_html__( 'GitHub Card', 'embed-block-for-github' ) . '" />
-	<div class="ebg-br-avatar">
-		<img class="ebg-br-header-avatar" src="' . $data->owner->avatar_url . '" alt="" width="150" height="150" />
-	</div>
-	<div class="ebg-br-main">
-		<p class="ebg-br-title">
-			<strong><a target="_blank" rel="noopener noreferrer" href="' . $data->html_url . '">' . $data->name . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a></strong>
-			<em>' . esc_html__( 'by', 'embed-block-for-github' ) . ' <a target="_blank" rel="noopener noreferrer" href="' . $data->owner->html_url . '">' . $data->owner->login . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a></em>
-		</p>
-		<p class="ebg-br-description">' . $data->description . '</p>
-		<p class="ebg-br-footer">
-			<span class="ebg-br-subscribers">
-				<img src="' . plugin_dir_url( __FILE__ ) . '/images/subscribe.svg" alt="" /> 
-				' . esc_html( sprintf( _n( '%s Subscriber', '%s Subscribers', $data->subscribers_count, 'embed-block-for-github' ), $data->subscribers_count ) ) . '
-			</span>
-			<span class="ebg-br-watchers">
-				<img src="' . plugin_dir_url( __FILE__ ) . '/images/watch.svg" alt="" /> 
-				' . esc_html( sprintf( _n( '%s Watcher', '%s Watchers', $data->watchers_count, 'embed-block-for-github' ), $data->watchers_count ) ) . '
-			</span>
-			<span class="ebg-br-forks">
-				<img src="' . plugin_dir_url( __FILE__ ) . '/images/fork.svg" alt="" /> 
-				' . esc_html( sprintf( _n( '%s Fork', '%s Forks', $data->forks_count, 'embed-block-for-github' ), $data->forks_count ) ) . '
-			</span>
-			<a target="_blank" rel="noopener noreferrer" class="ebg-br-link" href="' . $data->html_url . '">' . esc_html__( 'Check out this repository on GitHub.com', 'embed-block-for-github' ) . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a>
-		</p>
-	</div>
-</div>
-					';
-				} else {
-					$slug = str_replace( 'https://github.com/', '', $github_url );
-					$request = wp_remote_get( 'https://api.github.com/repos/' . $slug );
-					$body = wp_remote_retrieve_body( $request );
-					$data = json_decode( $body );
-					if ( ! is_wp_error( $response ) ) {
-						set_transient( '_ebg_repository_' . sanitize_title_with_dashes( $github_url ), json_encode( $data ) );
-						$content = '
-<div class="ebg-br-wrapper">
-	<img class="ebg-br-header-logo" src="' . plugin_dir_url( __FILE__ ) . '/images/github.svg" alt="' . esc_html__( 'GitHub Card', 'embed-block-for-github' ) . '" />
-	<div class="ebg-br-avatar">
-		<img class="ebg-br-header-avatar" src="' . $data->owner->avatar_url . '" alt="" width="150" height="150" />
-	</div>
-	<div class="ebg-br-main">
-		<p class="ebg-br-title">
-			<strong><a target="_blank" rel="noopener noreferrer" href="' . $data->html_url . '">' . $data->name . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a></strong>
-			<em>' . esc_html__( 'by', 'embed-block-for-github' ) . ' <a target="_blank" rel="noopener noreferrer" href="' . $data->owner->html_url . '">' . $data->owner->login . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a></em>
-		</p>
-		<p class="ebg-br-description">' . $data->description . '</p>
-		<p class="ebg-br-footer">
-			<span class="ebg-br-subscribers">
-				<img src="' . plugin_dir_url( __FILE__ ) . '/images/subscribe.svg" alt="" /> 
-				' . esc_html( sprintf( _n( '%s Subscriber', '%s Subscribers', $data->subscribers_count, 'embed-block-for-github' ), $data->subscribers_count ) ) . '
-			</span>
-			<span class="ebg-br-watchers">
-				<img src="' . plugin_dir_url( __FILE__ ) . '/images/watch.svg" alt="" /> 
-				' . esc_html( sprintf( _n( '%s Watcher', '%s Watchers', $data->watchers_count, 'embed-block-for-github' ), $data->watchers_count ) ) . '
-			</span>
-			<span class="ebg-br-forks">
-				<img src="' . plugin_dir_url( __FILE__ ) . '/images/fork.svg" alt="" /> 
-				' . esc_html( sprintf( _n( '%s Fork', '%s Forks', $data->forks_count, 'embed-block-for-github' ), $data->forks_count ) ) . '
-			</span>
-			<a target="_blank" rel="noopener noreferrer" class="ebg-br-link" href="' . $data->html_url . '">' . esc_html__( 'Check out this repository on GitHub.com', 'embed-block-for-github' ) . ' <span class="screen-reader-text">(' . esc_html__( 'this link opens in a new window', 'embed-block-for-github' ) . ')</span></a>
-		</p>
-	</div>
-</div>
-						';
-					} else {
-						$content = '<p>' . esc_html__( 'No information available. Please check your URL.', 'embed-block-for-github' ) . '</p>';
+
+	private function msgdebug ($msg) {
+		//$this->msgdebug("PAHT:".plugin_dir_path( __FILE__ ));
+		error_log("DEBUG: ".$msg, 0);
+	}
+
+
+
+	public function __construct() {
+		add_action( 'init', array( $this, 'init_wp_register' ) );
+	}
+
+	public function init_wp_register() {
+		wp_register_script(
+			'ebg-repository-editor',
+			$this->plugin_url('repository-block.js'),
+			array( 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-editor' ),
+			$this->plugin_file_ver('repository-block.js')
+		);
+		wp_register_style(
+			'ebg-repository-editor',
+			$this->plugin_url('repository-block.css'),
+			array(),
+			$this->plugin_file_ver('repository-block.css')
+		);
+		wp_register_style(
+			'ebg-repository',
+			$this->plugin_url('repository-block.css'),
+			array(),
+			$this->plugin_file_ver('repository-block.css')
+		);
+		register_block_type( 'embed-block-for-github/repository', array(
+			'editor_script'   => 'ebg-repository-editor',
+			'editor_style'    => 'ebg-repository-editor',
+			'style'           => 'ebg-repository',
+			'render_callback' => array( $this, 'ebg_embed_repository' ),
+			'attributes'      => array(
+				'github_url' => array( 'type' => 'string' ),
+				'darck_mode' => array( 'type' => 'boolean' ),
+			),
+		) );
+	}
+	
+
+	private function process_template( $template, $data ) {
+		ob_start();
+		if ( ! locate_template( $this->plugin_name() . '/' . $template, true ) ) {
+			require 'templates/' . $template;
+		}
+		return ob_get_clean();
+	}
+
+	/* Get Path install plugin */
+	private function plugin_path(){
+		return plugin_dir_path( __FILE__ );
+	}
+
+	/* Get Path install plugin and file name. */
+	private function plugin_file($file){
+		if (strlen(trim($file)) > 0) {
+			return $this->plugin_path() . $file;
+		}
+		return "";
+	}
+
+	/* Get version of the file using modified date. */
+	private function plugin_file_ver($file) {
+		return filemtime( $this->plugin_file($file) );
+	}
+
+	/* Get folder name plugin */
+	private function plugin_name() {
+		return basename( dirname( __FILE__ ) );
+	}
+
+	private function plugin_url($file) {
+		if (strlen(trim($file)) > 0) {
+			return plugins_url( $file, __FILE__ );
+		}
+		return "";
+	}
+
+	private function check_message($message) {
+	
+		if ($message == "Not Found") {
+			return '<p>' . esc_html__( 'Error: Reposity not found. Please check your URL.', 'embed-block-for-github' ) . '</p>';
+		} else {
+			return '<p>' . esc_html( sprintf( 'Error: %s', $message ) , 'embed-block-for-github' ) . '</p>';
+		}
+	}
+
+	public function ebg_embed_repository( $attributes ) {
+		$github_url = trim( $attributes['github_url'] );
+		$darck_mode = (in_array("darck_mode", $attributes) ? $attributes['darck_mode'] : false);
+		
+		$a_remplace = [];
+		if ($darck_mode) {
+			$a_remplace['%%_WRAPPER_DARK_MODE_%%'] = "ebg-br-wrapper-dark-mode-on";
+			$a_remplace['%%_FILE_IMG_ICO_GITHUB_%%'] = $this->plugin_url("images/github_white.png");
+			$a_remplace['%%_FILE_IMG_SUBSCRIBE_%%'] = $this->plugin_url("images/subscribe_white.svg");
+			$a_remplace['%%_FILE_IMG_WATCH_%%'] = $this->plugin_url("images/watch_white.svg");
+			$a_remplace['%%_FILE_IMG_FORK_%%'] = $this->plugin_url("images/fork_white.svg");
+		} else {
+			$a_remplace['%%_WRAPPER_DARK_MODE_%%'] = "ebg-br-wrapper-dark-mode-off";
+			$a_remplace['%%_FILE_IMG_ICO_GITHUB_%%'] = $this->plugin_url("images/github.png");
+			$a_remplace['%%_FILE_IMG_SUBSCRIBE_%%'] = $this->plugin_url("images/subscribe.svg");
+			$a_remplace['%%_FILE_IMG_WATCH_%%'] = $this->plugin_url("images/watch.svg");
+			$a_remplace['%%_FILE_IMG_FORK_%%'] = $this->plugin_url("images/fork.svg");
+		}
+		
+		if ( '' === trim( $github_url ) ) {
+			$content = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
+		} else {
+	
+			if ( filter_var( $github_url, FILTER_VALIDATE_URL ) ) {
+				if ( strpos( $github_url, 'https://github.com/' ) === 0 ) {
+					if ( get_transient( '_ebg_repository_' . sanitize_title_with_dashes( $github_url ) ) ) 
+					{
+						$data = json_decode( get_transient( '_ebg_repository_' . sanitize_title_with_dashes( $github_url ) ) );
+						if (isset( $data->message ) ) 
+						{
+							$content = $this->check_message($data->message);
+						}
+						else {
+							$content = $this->process_template('repository.php', $data);
+							$a_remplace['%%_DATA_AVATAR_URL_%%'] = $data->owner->avatar_url;
+							$a_remplace['%%_DATA_REPO_URL_%%'] = $data->html_url;
+							$a_remplace['%%_DATA_REPO_NAME_%%'] = $data->name;
+							$a_remplace['%%_DATA_AUTOR_URL_%%'] = $data->owner->html_url;
+							$a_remplace['%%_DATA_AUTOR_NAME_%%'] = $data->owner->login;
+							$a_remplace['%%_DATA_DESCIPTION_%%'] = $data->description;
+						}
+						unset($data);
+					} 
+					else {
+						$slug = str_replace( 'https://github.com/', '', $github_url );
+						$request = wp_remote_get( 'https://api.github.com/repos/' . $slug );
+
+						$body = wp_remote_retrieve_body( $request );
+						$data = json_decode( $body );
+						if ( ! is_wp_error( $response ) ) {
+							set_transient( '_ebg_repository_' . sanitize_title_with_dashes( $github_url ), json_encode( $data ) );
+							if (isset( $data->message ) ) 
+							{
+								$content = $this->check_message($data->message);
+							} 
+							else {
+								$content = $this->process_template('repository.php', $data);
+								
+								$a_remplace['%%_DATA_AVATAR_URL_%%'] = $data->owner->avatar_url;
+								$a_remplace['%%_DATA_REPO_URL_%%'] = $data->html_url;
+								$a_remplace['%%_DATA_REPO_NAME_%%'] = $data->name;
+								$a_remplace['%%_DATA_AUTOR_URL_%%'] = $data->owner->html_url;
+								$a_remplace['%%_DATA_AUTOR_NAME_%%'] = $data->owner->login;
+								$a_remplace['%%_DATA_DESCIPTION_%%'] = $data->description;
+							} 
+						} else {
+							$content = '<p>' . esc_html__( 'No information available. Please check your URL.', 'embed-block-for-github' ) . '</p>';
+						}
+						unset($data);
 					}
+				} else {
+					$content = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
 				}
 			} else {
 				$content = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
 			}
-		} else {
-			$content = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
 		}
+
+		foreach ($a_remplace as $key => $val) {
+			$content = str_replace($key, $val, $content);
+		}
+		return $content;
 	}
 
-	return $content;
 }
-function ebg_enqueue_scripts() {
-	wp_register_script(
-		'ebg-repository-editor',
-		plugins_url( 'repository-block.js', __FILE__ ),
-		array( 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-editor' ),
-		filemtime( plugin_dir_path( __FILE__ ) . 'repository-block.js' )
-	);
-	wp_register_style(
-		'ebg-repository-editor',
-		plugins_url( 'repository-block.css', __FILE__ ),
-		array(),
-		filemtime( plugin_dir_path( __FILE__ ) . 'repository-block.css' )
-	);
-	wp_register_style(
-		'ebg-repository',
-		plugins_url( 'repository-block.css', __FILE__ ),
-		array(),
-		filemtime( plugin_dir_path( __FILE__ ) . 'repository-block.css' )
-	);
-	register_block_type( 'embed-block-for-github/repository', array(
-		'editor_script'   => 'ebg-repository-editor',
-		'editor_style'    => 'ebg-repository-editor',
-		'style'           => 'ebg-repository',
-		'render_callback' => 'ebg_embed_repository',
-		'attributes'      => array(
-			'github_url' => array( 'type' => 'string' ),
-		),
-	) );
-}
-add_action( 'init', 'ebg_enqueue_scripts' );
+
+$embed_block_for_github = new embed_block_for_github();
