@@ -5,7 +5,8 @@
 	<div class="ebg-br-main">
 		<p class="ebg-br-title">
 			<strong>
-				<a target="_blank" rel="noopener noreferrer" href="%%_DATA_REPO_URL_%%">%%_DATA_REPO_NAME_%%
+				<a target="_blank" rel="noopener noreferrer" href="%%_DATA_REPO_URL_%%">
+					%%_DATA_REPO_NAME_%%
 					<span class="screen-reader-text">(<?php echo esc_html__( 'this link opens in a new window', 'embed-block-for-github' ); ?>)</span>
 				</a>
 			</strong>

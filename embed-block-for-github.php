@@ -21,9 +21,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 
-// INFO: https://github.com/leewillis77/wp-github-oembed/blob/master/github-embed.php
 class embed_block_for_github {
-
 
 	private function msgdebug ($msg) {
 		//$this->msgdebug("PAHT:".plugin_dir_path( __FILE__ ));
