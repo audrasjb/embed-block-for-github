@@ -1,3 +1,7 @@
+.ebg-br-wrapper .ebg-br-editmode {
+	display: none;
+}
+
 .ebg-br-wrapper {
 	position: relative;
 	display: flex;
@@ -28,6 +32,7 @@
     height: 100%;
 }
 
+
 .ebg-br-wrapper-dark-mode-on > .ebg-br-background-image {
 	-webkit-filter: invert(100%);
 	-moz-filter: invert(100%);
@@ -35,9 +40,6 @@
 	-ms-filter: invert(100%);
 	filter: invert(100%);
 }
-
-
-
 
 
 .ebg-br-wrapper .ebg-br-avatar {
@@ -51,8 +53,6 @@
 }
 .ebg-br-wrapper .ebg-br-avatar .ebg-br-header-avatar {
 }
-
-
 
 
 
