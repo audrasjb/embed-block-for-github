@@ -1,4 +1,5 @@
 <div class="ebg-br-wrapper %%_WRAPPER_DARK_MODE_%%">
+	<div class="ebg-br-background-image"></div>
 	<div class="ebg-br-avatar">
 		<img class="ebg-br-header-avatar" src="%%_DATA_AVATAR_URL_%%" alt="" width="150" height="150" />
 	</div>
@@ -20,12 +21,15 @@
 		<p class="ebg-br-description">%%_DATA_DESCIPTION_%%</p>
 		<p class="ebg-br-footer">
 			<span class="ebg-br-subscribers">
+				<span class="ebg-br-background-image"></span>
 				<?php echo esc_html( sprintf( _n( '%s Subscriber', '%s Subscribers', $data->subscribers_count, 'embed-block-for-github' ), $data->subscribers_count ) ); ?>
 			</span>
 			<span class="ebg-br-watchers">
+				<span class="ebg-br-background-image"></span>
 				<?php echo esc_html( sprintf( _n( '%s Watcher', '%s Watchers', $data->watchers_count, 'embed-block-for-github' ), $data->watchers_count ) ); ?>
 			</span>
 			<span class="ebg-br-forks">
+				<span class="ebg-br-background-image"></span>
 				<?php echo esc_html( sprintf( _n( '%s Fork', '%s Forks', $data->forks_count, 'embed-block-for-github' ), $data->forks_count ) ); ?>
 			</span>
 			<a target="_blank" rel="noopener noreferrer" class="ebg-br-link" href="%%_DATA_REPO_URL_%%">

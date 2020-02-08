@@ -8,22 +8,33 @@
 	-moz-box-shadow: 10px 10px 15px 0px rgba(0,0,0,0.75);
 	box-shadow: 10px 10px 15px 0px rgba(0,0,0,0.75);
 
-	background-repeat: no-repeat;
-	background-position: calc(100% - 0.5em) 0.5em;
-	background-size: 20px 20px;
-
 	border-radius: .5em;
+	border: 1px solid #eee;
 }
 
 .ebg-br-wrapper-dark-mode-on {
 	border: 1px solid rgba(94,9,9,1);
-	background-image: url('images/github_white.png');	
-}
-.ebg-br-wrapper-dark-mode-off {
-	border: 1px solid #eee;
-	background-image: url('images/github.png');
 }
 
+.ebg-br-wrapper > .ebg-br-background-image {
+	background-image: url('images/github.svg');
+	background-repeat: no-repeat;
+	background-position: calc(100% - 0.5em) 0.5em;
+	background-size: 20px 20px;
+	position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.ebg-br-wrapper-dark-mode-on > .ebg-br-background-image {
+	-webkit-filter: invert(100%);
+	-moz-filter: invert(100%);
+	-o-filter: invert(100%);
+	-ms-filter: invert(100%);
+	filter: invert(100%);
+}
 
 
 
@@ -89,7 +100,7 @@
 	padding: 0;
 	line-height: 1.2em;
 }
-.ebg-br-wrapper .ebg-br-footer span {
+.ebg-br-wrapper .ebg-br-footer .ebg-br-background-image {
 	background-repeat: no-repeat;
 	background-position: left center;
 	background-size: 18px 18px;
@@ -97,23 +108,23 @@
 	margin-right: 0.5em;
 	font-size: 0.9em;
 }
-.ebg-br-wrapper-dark-mode-on .ebg-br-footer span.ebg-br-subscribers {
-	background-image: url('images/subscribe_white.svg');
-}
-.ebg-br-wrapper-dark-mode-on .ebg-br-footer span.ebg-br-watchers {
-	background-image: url('images/watch_white.svg');
-}
-.ebg-br-wrapper-dark-mode-on .ebg-br-footer span.ebg-br-forks {
-	background-image: url('images/fork_white.svg');
-}
-.ebg-br-wrapper-dark-mode-off .ebg-br-footer span.ebg-br-subscribers {
+
+.ebg-br-wrapper .ebg-br-footer .ebg-br-subscribers .ebg-br-background-image {
 	background-image: url('images/subscribe.svg');
 }
-.ebg-br-wrapper-dark-mode-off .ebg-br-footer span.ebg-br-watchers {
+.ebg-br-wrapper .ebg-br-footer .ebg-br-watchers .ebg-br-background-image {
 	background-image: url('images/watch.svg');
 }
-.ebg-br-wrapper-dark-mode-off .ebg-br-footer span.ebg-br-forks {
+.ebg-br-wrapper .ebg-br-footer .ebg-br-forks .ebg-br-background-image {
 	background-image: url('images/fork.svg');
+}
+
+.ebg-br-wrapper-dark-mode-on .ebg-br-footer .ebg-br-background-image {
+    -webkit-filter: invert(100%);
+    -moz-filter: invert(100%);
+    -o-filter: invert(100%);
+    -ms-filter: invert(100%);
+    filter: invert(100%);
 }
 
 .ebg-br-wrapper .ebg-br-link {
