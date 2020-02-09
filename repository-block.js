@@ -71,7 +71,7 @@
 					),
 					el (
 						ToggleControl, {
-							label: i18n.__( 'Active Dark Mode' ),
+							label: i18n.__( 'Activate Dark Mode' ),
 							checked: darck_mode,
 							onChange: function ( new_mode ) {
 								props.setAttributes( { darck_mode: new_mode } )
