@@ -7,6 +7,7 @@
 	var MediaUpload = wp.editor.MediaUpload
 	var InspectorControls = wp.editor.InspectorControls
 	var TextControl = components.TextControl
+	var ToggleControl = wp.components.ToggleControl
 	var ServerSideRender = components.ServerSideRender
 	var withState = wp.compose.withState
 
@@ -29,13 +30,18 @@
 	category: 'embed',
 	attributes: {
 		github_url: {
-	    		type: 'string',
+	    	type: 'string',
+		},
+		darck_mode: {
+			type: 'boolean',
+			default: false,
 		},
 	},
 
 	edit: function ( props ) {
 		var attributes = props.attributes
 		var github_url = props.attributes.github_url
+		var darck_mode = props.attributes.darck_mode
 
 		return [
 			el( 'div', { className: 'components-block-description' },
@@ -60,6 +66,15 @@
 							value: github_url,
 							onChange: function ( new_url ) {
 								props.setAttributes( { github_url: new_url } )
+							}
+						}
+					),
+					el (
+						ToggleControl, {
+							label: i18n.__( 'Active Dark Mode' ),
+							checked: darck_mode,
+							onChange: function ( new_mode ) {
+								props.setAttributes( { darck_mode: new_mode } )
 							}
 						}
 					),
