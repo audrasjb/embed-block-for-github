@@ -1,10 +1,10 @@
 === Embed Block for GitHub ===
-Contributors: audrasjb, whodunitagency
+Contributors: audrasjb, whodunitagency, pedromendonca, vsc55
 Donate link: https://www.paypal.me/audrasjb
 Tags: GitHub, embed, block, Gutenberg, bloc, gist, git, repository, card
 Requires at least: 5.2
-Tested up to: 5.3
-Stable tag: 0.2
+Tested up to: 5.4
+Stable tag: 0.3
 Requires PHP: 5.6
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,6 +19,7 @@ It is developed on [GitHub](https://github.com/audrasjb/embed-block-for-github).
 
 Special thanks:
 - [@pedro-mendonca](https://github.com/pedro-mendonca) for i18n/l10n fixes and portuguese translation.
+- [@vsc55](https://github.com/vsc55) for Dark Mode Enhancement, full code refresh and spanish translation.
 
 == Screenshots ==
 
@@ -34,6 +35,10 @@ Special thanks:
 3. Add the URL of the repository and see the magic happen.
 
 == Changelog ==
+
+= 0.3 =
+* Code refresh and dark mode support. Props @vsc55: https://github.com/audrasjb/embed-block-for-github/pull/2
+* Added @vsc55 as plugin contributor for his multiple contributions ♥️
 
 = 0.2 =
 * Localization/internationalization fixes. Props @pedro-mendoza: https://github.com/audrasjb/embed-block-for-github/pull/1

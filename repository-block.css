@@ -7,11 +7,7 @@
 	display: flex;
 	margin: 1em 0 1.5em 0;
 	padding: 1em;
-	
-	-webkit-box-shadow: 10px 10px 15px 0px rgba(0,0,0,0.75);
-	-moz-box-shadow: 10px 10px 15px 0px rgba(0,0,0,0.75);
 	box-shadow: 10px 10px 15px 0px rgba(0,0,0,0.75);
-
 	border-radius: .5em;
 	border: 1px solid #eee;
 }
@@ -32,7 +28,6 @@
     height: 100%;
 }
 
-
 .ebg-br-wrapper-dark-mode-on > .ebg-br-background-image {
 	-webkit-filter: invert(100%);
 	-moz-filter: invert(100%);
@@ -41,48 +36,47 @@
 	filter: invert(100%);
 }
 
-
 .ebg-br-wrapper .ebg-br-avatar {
 	display: inline-block;
 	margin: 0 1em 0 0;
 	min-width: 150px;
 }
+
 .ebg-br-wrapper .ebg-br-header-avatar {
 	max-width: 150px;
 	border-radius: 50%;
 }
+
 .ebg-br-wrapper .ebg-br-avatar .ebg-br-header-avatar {
 }
-
-
 
 .ebg-br-wrapper .ebg-br-main {
 	display: inline-block;
 	margin: 0;
 	padding: 0;
 }
+
 .ebg-br-wrapper .ebg-br-title {
 	margin: 0;
 	padding: 0;
 	line-height: 1.2em;
 }
+
 .ebg-br-wrapper .ebg-br-title strong {
 	display: block;
 	font-size: 1.5em;
 }
+
 .ebg-br-wrapper .ebg-br-title em {
 	display: block;
 	font-size: .8em;
 }
+
 .ebg-br-wrapper .ebg-br-title a {
 }
+
 .ebg-br-wrapper .ebg-br-title a:hover, .ebg-br-title a:focus, ebg-br-title a:active {
 }
-
-
-
-
-
 
 .ebg-br-wrapper .ebg-br-description {
 	margin: .5em 0 0;
@@ -91,15 +85,12 @@
 	line-height: 1.2em;
 }
 
-
-
-
-
 .ebg-br-wrapper .ebg-br-footer {
 	margin: 1em 0 0;
 	padding: 0;
 	line-height: 1.2em;
 }
+
 .ebg-br-wrapper .ebg-br-footer .ebg-br-background-image {
 	background-repeat: no-repeat;
 	background-position: left center;
@@ -112,9 +103,11 @@
 .ebg-br-wrapper .ebg-br-footer .ebg-br-subscribers .ebg-br-background-image {
 	background-image: url('images/subscribe.svg');
 }
+
 .ebg-br-wrapper .ebg-br-footer .ebg-br-watchers .ebg-br-background-image {
 	background-image: url('images/watch.svg');
 }
+
 .ebg-br-wrapper .ebg-br-footer .ebg-br-forks .ebg-br-background-image {
 	background-image: url('images/fork.svg');
 }
@@ -131,6 +124,7 @@
 	display: block;
 	margin: .5em 0 0;	
 }
+
 .ebg-br-wrapper .screen-reader-text {
 	border: 0;
 	clip: rect(1px, 1px, 1px, 1px);
