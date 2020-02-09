@@ -19,7 +19,7 @@ It is developed on [GitHub](https://github.com/audrasjb/embed-block-for-github).
 
 Special thanks:
 - [@pedro-mendonca](https://github.com/pedro-mendonca) for i18n/l10n fixes and portuguese translation.
-- [@vsc55](https://github.com/vsc55) for Dark Mode Enhancement, full code refresh.
+- [@vsc55](https://github.com/vsc55) for Dark Mode Enhancement, full code refresh and spanish translation.
 
 == Screenshots ==
 
