@@ -102,7 +102,7 @@ class embed_block_for_github {
 
 	private function check_message($message) {
 		if ($message == "Not Found") {
-			return '<p>' . esc_html__( 'Error: Reposity not found. Please check your URL.', 'embed-block-for-github' ) . '</p>';
+			return '<p>' . esc_html__( 'Error: Repository not found. Please check your URL.', 'embed-block-for-github' ) . '</p>';
 		} else {
 			return '<p>' . esc_html( sprintf( 'Error: %s', $message ) , 'embed-block-for-github' ) . '</p>';
 		}

@@ -1,7 +1,7 @@
 <div class="ebg-br-wrapper %%_WRAPPER_DARK_MODE_%%">
 	<div class="ebg-br-background-image"></div>
 	<div class="ebg-br-editmode egb-br-darkmode-status">
-		<span class="egb-br-darkmode-status-img">Dark Mode</span>
+		<span class="egb-br-darkmode-status-img"><?php echo esc_html__( 'Status Dark Mode', 'embed-block-for-github' ); ?></span>
 	</div>
 	<div class="ebg-br-avatar">
 		<img class="ebg-br-header-avatar" src="%%_DATA_AVATAR_URL_%%" alt="" width="150" height="150" />
