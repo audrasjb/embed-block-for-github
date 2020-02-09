@@ -1,5 +1,5 @@
 === Embed Block for GitHub ===
-Contributors: audrasjb, whodunitagency, pedromendonca
+Contributors: audrasjb, whodunitagency, pedromendonca, vsc55
 Donate link: https://www.paypal.me/audrasjb
 Tags: GitHub, embed, block, Gutenberg, bloc, gist, git, repository, card
 Requires at least: 5.2
@@ -18,7 +18,8 @@ This plugin adds a GitHub Repository Embed Block to the Block Editor.
 It is developed on [GitHub](https://github.com/audrasjb/embed-block-for-github). Contributions welcome!
 
 Special thanks:
-- [@pedro-mendonca](https://github.com/pedro-mendonca) for Dark Mode Enhancement, full code refresh, i18n/l10n fixes and portuguese translation.
+- [@pedro-mendonca](https://github.com/pedro-mendonca) for i18n/l10n fixes and portuguese translation.
+- [@vsc55](https://github.com/vsc55) for Dark Mode Enhancement, full code refresh.
 
 == Screenshots ==
 
@@ -36,8 +37,8 @@ Special thanks:
 == Changelog ==
 
 = 0.3 =
-* Code refresh and dark mode support. Props @pedro-mendoza: https://github.com/audrasjb/embed-block-for-github/pull/2
-* Added @pedromendonca as plugin contributor for his multiple contributions ♥️
+* Code refresh and dark mode support. Props @vsc55: https://github.com/audrasjb/embed-block-for-github/pull/2
+* Added @vsc55 as plugin contributor for his multiple contributions ♥️
 
 = 0.2 =
 * Localization/internationalization fixes. Props @pedro-mendoza: https://github.com/audrasjb/embed-block-for-github/pull/1
