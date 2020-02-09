@@ -1,10 +1,14 @@
 @import 'repository-block.css';
 
+.ebg-br-wrapper .ebg-br-editmode {
+	display: initial !important;
+}
+
 .ebg-br-wrapper {
 	border: 1px solid #eee !important;
 }
 
-.ebg-br-wrapper .ebg-br-background-image {
+.ebg-br-wrapper .ebg-br-img-color-auto {
 	-webkit-filter: invert(0) !important;
 	-moz-filter: invert(0) !important;
 	-o-filter: invert(0) !important;
@@ -12,11 +16,7 @@
 	filter: invert(0) !important;
 }
 
-.ebg-br-wrapper .ebg-br-editmode {
-	display: initial !important;
-}
-
-.ebg-br-wrapper .egb-br-darkmode-status {
+.ebg-br-wrapper > .egb-br-darkmode-status {
 	position: absolute;
     left: 0;
 	top: calc(100% - 25px - 0.5em);
@@ -27,18 +27,12 @@
 
 .ebg-br-wrapper .egb-br-darkmode-status .egb-br-darkmode-status-img {
 	display: inline-block;
-	height: 24px;
-	margin: 0;
 	margin-right: 0.5em;
 	padding-left: calc(64px + 0.5em);
-	padding-right: 0px;
-	padding-top: 2px;
-	padding-bottom: 0px;
 	background-image: url('images/on_off.svg');
 	background-repeat: no-repeat;
 	background-size: 64px auto;
 	font-size: smaller;
-	vertical-align: top;
 }
 
 .ebg-br-wrapper-dark-mode-on .egb-br-darkmode-status .egb-br-darkmode-status-img {

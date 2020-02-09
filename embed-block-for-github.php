@@ -114,6 +114,7 @@ class embed_block_for_github {
 		
 		$a_remplace = [];
 		$a_remplace['%%_WRAPPER_DARK_MODE_%%'] = "ebg-br-wrapper-dark-mode-" . ($darck_mode ? "on" : "off");
+		$a_remplace['%%_URL_ICO_LINK_%%'] = $this->plugin_url("images/link.svg");
 		
 		if ( '' === trim( $github_url ) ) {
 			$content = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
