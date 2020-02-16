@@ -22,6 +22,8 @@ if ( ! defined( 'WPINC' ) ) {
 
 class embed_block_for_github {
 
+	private $dev_mode = false;
+
 	private function msgdebug ($msg) {
 		//$this->msgdebug("PAHT:".plugin_dir_path( __FILE__ ));
 		error_log("DEBUG: ".$msg, 0);
@@ -62,9 +64,9 @@ class embed_block_for_github {
 		) );
 	}
 
-	private function process_template( $template, $data ) {
+	private function process_template( $template, $data = array() ) {
 		ob_start();
-		if ( ! locate_template( $this->plugin_name() . '/' . $template, true ) ) {
+		if ( ! locate_template( $this->plugin_name() . '/' . $template, true, false) ) {
 			require 'templates/' . $template;
 		}
 		return ob_get_clean();
@@ -78,14 +80,14 @@ class embed_block_for_github {
 	/* Get Path install plugin and file name. */
 	private function plugin_file($file){
 		if (strlen(trim($file)) > 0) {
-			return $this->plugin_path() . $file;
+			return $this::plugin_path() . $file;
 		}
 		return "";
 	}
 
 	/* Get version of the file using modified date. */
 	private function plugin_file_ver($file) {
-		return filemtime( $this->plugin_file($file) );
+		return filemtime( $this::plugin_file($file) );
 	}
 
 	/* Get folder name plugin */
@@ -93,6 +95,7 @@ class embed_block_for_github {
 		return basename( dirname( __FILE__ ) );
 	}
 
+	/* Get Url Plugin */
 	private function plugin_url($file) {
 		if (strlen(trim($file)) > 0) {
 			return plugins_url( $file, __FILE__ );
@@ -100,87 +103,230 @@ class embed_block_for_github {
 		return "";
 	}
 
-	private function check_message($message) {
+	/* Message according to the error received from GitHub. */
+	private function check_message($message, $documentation_url) {
 		if ($message == "Not Found") {
-			return '<p>' . esc_html__( 'Error: Repository not found. Please check your URL.', 'embed-block-for-github' ) . '</p>';
-		} else {
+			return '<p>' . esc_html__( 'Repository not found. Please check your URL.', 'embed-block-for-github' ) . '</p>';
+		}
+		elseif ( strpos( $message, 'API rate limit exceeded for ' ) === 0 )
+		{
+			return '<p>' . esc_html__( 'Sorry, API Github rate limit exceeded for IP. Please try again later.', 'embed-block-for-github' ) . '</p>';
+		}
+		else 
+		{
 			return '<p>' . esc_html( sprintf( 'Error: %s', $message ) , 'embed-block-for-github' ) . '</p>';
 		}
 	}
 
+	/* All messages shown to the user. */
+	private function message($message, $arg = array()) {
+		$msg_return = "";
+		switch($message) {
+			case "url_is_null":
+				$msg_return = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
+			break;
+
+			case "url_not_valid":
+				$msg_return = '<p>' . esc_html__( 'The specified URL is not valid. Check the address using the sidebar to add the repository URL.', 'embed-block-for-github' ) . '</p>';				
+			break;
+
+			case "url_not_github":
+				$msg_return = '<p>' . esc_html__( 'The specified URL is not from GitHub. Check the address using the sidebar to add the correct GitHub repository URL (only https allowed).', 'embed-block-for-github' ) . '</p>';
+			break;
+
+			case "info_no_available":
+				$msg_return = '<p>' . esc_html__( 'No information available. Please check your URL.', 'embed-block-for-github' ) . '</p>';
+			break;
+		}
+		return $msg_return;
+	}
+
+	private function transient_id($prefix = "", $postfix = "") {
+		$plugin_data = get_plugin_data( __FILE__ );
+		$plugin_version = $plugin_data['Version'];
+
+		$id = "_ebg_repository_".$plugin_version."_";
+		if (! empty($prefix)) 	{ $id = "_".$prefix.$id; }
+		if (! empty($postfix)) 	{ $id = $id.$postfix."_"; }
+		return $id;
+	}
+
+	/* Check if the URL is correct */
+	private function check_github_url($github_url) {
+		switch(True) {
+			case ( '' === trim( $github_url ) ):
+				return "url_is_null";
+			break;
+
+			case (! filter_var( $github_url, FILTER_VALIDATE_URL ) ):
+				return "url_not_valid";
+			break;
+			
+			case ( strpos( $github_url, 'https://github.com/' ) !== 0 ):
+				return "url_not_github";
+			break;
+		}
+		return "";
+	}
+
+	/* Detect type request (user, repo, etc...) */
+	private function detect_request($github_url) {
+		$slug = str_replace( 'https://github.com/', '', $github_url );
+		
+		$data_return = [];
+		switch ( count(explode("/", $slug)) )
+		{
+			case 1:
+				/* User */
+				$data_return['request'] = wp_remote_get( 'https://api.github.com/users/' . explode("/", $slug)[0] );
+				$data_return['type'] = "user";
+				break;
+
+			case 2:
+				/* Repo */
+				$data_return['request'] = wp_remote_get( 'https://api.github.com/repos/' . $slug );
+				$data_return['type'] = "repo";
+				break;
+
+			default:
+				/* ??? */
+				/*
+				$data_return['request'] = "";
+				$data_return['type'] = "";
+				*/
+				$data_return = NULL;
+		}
+		return $data_return;
+
+	}
+
+
 	public function ebg_embed_repository( $attributes ) {
 		$github_url = trim( $attributes['github_url'] );
 		$darck_mode = (in_array("darck_mode", $attributes) ? $attributes['darck_mode'] : false);
-		
-		$a_remplace = [];
-		$a_remplace['%%_WRAPPER_DARK_MODE_%%'] = "ebg-br-wrapper-dark-mode-" . ($darck_mode ? "on" : "off");
-		$a_remplace['%%_URL_ICO_LINK_%%'] = $this->plugin_url("images/link.svg");
-		
-		if ( '' === trim( $github_url ) ) {
-			$content = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
-		} else {
-	
-			if ( filter_var( $github_url, FILTER_VALIDATE_URL ) ) {
-				if ( strpos( $github_url, 'https://github.com/' ) === 0 ) {
-					if ( get_transient( '_ebg_repository_' . sanitize_title_with_dashes( $github_url ) ) ) 
-					{
-						$data = json_decode( get_transient( '_ebg_repository_' . sanitize_title_with_dashes( $github_url ) ) );
-						if (isset( $data->message ) ) 
-						{
-							$content = $this->check_message($data->message);
-						}
-						else {
-							$content = $this->process_template('repository.php', $data);
-							$a_remplace['%%_DATA_AVATAR_URL_%%'] = $data->owner->avatar_url;
-							$a_remplace['%%_DATA_REPO_URL_%%'] = $data->html_url;
-							$a_remplace['%%_DATA_REPO_NAME_%%'] = $data->name;
-							$a_remplace['%%_DATA_AUTOR_URL_%%'] = $data->owner->html_url;
-							$a_remplace['%%_DATA_AUTOR_NAME_%%'] = $data->owner->login;
-							$a_remplace['%%_DATA_DESCIPTION_%%'] = $data->description;
-						}
-						unset($data);
-					} 
-					else {
-						$slug = str_replace( 'https://github.com/', '', $github_url );
-						$request = wp_remote_get( 'https://api.github.com/repos/' . $slug );
 
-						$body = wp_remote_retrieve_body( $request );
-						$data = json_decode( $body );
-						if ( ! is_wp_error( $response ) ) {
-							set_transient( '_ebg_repository_' . sanitize_title_with_dashes( $github_url ), json_encode( $data ) );
-							if (isset( $data->message ) ) 
-							{
-								$content = $this->check_message($data->message);
-							} 
-							else {
-								$content = $this->process_template('repository.php', $data);
-								
-								$a_remplace['%%_DATA_AVATAR_URL_%%'] = $data->owner->avatar_url;
-								$a_remplace['%%_DATA_REPO_URL_%%'] = $data->html_url;
-								$a_remplace['%%_DATA_REPO_NAME_%%'] = $data->name;
-								$a_remplace['%%_DATA_AUTOR_URL_%%'] = $data->owner->html_url;
-								$a_remplace['%%_DATA_AUTOR_NAME_%%'] = $data->owner->login;
-								$a_remplace['%%_DATA_DESCIPTION_%%'] = $data->description;
-							} 
-						} else {
-							$content = '<p>' . esc_html__( 'No information available. Please check your URL.', 'embed-block-for-github' ) . '</p>';
-						}
-						unset($data);
+		$transient_id = $this::transient_id("", sanitize_title_with_dashes( $github_url ) );
+		$transi = new embed_block_for_github_transient($transient_id, true);
+		
+		/* We check and validate the propiedases are good. */
+		$error['type'] = $this::check_github_url($github_url);
+		
+		/* If no errors have been detected, we obtain the data from github. */
+		if (empty($error['type']))
+		{
+			/* DEV: CLEAN TRANSIENT */
+			if ($this->dev_mode) {
+				$transi->delete(true);
+			}
+			/* DEV: CLEAN TRANSIENT */
+			
+			if (! $transi->isExist() )
+			{
+				$data_all = $this::detect_request($github_url);
+
+				if (! is_null( $data_all ) )
+				{
+					$body = wp_remote_retrieve_body( $data_all['request'] );
+					$data_all['data'] = json_decode( $body );
+
+					if (! is_wp_error( $response ) ) {
+						$transi->set($data_all);
+					} else {
+						$error['type'] = "info_no_available";
+						//$response->get_error_message()
 					}
-				} else {
-					$content = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
+					unset($body);
+				} else 
+				{
+					$error['type'] = "url_not_valid";
 				}
-			} else {
-				$content = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
+			}
+
+			if (empty($error['type'])) 
+			{
+				$data_all = $transi->get();
+
+				if (isset($data_all->data)) 
+				{
+					/* We check if any error has been received from github. */
+					if (isset( $data_all->data->message ) )
+					{
+						$error['type'] = "get_error_from_github";
+						$error['msg_custom'] =  $this::check_message($data_all->data->message, $data_all->data->documentation_url);
+					}
+
+					/* If all went well, we loaded the template and generated the replacements. */
+					if ( empty($error['type'] ) )
+					{	
+						switch($data_all->type) {
+							case "user":
+								$content = $this::gen_info_user($data_all, $a_remplace);
+								break;
+							case "repo":
+								$content = $this::gen_info_repo($data_all, $a_remplace);
+								break;
+							default:
+								$error['type'] = "url_not_valid";
+						}
+					}
+				}
+
+				unset($data_all);
 			}
 		}
 
-		foreach ($a_remplace as $key => $val) {
-			$content = str_replace($key, $val, $content);
+		/* If there is an error, we prepare the error message that has been detected. */
+		if (! empty($error['type'])) {
+			/* Clean Transient is error detected*/
+			$transi->delete(true);
+
+			$content = $this::process_template('msg-error.php');
+			$a_remplace['%%_ERROR_TITLE_%%'] = "ERROR";
+			if (empty($error['msg_custom'])) {
+				$a_remplace['%%_ERROR_MESSAGE_%%'] = $this::message($error['type']);
+			} else {
+				$a_remplace['%%_ERROR_MESSAGE_%%'] = $error['msg_custom'];
+			}
 		}
-		return $content;
+		unset ($transi);
+
+		if (! empty($content)) {
+			$a_remplace['%%_WRAPPER_DARK_MODE_%%'] = "ebg-br-wrapper-dark-mode-" . ($darck_mode ? "on" : "off");
+			$a_remplace['%%_URL_ICO_LINK_%%'] = $this::plugin_url("images/link.svg");
+
+			foreach ($a_remplace as $key => $val) {
+				$content = str_replace($key, $val, $content);
+			}
+			return $content;
+		}
 	}
 
+
+	private function gen_info_user($data_all, &$a_remplace) {
+
+		$a_remplace['%%_DATA_USER_CREATED_AT_ONLY_DATE_%%'] = date_format( date_create( $data_all->data->created_at ), 'd/m/Y');
+		$a_remplace['%%_DATA_USER_UPDATED_AT_ONLY_DATE_%%'] = date_format( date_create( $data_all->data->updated_at ), 'd/m/Y');
+
+		foreach ($data_all->data as $key => $value) {
+			$a_remplace['%%_DATA_USER_'.strtoupper($key).'_%%'] = $value;
+		}
+		return $this::process_template('info-user.php', $data_all->data);
+	}
+
+	private function gen_info_repo($data_all, &$a_remplace) {
+		$a_remplace['%%_DATA_AVATAR_URL_%%'] = $data_all->data->owner->avatar_url;
+		$a_remplace['%%_DATA_REPO_URL_%%'] = $data_all->data->html_url;
+		$a_remplace['%%_DATA_REPO_NAME_%%'] = $data_all->data->name;
+		$a_remplace['%%_DATA_AUTOR_URL_%%'] = $data_all->data->owner->html_url;
+		$a_remplace['%%_DATA_AUTOR_NAME_%%'] = $data_all->data->owner->login;
+		$a_remplace['%%_DATA_DESCIPTION_%%'] = $data_all->data->description;
+		return $this::process_template('repository.php', $data_all->data);
+	}
+
+
+
 }
+
+require_once( 'embed_block_for_github_transient.php' );
 
 $embed_block_for_github = new embed_block_for_github();

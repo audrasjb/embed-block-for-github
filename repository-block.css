@@ -163,3 +163,18 @@
     -ms-filter: invert(0);
 	filter: invert(0);
 }
+
+
+/*
+	Class Page Error
+*/
+
+.ebg-br-wrapper .ebg-br-error {
+	padding-left: 60px;
+	padding-top: 0.5em;
+	
+	background-image: url('images/logo-error.png');
+	background-repeat: no-repeat;
+	background-size: auto 50px;
+	background-position: left top;
+}
