@@ -64,14 +64,6 @@ class embed_block_for_github {
 		) );
 	}
 
-	private function process_template( $template, $data = array() ) {
-		ob_start();
-		if ( ! locate_template( $this->plugin_name() . '/' . $template, true, false) ) {
-			require 'templates/' . $template;
-		}
-		return ob_get_clean();
-	}
-
 	/* Get Path install plugin */
 	private function plugin_path(){
 		return plugin_dir_path( __FILE__ );
@@ -256,18 +248,9 @@ class embed_block_for_github {
 					}
 
 					/* If all went well, we loaded the template and generated the replacements. */
-					if ( empty($error['type'] ) )
-					{	
-						switch($data_all->type) {
-							case "user":
-								$content = $this::gen_info_user($data_all, $a_remplace);
-								break;
-							case "repo":
-								$content = $this::gen_info_repo($data_all, $a_remplace);
-								break;
-							default:
-								$error['type'] = "url_not_valid";
-						}
+					$content = $this::template_generate_info($data_all, $a_remplace);
+					if (is_null($content)) {
+						$error['type'] = "url_not_valid";
 					}
 				}
 
@@ -277,10 +260,10 @@ class embed_block_for_github {
 
 		/* If there is an error, we prepare the error message that has been detected. */
 		if (! empty($error['type'])) {
-			/* Clean Transient is error detected*/
+			/* Clean Transient is error detected. */
 			$transi->delete(true);
 
-			$content = $this::process_template('msg-error.php');
+			$content = $this::template_file_require('msg-error.php');
 			$a_remplace['%%_ERROR_TITLE_%%'] = "ERROR";
 			if (empty($error['msg_custom'])) {
 				$a_remplace['%%_ERROR_MESSAGE_%%'] = $this::message($error['type']);
@@ -290,6 +273,7 @@ class embed_block_for_github {
 		}
 		unset ($transi);
 
+		/* If "$content" is not empty, we execute the replaces in the template. */
 		if (! empty($content)) {
 			$a_remplace['%%_WRAPPER_DARK_MODE_%%'] = "ebg-br-wrapper-dark-mode-" . ($darck_mode ? "on" : "off");
 			$a_remplace['%%_URL_ICO_LINK_%%'] = $this::plugin_url("images/link.svg");
@@ -302,28 +286,57 @@ class embed_block_for_github {
 	}
 
 
-	private function gen_info_user($data_all, &$a_remplace) {
 
-		$a_remplace['%%_DATA_USER_CREATED_AT_ONLY_DATE_%%'] = date_format( date_create( $data_all->data->created_at ), 'd/m/Y');
-		$a_remplace['%%_DATA_USER_UPDATED_AT_ONLY_DATE_%%'] = date_format( date_create( $data_all->data->updated_at ), 'd/m/Y');
 
-		foreach ($data_all->data as $key => $value) {
-			$a_remplace['%%_DATA_USER_'.strtoupper($key).'_%%'] = $value;
+
+	private function template_file_require( $template, $data = array() ) {
+		ob_start();
+		if ( ! locate_template( $this->plugin_name() . '/' . $template, true, false) ) {
+			$filename = $this::plugin_path() . 'templates/' . $template;
+			if (! file_exists( $filename ) ) {
+				return NULL;
+			}
+			require $filename;
 		}
-		return $this::process_template('info-user.php', $data_all->data);
+		return ob_get_clean();
 	}
 
-	private function gen_info_repo($data_all, &$a_remplace) {
-		$a_remplace['%%_DATA_AVATAR_URL_%%'] = $data_all->data->owner->avatar_url;
-		$a_remplace['%%_DATA_REPO_URL_%%'] = $data_all->data->html_url;
-		$a_remplace['%%_DATA_REPO_NAME_%%'] = $data_all->data->name;
-		$a_remplace['%%_DATA_AUTOR_URL_%%'] = $data_all->data->owner->html_url;
-		$a_remplace['%%_DATA_AUTOR_NAME_%%'] = $data_all->data->owner->login;
-		$a_remplace['%%_DATA_DESCIPTION_%%'] = $data_all->data->description;
-		return $this::process_template('repository.php', $data_all->data);
+	private function template_collect_values_to_replace($data, $prefix_text, &$a_remplace) {
+		foreach ($data as $key => $value) {
+			$new_prefix_text = $prefix_text."_".strtoupper($key);
+			//echo "Debug >> Key:". $key . " - Valor Tipo:" . gettype($value) . "<br>";
+			if (is_object($value)) {
+				$this->{__FUNCTION__}($value, $new_prefix_text, $a_remplace);
+			} else {
+				$a_remplace[$new_prefix_text.'_%%'] = $value;
+				$a_remplace[$new_prefix_text.'_%_CLASS_HIDE_IS_NULL_%%'] = (empty($value) ? "ebg-br-hide-is-null": "");
+			}
+		}
 	}
+	
+	private function template_generate_info($data_all, &$a_remplace) {
+		// https://api.github.com/users/vsc55
+		// https://api.github.com/repos/vsc55/embed-block-for-github
 
-
+		$name_file = 'info-'.strtolower($data_all->type).'.php';
+		$content = $this::template_file_require($name_file, $data_all->data);
+		if ( (! is_null($content)) && (! empty($content)) ) 
+		{
+			switch(strtolower($data_all->type))
+			{
+				case "user":
+					$a_remplace['%%_CUSTOM_DATA_USER_CREATED_AT_ONLY_DATE_%%'] = date_format( date_create( $data_all->data->created_at ), 'd/m/Y');
+					$a_remplace['%%_CUSTOM_DATA_USER_CREATED_AT_ONLY_DATE_%_CLASS_HIDE_IS_NULL_%%'] = (empty($data_all->data->created_at) ? "ebg-br-hide-is-null": "");
+					$a_remplace['%%_CUSTOM_DATA_USER_UPDATED_AT_ONLY_DATE_%%'] = date_format( date_create( $data_all->data->updated_at ), 'd/m/Y');
+					$a_remplace['%%_CUSTOM_DATA_USER_UPDATED_AT_ONLY_DATE_%_CLASS_HIDE_IS_NULL_%%'] = (empty($data_all->data->updated_at) ? "ebg-br-hide-is-null": "");
+					break;
+				case "repo":
+					break;
+			}
+			$this::template_collect_values_to_replace($data_all->data, "%%_DATA_".strtoupper($data_all->type), $a_remplace);		
+		}
+		return $content;
+	}
 
 }
 

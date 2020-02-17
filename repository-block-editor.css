@@ -16,6 +16,43 @@
 	filter: invert(0) !important;
 }
 
+.ebg-br-wrapper .ebg-br-title em {
+	padding-top: 0.40em !important;
+}
+
+
+/*
+	Class Info User
+*/
+
+.ebg-br-wrapper .ebg-br-user-info-ls ul,
+.ebg-br-wrapper .ebg-br-user-info-count ul
+{
+	border: 1px solid #eee !important;
+	background-color: transparent !important;
+}
+
+.ebg-br-wrapper i {
+	color: black !important;
+}
+
+.ebg-br-wrapper .ebg-br-user-info-count ul > li{
+	padding-top: 0 !important;
+}
+
+.ebg-br-wrapper .ebg-br-user-info-ls ul > li > i {
+	width: 30px !important;
+}
+
+
+/*
+	Class button status dark mode
+*/
+
+.ebg-br-wrapper .ebg-br-user-info-ls {
+	margin-bottom: 40px !important;
+}
+
 .ebg-br-wrapper > .egb-br-darkmode-status {
 	position: absolute;
     left: 0;

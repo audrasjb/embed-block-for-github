@@ -8,38 +8,65 @@
 			<strong>
 				<a target="_blank" rel="noopener noreferrer" href="%%_DATA_USER_HTML_URL_%%">
 					%%_DATA_USER_NAME_%% <span class="ebg-br-editmode">(%%_DATA_USER_ID_%%)</span>
-					<img class="ebg-br-img-color-auto" src="%%_URL_ICO_LINK_%%" alt="" height="13" width="13">
+					<i class="fas fa-link">&nbsp;</i>
 					<span class="screen-reader-text">(<?php echo esc_html__( 'this link opens in a new window', 'embed-block-for-github' ); ?>)</span>
 				</a>
 			</strong>
 			<em>
-				<?php echo esc_html__( 'alias', 'embed-block-for-github' ); ?><a target="_blank" rel="noopener noreferrer" href="%%_DATA_USER_URL_%%">
+				<?php echo esc_html__( 'alias', 'embed-block-for-github' ); ?><a target="_blank" rel="noopener noreferrer" href="%%_DATA_USER_HTML_URL_%%">
 					%%_DATA_USER_LOGIN_%%
-					<img class="ebg-br-img-color-auto" src="%%_URL_ICO_LINK_%%" alt="" height="9" width="9">
+					<i class="fas fa-link">&nbsp;</i>
 					<span class="screen-reader-text">(<?php echo esc_html__( 'this link opens in a new window', 'embed-block-for-github' ); ?>)</span>
 				</a>
 			</em>
 		</p>
-		<p>%%_DATA_USER_BIO_%%</p>
-		
-		<p>
-			<span>Alta: %%_DATA_USER_CREATED_AT_ONLY_DATE_%%</span>
-			<span> - - </span>
-			<span>Actualizacion: %%_DATA_USER_UPDATED_AT_ONLY_DATE_%%</span>
+		<p class="ebg-br-user-bio %%_DATA_USER_BIO_%_CLASS_HIDE_IS_NULL_%%">
+			%%_DATA_USER_BIO_%%
 		</p>
-		
-		<p>type: %%_DATA_USER_TYPE_%%</p>
-		<p>site_admin: %%_DATA_USER_SITE_ADMIN_%%</p>
-		<p>company: %%_DATA_USER_COMPANY_%%</p>
-		<p>Blog: %%_DATA_USER_BLOG_%%</p>
-		<p>Location: %%_DATA_USER_LOCATION_%%</p>
-		<p>email: %%_DATA_USER_EMAIL_%%</p>
-		<p>hireable: %%_DATA_USER_HIREABLE_%%</p>
-		<p>public_repos: %%_DATA_USER_PUBLIC_REPOS_%%</p>
-		<p>public_gists: %%_DATA_USER_PUBLIC_GISTS_%%</p>
-		<p>followers: %%_DATA_USER_FOLLOWERS_%%</p>
-		<p>following: %%_DATA_USER_FOLLOWING_%%</p>
-
+		<div class="ebg-br-user-info-count">
+			<ul>
+				<li>
+					<i class="fas fa-users">&nbsp;</i>%%_DATA_USER_FOLLOWERS_%% Followers
+				</li>
+				<li>
+					<i class="fas fa-star">&nbsp;</i>?? Starter
+				</li>
+				<li>
+					<i class="fas fa-users">&nbsp;</i>%%_DATA_USER_FOLLOWING_%% Following
+				</li>
+			</ul>
+		</div>
+		<div class="ebg-br-user-info-ls">
+			<ul>
+				<li class="%%_CUSTOM_DATA_USER_CREATED_AT_ONLY_DATE_%_CLASS_HIDE_IS_NULL_%%">
+					<i class="fas fa-clock">&nbsp;</i>%%_CUSTOM_DATA_USER_CREATED_AT_ONLY_DATE_%%
+				</li>
+				<li class="%%_DATA_USER_COMPANY_%_CLASS_HIDE_IS_NULL_%%">
+					<i class="fas fa-building">&nbsp;</i>%%_DATA_USER_COMPANY_%%
+				</li>
+				<li class="%%_DATA_USER_LOCATION_%_CLASS_HIDE_IS_NULL_%%">
+					<i class="fas fa-map-marker-alt">&nbsp;</i>%%_DATA_USER_LOCATION_%%
+				</li>
+				<li class="%%_DATA_USER_BLOG_%_CLASS_HIDE_IS_NULL_%%">
+					<i class="fas fa-link">&nbsp;</i>
+					<a target="_blank" rel="noopener noreferrer" href="%%_DATA_USER_BLOG_%%">	
+						%%_DATA_USER_BLOG_%%
+						<span class="screen-reader-text">(<?php echo esc_html__( 'this link opens in a new window', 'embed-block-for-github' ); ?>)</span>
+					</a>
+				</li>
+				<li class="%%_DATA_USER_EMAIL_%_CLASS_HIDE_IS_NULL_%%">
+					<i class="fas fa-at">&nbsp;</i>%%_DATA_USER_EMAIL_%%
+				</li>
+			</ul>
+			<ul>
+				<li class="%%_DATA_USER_PUBLIC_REPOS_%_CLASS_HIDE_IS_NULL_%%">
+					<i class="fas fa-code-branch">&nbsp;</i>%%_DATA_USER_PUBLIC_REPOS_%% Public Repos
+				</li>
+				<li class="%%_DATA_USER_PUBLIC_GISTS_%_CLASS_HIDE_IS_NULL_%%">
+					<i class="fas fa-code">&nbsp;</i>%%_DATA_USER_PUBLIC_GISTS_%% Public Gists
+				</li>
+			</ul>
+		</div>
 	</div>
 	<div class="ebg-br-editmode egb-br-darkmode-status">
 		<span class="egb-br-darkmode-status-img"><?php echo esc_html__( 'Status Dark Mode', 'embed-block-for-github' ); ?></span>
