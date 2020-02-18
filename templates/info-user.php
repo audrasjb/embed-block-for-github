@@ -43,6 +43,8 @@
 							</li>
 							<li class="%%_DATA_USER_EMAIL_%_CLASS_HIDE_IS_NULL_%%"><i class="ebg-br-icon fas fa-at">&nbsp;</i>%%_DATA_USER_EMAIL_%%</li>
 						</ul>
+					</div>
+					<div class="ebg-br-box-ul">
 						<ul>
 							<li class="%%_DATA_USER_PUBLIC_REPOS_%_CLASS_HIDE_IS_NULL_%%"><i class="ebg-br-icon fas fa-code-branch">&nbsp;</i>%%_DATA_USER_PUBLIC_REPOS_%% Public Repos</li>
 							<li class="%%_DATA_USER_PUBLIC_GISTS_%_CLASS_HIDE_IS_NULL_%%"><i class="ebg-br-icon fas fa-code">&nbsp;</i>%%_DATA_USER_PUBLIC_GISTS_%% Public Gists</li>
