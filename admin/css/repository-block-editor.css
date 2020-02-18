@@ -1,81 +1,80 @@
-@import 'repository-block.css';
-
 .ebg-br-wrapper .ebg-br-editmode {
 	display: initial !important;
 }
 
-.ebg-br-wrapper {
+.ebg-br-wrapper .ebg-br-border {
 	border: 1px solid #eee !important;
 }
 
-.ebg-br-wrapper .ebg-br-img-color-auto {
-	-webkit-filter: invert(0) !important;
-	-moz-filter: invert(0) !important;
-	-o-filter: invert(0) !important;
-	-ms-filter: invert(0) !important;
-	filter: invert(0) !important;
+.ebg-br-wrapper .ebg-br-background-color {
+	background-color: whitesmoke !important;
+	color: black !important;
 }
 
-.ebg-br-wrapper .ebg-br-title em {
+.ebg-br-wrapper .ebg-br-icon,
+.ebg-br-wrapper .ebg-br-logo.fab.fa-github {
+	color: black !important;
+}
+
+.ebg-br-wrapper .ebg-br-col-main .ebg-br-title em {
 	padding-top: 0.40em !important;
 }
 
 
 /*
-	Class Info User
+	CSS > Template Error
 */
-
-.ebg-br-wrapper .ebg-br-user-info-ls ul,
-.ebg-br-wrapper .ebg-br-user-info-count ul
-{
-	border: 1px solid #eee !important;
-	background-color: transparent !important;
+.ebg-br-wrapper .ebg-br-template-error .ebg-br-body p {
+	margin: 0px !important;
+	padding: 0px !important;
 }
 
-.ebg-br-wrapper i {
-	color: black !important;
-}
+.ebg-br-wrapper .ebg-br-template-error .ebg-br-body .ebg-br-title {
+	padding-bottom: 0.5em !important;
 
-.ebg-br-wrapper .ebg-br-user-info-count ul > li{
-	padding-top: 0 !important;
-}
-
-.ebg-br-wrapper .ebg-br-user-info-ls ul > li > i {
-	width: 30px !important;
 }
 
 
 /*
-	Class button status dark mode
+	CSS > Template User
 */
-
-.ebg-br-wrapper .ebg-br-user-info-ls {
-	margin-bottom: 40px !important;
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-box-ul ul {
+	border: 1px solid #eee !important;
+	background-color: white !important;
 }
 
-.ebg-br-wrapper > .egb-br-dark_theam-status {
+
+/*
+	Class button status dark Theme
+*/
+.ebg-br-wrapper .ebg-br-body {
+	padding-bottom: 40px !important;
+}
+
+.ebg-br-wrapper .egb-br-dark_theme-status {
 	position: absolute;
-    left: 0;
-	top: calc(100% - 25px - 0.5em);
-	width: calc(100% - 0.5em);
 	display: block;
-	text-align: right;
+	right: 0;
+	bottom: 0;
+	padding-right: 0.5em;
+	padding-bottom: 0.5em;
 }
 
-.ebg-br-wrapper .egb-br-dark_theam-status .egb-br-dark_theam-status-img {
+.ebg-br-wrapper .egb-br-dark_theme-status .egb-br-dark_theme-status-img {
 	display: inline-block;
 	margin-right: 0.5em;
 	padding-left: calc(64px + 0.5em);
+	padding-bottom: 5px;
 	background-image: url('../images/on_off.png');
 	background-repeat: no-repeat;
-	background-size: 64px auto;
+	background-size: 65px auto;
 	font-size: smaller;
 }
 
-.ebg-br-wrapper-dark-theme-on .egb-br-dark_theam-status .egb-br-dark_theam-status-img {
+.ebg-br-wrapper-dark-theme-on .egb-br-dark_theme-status .egb-br-dark_theme-status-img {
 	background-position: 0px 0px !important;
 }
 
-.ebg-br-wrapper-dark-theme-off .egb-br-dark_theam-status .egb-br-dark_theam-status-img {
-	background-position: 0px -37px !important;	
+.ebg-br-wrapper-dark-theme-off .egb-br-dark_theme-status .egb-br-dark_theme-status-img {
+	background-position: 0px -35px !important;	
 }

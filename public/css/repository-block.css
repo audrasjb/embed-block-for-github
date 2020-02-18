@@ -1,39 +1,99 @@
-.ebg-br-wrapper .ebg-br-hide-is-null,
+.ebg-br-wrapper {
+	margin: 0px 0px 0px 0px;
+	padding: 0;
+}
+
+
+/*
+	CSS > TOOLS
+*/
 .ebg-br-wrapper .ebg-br-editmode {
 	display: none;
 }
 
+.ebg-br-wrapper .ebg-br-hide {
+	display: none !important;
+}
 
 
-.ebg-br-wrapper {
-	position: relative;
-	display: flex;
+/*
+	CSS > Body
+*/
+.ebg-br-wrapper .ebg-br-border {
 	margin: 1em 0 1.5em 0;
 	padding: 1em;
 	box-shadow: 10px 10px 15px 0px rgba(0,0,0,0.75);
 	border-radius: .5em;
+}
+
+.ebg-br-wrapper .ebg-br-body {
+	position: relative;
+	display: flex;
+}
+
+.ebg-br-wrapper .ebg-br-wrapper-dark-theme-off .ebg-br-border {
 	border: 1px solid #eee;
 }
 
-.ebg-br-wrapper.ebg-br-wrapper-dark-theme-on {
+.ebg-br-wrapper .ebg-br-wrapper-dark-theme-on .ebg-br-border {
 	border: 1px solid rgba(94,9,9,1);
 }
 
-.ebg-br-wrapper .ebg-br-background {
-	background-repeat: no-repeat;
-	background-position: calc(100% - 0.5em) 0.5em;
-	background-size: 20px 20px;
-	position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+.ebg-br-wrapper .ebg-br-wrapper-dark-theme-off .ebg-br-background-color {
+	background-color: whitesmoke;
+	/*color: black;*/
 }
 
-.ebg-br-wrapper .ebg-br-avatar {
+.ebg-br-wrapper .ebg-br-wrapper-dark-theme-on .ebg-br-background-color {
+	background-color: #333333;
+	/*color: whitesmoke;*/
+}
+
+
+/*
+	CSS > Icon and Logo GitHub
+*/
+.ebg-br-wrapper .ebg-br-logo.fab.fa-github {
+	position: absolute;
+	top: 0.5em;
+	right: 0.5em;
+	font-size: 20px;
+}
+
+.ebg-br-wrapper .ebg-br-wrapper-dark-theme-off .ebg-br-icon,
+.ebg-br-wrapper .ebg-br-wrapper-dark-theme-off .ebg-br-logo.fab.fa-github {
+	color: black;
+}
+
+.ebg-br-wrapper .ebg-br-wrapper-dark-theme-on .ebg-br-icon,
+.ebg-br-wrapper .ebg-br-wrapper-dark-theme-on .ebg-br-logo.fab.fa-github {
+	color: white;
+}
+
+
+/*
+	CSS > Columns Sidebar, Main
+*/
+.ebg-br-wrapper .ebg-br-col {
 	display: inline-block;
-	margin: 0 1em 0 0;
+	margin: 0;
+	padding: 0;
+}
+
+.ebg-br-wrapper .ebg-br-col.ebg-br-col-sidebar {
 	min-width: 150px;
+}
+
+.ebg-br-wrapper .ebg-br-col.ebg-br-col-main {
+	width: 100%;
+}
+
+
+/*
+	CSS > Avatar
+*/
+.ebg-br-wrapper .ebg-br-col.ebg-br-col-sidebar {
+	margin: 0 1em 0 0;
 }
 
 .ebg-br-wrapper .ebg-br-header-avatar {
@@ -42,67 +102,39 @@
 	box-shadow: 10px 10px 15px 0px rgba(0,0,0,0.75);
 }
 
-.ebg-br-wrapper .ebg-br-avatar .ebg-br-header-avatar {
-}
 
-.ebg-br-wrapper .ebg-br-main {
-	display: inline-block;
-	margin: 0;
-	padding: 0;
-	width: 100%;
-}
-
-.ebg-br-wrapper .ebg-br-title {
+/*
+	CSS > All Template
+*/
+.ebg-br-wrapper .ebg-br-col-main .ebg-br-title {
 	margin: 0;
 	padding: 0;
 	line-height: 1.2em;
 }
 
-.ebg-br-wrapper .ebg-br-title strong {
+.ebg-br-wrapper .ebg-br-col-main .ebg-br-title strong {
 	display: block;
 	font-size: 1.5em;
 }
 
-.ebg-br-wrapper .ebg-br-title em {
+.ebg-br-wrapper .ebg-br-col-main .ebg-br-title em {
 	display: block;
 	font-size: .8em;
 	padding-top: 0.25em;
 }
 
-.ebg-br-wrapper .ebg-br-title a {
+.ebg-br-wrapper .ebg-br-col-main a,
+.ebg-br-wrapper .ebg-br-col-main a:hover, 
+.ebg-br-wrapper .ebg-br-col-main a:focus, 
+.ebg-br-wrapper .ebg-br-col-main a:active {
 	text-decoration:  none;
 }
 
-.ebg-br-wrapper .ebg-br-title a:hover, .ebg-br-title a:focus, ebg-br-title a:active {
-	text-decoration:  none;
-}
-
-.ebg-br-wrapper .ebg-br-user-bio,
-.ebg-br-wrapper .ebg-br-description {
+.ebg-br-wrapper .ebg-br-col-main .ebg-br-description {
 	margin: .5em 0 0;
 	padding: 0;
 	font-size: 0.9em;
 	line-height: 1.2em;
-}
-
-.ebg-br-wrapper .ebg-br-footer {
-	margin: 1em 0 0;
-	padding: 0;
-	line-height: 1.2em;
-}
-
-.ebg-br-wrapper .ebg-br-footer > span {
-	margin-right: 0.5em;
-	font-size: 0.9em;
-}
-
-.ebg-br-wrapper .ebg-br-footer a {
-	text-decoration:  none;
-}
-
-.ebg-br-wrapper .ebg-br-link {
-	display: block;
-	margin: .5em 0 0;
 }
 
 .ebg-br-wrapper .screen-reader-text {
@@ -119,66 +151,15 @@
 }
 
 /*
-	Class Set URL Images and setting global
+	CSS > Template Error
 */
-
-.ebg-br-wrapper .ebg-br-ico-mini {
-	background-repeat: no-repeat;
-	background-position: left center;
-	background-size: 18px 18px;
-	padding-left: 21px;
+.ebg-br-wrapper .ebg-br-template-error .ebg-br-col.ebg-br-col-sidebar {
+	display: none !important;
 }
 
-.ebg-br-wrapper .ebg-br-ico-github {
-	background-image: url('../images/github.svg');
-}
-
-.ebg-br-wrapper .ebg-br-ico-subscribers {
-	background-image: url('../images/subscribe.svg');
-}
-
-.ebg-br-wrapper .ebg-br-ico-watchers {
-	background-image: url('../images/watch.svg');
-}
-
-.ebg-br-wrapper .ebg-br-ico-forks {
-	background-image: url('../images/fork.svg');
-}
-
-.ebg-br-wrapper .ebg-br-ico-link {
-	background-image: url('../images/link.svg');
-}
-
-/*
-	Class Control Color Images
-*/
-
-.ebg-br-wrapper .ebg-br-inverter-color,
-.ebg-br-wrapper.ebg-br-wrapper-dark-theme-on .ebg-br-img-color-auto {
-    -webkit-filter: invert(100%);
-    -moz-filter: invert(100%);
-    -o-filter: invert(100%);
-    -ms-filter: invert(100%);
-    filter: invert(100%);
-}
-
-.ebg-br-wrapper.ebg-br-wrapper-dark-theme-off .ebg-br-img-color-auto {
-    -webkit-filter: invert(0);
-    -moz-filter: invert(0);
-    -o-filter: invert(0);
-    -ms-filter: invert(0);
-	filter: invert(0);
-}
-
-
-/*
-	Class Page Error
-*/
-
-.ebg-br-wrapper .ebg-br-error {
+.ebg-br-wrapper .ebg-br-template-error .ebg-br-col.ebg-br-col-main {
 	padding-left: 60px;
 	padding-top: 0.5em;
-	
 	background-image: url('../images/logo-error.png');
 	background-repeat: no-repeat;
 	background-size: auto 50px;
@@ -186,30 +167,50 @@
 }
 
 
+/*
+	CSS > Template Repo
+*/
+.ebg-br-wrapper .ebg-br-template-repo .ebg-br-description {
+	font-size: 1.1em;
+}
+
+.ebg-br-wrapper .ebg-br-template-repo .ebg-br-footer {
+	margin: 1em 0 0;
+	padding: 0;
+	padding-left: 1.5em;
+	line-height: 1.2em;
+}
+
+.ebg-br-wrapper .ebg-br-template-repo .ebg-br-footer > span {
+	margin-right: 0.5em;
+	font-size: 0.9em;
+}
+
+.ebg-br-wrapper .ebg-br-template-repo .ebg-br-footer .ebg-br-link {
+	display: block;
+	margin: .5em 0 0;
+}
+
+.ebg-br-wrapper .ebg-br-template-repo .ebg-br-footer .ebg-br-icon {
+	font-size: 1em;
+}
+
 
 /*
-	Class Info User
+	CSS > Template User
 */
-
-.ebg-br-wrapper .ebg-br-user-bio {
-	padding-bottom: 1em;
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-description {
+	font-size: 1.1em;
 }
 
-.ebg-br-wrapper a,
-.ebg-br-wrapper a:hover, 
-.ebg-br-wrapper a:focus, 
-.ebg-br-wrapper a:active {
-	text-decoration:  none;
-}
-
-.ebg-br-wrapper .ebg-br-user-info-ls,
-.ebg-br-wrapper .ebg-br-user-info-count {
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-box-ul {
 	padding-top: 0.5em;
-	width: 90%;
+	padding-left: 1em;
+	width: calc(90% - 1em);
 	vertical-align: middle;
 }
 
-.ebg-br-wrapper ul {
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-box-ul ul {
 	margin: 0;
 	margin-bottom: 10px;
 	padding: 0.5em;
@@ -220,31 +221,23 @@
 	border-radius: .5em;
 }
 
-.ebg-br-wrapper .ebg-br-user-info-ls ul i {
-	width: 25px;
-}
-
-.ebg-br-wrapper .ebg-br-user-info-count ul > li {
-	float: left;
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-box-ul ul > li {
+	display: inline-block;
 	margin-right: 0.5em;
 	padding-top: 0.5em;
 	padding-left: 0.5em;
 }
 
-.ebg-br-wrapper.ebg-br-wrapper-dark-theme-on ul {
-	border: 1px solid rgba(94,9,9,1);
-	background-color: #333333;
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-box-ul ul > li > i {
+	padding-right: 0.25em;
 }
 
-.ebg-br-wrapper.ebg-br-wrapper-dark-theme-off ul{
+.ebg-br-wrapper .ebg-br-wrapper-dark-theme-off.ebg-br-template-user .ebg-br-box-ul ul {
 	border: 1px solid #eee;
-	background-color: transparent;
+	background-color: white;
 }
 
-.ebg-br-wrapper.ebg-br-wrapper-dark-theme-on i {
-	color: white;
-}
-
-.ebg-br-wrapper.ebg-br-wrapper-dark-theme-off i {
-	color: black;
+.ebg-br-wrapper .ebg-br-wrapper-dark-theme-on.ebg-br-template-user .ebg-br-box-ul ul {
+	border: 1px solid rgba(94,9,9,1);
+	background-color: #1d201d;
 }
