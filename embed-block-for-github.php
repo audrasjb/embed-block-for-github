@@ -36,21 +36,21 @@ class embed_block_for_github {
 	public function init_wp_register() {
 		wp_register_script(
 			'ebg-repository-editor',
-			$this->plugin_url('repository-block.js'),
+			$this->plugin_url('admin/js/repository-block.js'),
 			array( 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-editor' ),
-			$this->plugin_file_ver('repository-block.js')
+			$this->plugin_file_ver('admin/js/repository-block.js')
 		);
 		wp_register_style(
 			'ebg-repository-editor',
-			$this->plugin_url('repository-block-editor.css'),
+			$this->plugin_url('admin/css/repository-block-editor.css'),
 			array(),
-			$this->plugin_file_ver('repository-block.css')
+			$this->plugin_file_ver('admin/css/repository-block-editor.css')
 		);
 		wp_register_style(
 			'ebg-repository',
-			$this->plugin_url('repository-block.css'),
+			$this->plugin_url('public/css/repository-block.css'),
 			array(),
-			$this->plugin_file_ver('repository-block.css')
+			$this->plugin_file_ver('public/css/repository-block.css')
 		);
 		register_block_type( 'embed-block-for-github/repository', array(
 			'editor_script'   => 'ebg-repository-editor',
@@ -59,7 +59,7 @@ class embed_block_for_github {
 			'render_callback' => array( $this, 'ebg_embed_repository' ),
 			'attributes'      => array(
 				'github_url' => array( 'type' => 'string' ),
-				'darck_mode' => array( 'type' => 'boolean' ),
+				'darck_theme' => array( 'type' => 'boolean' ),
 			),
 		) );
 	}
@@ -72,14 +72,14 @@ class embed_block_for_github {
 	/* Get Path install plugin and file name. */
 	private function plugin_file($file){
 		if (strlen(trim($file)) > 0) {
-			return $this::plugin_path() . $file;
+			return $this::plugin_path().$file;
 		}
 		return "";
 	}
 
 	/* Get version of the file using modified date. */
 	private function plugin_file_ver($file) {
-		return filemtime( $this::plugin_file($file) );
+		return filemtime($this::plugin_file($file));
 	}
 
 	/* Get folder name plugin */
@@ -195,7 +195,8 @@ class embed_block_for_github {
 
 	public function ebg_embed_repository( $attributes ) {
 		$github_url = trim( $attributes['github_url'] );
-		$darck_mode = (in_array("darck_mode", $attributes) ? $attributes['darck_mode'] : false);
+		$darck_theme = (in_array("darck_theme", $attributes) ? $attributes['darck_theme'] : false);
+		//bg_color
 
 		$transient_id = $this::transient_id("", sanitize_title_with_dashes( $github_url ) );
 		$transi = new embed_block_for_github_transient($transient_id, true);
@@ -272,11 +273,11 @@ class embed_block_for_github {
 			}
 		}
 		unset ($transi);
-
+		
 		/* If "$content" is not empty, we execute the replaces in the template. */
 		if (! empty($content)) {
-			$a_remplace['%%_WRAPPER_DARK_MODE_%%'] = "ebg-br-wrapper-dark-mode-" . ($darck_mode ? "on" : "off");
-			$a_remplace['%%_URL_ICO_LINK_%%'] = $this::plugin_url("images/link.svg");
+			$a_remplace['%%_WRAPPER_DARK_THEME_%%'] = "ebg-br-wrapper-dark-theme-" . ($darck_theme ? "on" : "off");
+			$a_remplace['%%_URL_ICO_LINK_%%'] = $this::plugin_url("public/images/link.svg");
 
 			foreach ($a_remplace as $key => $val) {
 				$content = str_replace($key, $val, $content);
@@ -340,6 +341,6 @@ class embed_block_for_github {
 
 }
 
-require_once( 'embed_block_for_github_transient.php' );
+require_once ( __DIR__ . '/includes/embed_block_for_github_transient.php' );
 
 $embed_block_for_github = new embed_block_for_github();

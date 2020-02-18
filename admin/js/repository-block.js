@@ -32,7 +32,7 @@
 		github_url: {
 	    	type: 'string',
 		},
-		darck_mode: {
+		darck_theme: {
 			type: 'boolean',
 			default: false,
 		},
@@ -41,7 +41,7 @@
 	edit: function ( props ) {
 		var attributes = props.attributes
 		var github_url = props.attributes.github_url
-		var darck_mode = props.attributes.darck_mode
+		var darck_theme = props.attributes.darck_theme
 
 		return [
 			el( 'div', { className: 'components-block-description' },
@@ -70,11 +70,18 @@
 						}
 					),
 					el (
+						components.PanelBody, {
+							title: i18n.__( 'Theme/Skin' ),
+							initialOpen: true
+						},
+					),
+					el (
 						ToggleControl, {
-							label: i18n.__( 'Activate Dark Mode' ),
-							checked: darck_mode,
-							onChange: function ( new_mode ) {
-								props.setAttributes( { darck_mode: new_mode } )
+							label: i18n.__( 'Is Dark Theme?' ),
+							help: darck_theme ? i18n.__( 'Light colors will be used to counteract the dark colors of themes or skins.' ) : i18n.__( 'Dark colors will be used to counteract the light colors of themes or skins.' ),
+							checked: darck_theme,
+							onChange: function ( value ) {
+								props.setAttributes( { darck_theme: value } )
 							}
 						}
 					),
@@ -83,7 +90,7 @@
 		]
 	},
 
-	save: () => {
+	save: (props) => {
 		return null
 	}
 

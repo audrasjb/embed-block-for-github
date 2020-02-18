@@ -15,7 +15,7 @@
 	border: 1px solid #eee;
 }
 
-.ebg-br-wrapper.ebg-br-wrapper-dark-mode-on {
+.ebg-br-wrapper.ebg-br-wrapper-dark-theme-on {
 	border: 1px solid rgba(94,9,9,1);
 }
 
@@ -130,23 +130,23 @@
 }
 
 .ebg-br-wrapper .ebg-br-ico-github {
-	background-image: url('images/github.svg');
+	background-image: url('../images/github.svg');
 }
 
 .ebg-br-wrapper .ebg-br-ico-subscribers {
-	background-image: url('images/subscribe.svg');
+	background-image: url('../images/subscribe.svg');
 }
 
 .ebg-br-wrapper .ebg-br-ico-watchers {
-	background-image: url('images/watch.svg');
+	background-image: url('../images/watch.svg');
 }
 
 .ebg-br-wrapper .ebg-br-ico-forks {
-	background-image: url('images/fork.svg');
+	background-image: url('../images/fork.svg');
 }
 
 .ebg-br-wrapper .ebg-br-ico-link {
-	background-image: url('images/link.svg');
+	background-image: url('../images/link.svg');
 }
 
 /*
@@ -154,7 +154,7 @@
 */
 
 .ebg-br-wrapper .ebg-br-inverter-color,
-.ebg-br-wrapper.ebg-br-wrapper-dark-mode-on .ebg-br-img-color-auto {
+.ebg-br-wrapper.ebg-br-wrapper-dark-theme-on .ebg-br-img-color-auto {
     -webkit-filter: invert(100%);
     -moz-filter: invert(100%);
     -o-filter: invert(100%);
@@ -162,7 +162,7 @@
     filter: invert(100%);
 }
 
-.ebg-br-wrapper.ebg-br-wrapper-dark-mode-off .ebg-br-img-color-auto {
+.ebg-br-wrapper.ebg-br-wrapper-dark-theme-off .ebg-br-img-color-auto {
     -webkit-filter: invert(0);
     -moz-filter: invert(0);
     -o-filter: invert(0);
@@ -179,7 +179,7 @@
 	padding-left: 60px;
 	padding-top: 0.5em;
 	
-	background-image: url('images/logo-error.png');
+	background-image: url('../images/logo-error.png');
 	background-repeat: no-repeat;
 	background-size: auto 50px;
 	background-position: left top;
@@ -231,20 +231,20 @@
 	padding-left: 0.5em;
 }
 
-.ebg-br-wrapper.ebg-br-wrapper-dark-mode-on ul {
+.ebg-br-wrapper.ebg-br-wrapper-dark-theme-on ul {
 	border: 1px solid rgba(94,9,9,1);
 	background-color: #333333;
 }
 
-.ebg-br-wrapper.ebg-br-wrapper-dark-mode-off ul{
+.ebg-br-wrapper.ebg-br-wrapper-dark-theme-off ul{
 	border: 1px solid #eee;
 	background-color: transparent;
 }
 
-.ebg-br-wrapper.ebg-br-wrapper-dark-mode-on i {
+.ebg-br-wrapper.ebg-br-wrapper-dark-theme-on i {
 	color: white;
 }
 
-.ebg-br-wrapper.ebg-br-wrapper-dark-mode-off i {
+.ebg-br-wrapper.ebg-br-wrapper-dark-theme-off i {
 	color: black;
 }

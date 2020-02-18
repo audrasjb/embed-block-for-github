@@ -53,7 +53,7 @@
 	margin-bottom: 40px !important;
 }
 
-.ebg-br-wrapper > .egb-br-darkmode-status {
+.ebg-br-wrapper > .egb-br-dark_theam-status {
 	position: absolute;
     left: 0;
 	top: calc(100% - 25px - 0.5em);
@@ -62,20 +62,20 @@
 	text-align: right;
 }
 
-.ebg-br-wrapper .egb-br-darkmode-status .egb-br-darkmode-status-img {
+.ebg-br-wrapper .egb-br-dark_theam-status .egb-br-dark_theam-status-img {
 	display: inline-block;
 	margin-right: 0.5em;
 	padding-left: calc(64px + 0.5em);
-	background-image: url('images/on_off.svg');
+	background-image: url('../images/on_off.png');
 	background-repeat: no-repeat;
 	background-size: 64px auto;
 	font-size: smaller;
 }
 
-.ebg-br-wrapper-dark-mode-on .egb-br-darkmode-status .egb-br-darkmode-status-img {
-	background-position: 0px -27px !important;	
+.ebg-br-wrapper-dark-theme-on .egb-br-dark_theam-status .egb-br-dark_theam-status-img {
+	background-position: 0px 0px !important;
 }
 
-.ebg-br-wrapper-dark-mode-off .egb-br-darkmode-status .egb-br-darkmode-status-img {
-	background-position: 0px 0px !important;
+.ebg-br-wrapper-dark-theme-off .egb-br-dark_theam-status .egb-br-dark_theam-status-img {
+	background-position: 0px -37px !important;	
 }

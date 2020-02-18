@@ -1,4 +1,4 @@
-<div class="ebg-br-wrapper %%_WRAPPER_DARK_MODE_%%">
+<div class="ebg-br-wrapper %%_WRAPPER_DARK_THEME_%%">
 	<div class="ebg-br-background ebg-br-img-color-auto ebg-br-ico-github"></div>
 	<div class="ebg-br-avatar">
 		<img class="ebg-br-header-avatar" src="%%_DATA_USER_AVATAR_URL_%%" alt="" width="150" height="150" />
@@ -68,7 +68,7 @@
 			</ul>
 		</div>
 	</div>
-	<div class="ebg-br-editmode egb-br-darkmode-status">
-		<span class="egb-br-darkmode-status-img"><?php echo esc_html__( 'Status Dark Mode', 'embed-block-for-github' ); ?></span>
+	<div class="ebg-br-editmode egb-br-dark_theam-status">
+		<span class="egb-br-dark_theam-status-img"><?php echo esc_html__( 'Dark Theam', 'embed-block-for-github' ); ?></span>
 	</div>
 </div>
