@@ -25,7 +25,9 @@
 					<div class="ebg-br-box-ul">
 						<ul>
 							<li><i class="ebg-br-icon fas fa-users">&nbsp;</i>%%_DATA_USER_FOLLOWERS_%% Followers</li>
+							<!--
 							<li><i class="ebg-br-icon fas fa-star">&nbsp;</i>?? Starter</li>
+							-->
 							<li><i class="ebg-br-icon fas fa-users">&nbsp;</i>%%_DATA_USER_FOLLOWING_%% Following</li>
 						</ul>
 					</div>
