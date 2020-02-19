@@ -81,6 +81,10 @@
 	color: white;
 }
 
+.ebg-br-wrapper .ebg-br-icon-github {
+	background-image: url('../images/github.svg');
+}
+
 .ebg-br-wrapper .ebg-br-icon-subscribers {
 	background-image: url('../images/subscribe.svg');
 }
