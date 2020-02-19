@@ -60,6 +60,7 @@ class embed_block_for_github {
 			'attributes'      => array(
 				'github_url' => array( 'type' => 'string' ),
 				'darck_theme' => array( 'type' => 'boolean' ),
+				'icon_type_source' => array( 'type' => 'string' ),
 			),
 		) );
 	}
@@ -196,7 +197,6 @@ class embed_block_for_github {
 	public function ebg_embed_repository( $attributes ) {
 		$github_url = trim( $attributes['github_url'] );
 		$darck_theme = (in_array("darck_theme", $attributes) ? $attributes['darck_theme'] : false);
-		//bg_color
 
 		$transient_id = $this::transient_id("", sanitize_title_with_dashes( $github_url ) );
 		$transi = new embed_block_for_github_transient($transient_id, true);

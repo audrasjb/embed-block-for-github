@@ -1,15 +1,16 @@
 ( function (blocks, editor, components, i18n, element ) {
 
-	var el = wp.element.createElement
-	var registerBlockType = wp.blocks.registerBlockType
-	var BlockControls = wp.editor.BlockControls
-	var AlignmentToolbar = wp.editor.AlignmentToolbar
-	var MediaUpload = wp.editor.MediaUpload
-	var InspectorControls = wp.editor.InspectorControls
-	var TextControl = components.TextControl
-	var ToggleControl = wp.components.ToggleControl
-	var ServerSideRender = components.ServerSideRender
-	var withState = wp.compose.withState
+	var el = wp.element.createElement,
+		registerBlockType = wp.blocks.registerBlockType,
+		BlockControls = wp.editor.BlockControls,
+		AlignmentToolbar = wp.editor.AlignmentToolbar,
+		MediaUpload = wp.editor.MediaUpload,
+		InspectorControls = wp.editor.InspectorControls,
+		TextControl = wp.components.TextControl,
+		ToggleControl = wp.components.ToggleControl,
+		RadioControl = wp.components.RadioControl,
+		ServerSideRender = wp.components.ServerSideRender,
+		withState = wp.compose.withState;
 
 	var github_icon = 
 		el( 'svg' , 
@@ -23,78 +24,98 @@
 		)
 
 	registerBlockType( 'embed-block-for-github/repository', {
-	title: i18n.__( 'GitHub Repo' ),
-	description: i18n.__( 'A block to embed a GitHub Repository.' ),
-	icon: github_icon,
-	keywords: [ i18n.__( 'github' ), i18n.__( 'repository' ), i18n.__( 'repo' ) ],
-	category: 'embed',
-	attributes: {
-		github_url: {
-	    	type: 'string',
+		title: i18n.__( 'GitHub Repo' ),
+		description: i18n.__( 'A block to embed a GitHub Repository.' ),
+		icon: github_icon,
+		keywords: [ i18n.__( 'github' ), i18n.__( 'repository' ), i18n.__( 'repo' ) ],
+		category: 'embed',
+		attributes: {
+			github_url: {
+				type: 'string',
+			},
+			darck_theme: {
+				type: 'boolean',
+				default: false,
+			},
+			icon_type_source: {
+				type: 'string',
+				default: 'file_svg',
+			},
 		},
-		darck_theme: {
-			type: 'boolean',
-			default: false,
-		},
-	},
 
-	edit: function ( props ) {
-		var attributes = props.attributes
-		var github_url = props.attributes.github_url
-		var darck_theme = props.attributes.darck_theme
+		edit: function ( props ) {
+			var attributes = props.attributes,
+				github_url = props.attributes.github_url,
+				darck_theme = props.attributes.darck_theme,
+				icon_type_source = props.attributes.icon_type_source;
 
-		return [
-			el( 'div', { className: 'components-block-description' },
-				el( ServerSideRender, {
-					block: 'embed-block-for-github/repository',
-					attributes: props.attributes
-				} )
-			),
-			el(
-				InspectorControls,
-				{ key: 'inspector' },
+			return [
+				el( 'div', { className: 'components-block-description' },
+					el( ServerSideRender, {
+						block: 'embed-block-for-github/repository',
+						attributes: props.attributes
+					} )
+				),
 				el(
-					components.PanelBody, {
-						title: i18n.__( 'GitHub Repository' ),
-						className: 'block-github-repository',
-						initialOpen: true
-					},
+					InspectorControls,
+					{ key: 'inspector' },
 					el(
-						TextControl, {
-							type: 'text',
-							label: i18n.__( 'Enter the URL of the GitHub Repository' ),
-							value: github_url,
-							onChange: function ( new_url ) {
-								props.setAttributes( { github_url: new_url } )
-							}
-						}
-					),
-					el (
 						components.PanelBody, {
-							title: i18n.__( 'Theme/Skin' ),
+							title: i18n.__( 'GitHub Repository' ),
+							className: 'block-github-repository',
 							initialOpen: true
 						},
-					),
-					el (
-						ToggleControl, {
-							label: i18n.__( 'Is Dark Theme?' ),
-							help: darck_theme ? i18n.__( 'Light colors will be used to counteract the dark colors of themes or skins.' ) : i18n.__( 'Dark colors will be used to counteract the light colors of themes or skins.' ),
-							checked: darck_theme,
-							onChange: function ( value ) {
-								props.setAttributes( { darck_theme: value } )
+						el(
+							TextControl, {
+								type: 'text',
+								label: i18n.__( 'Enter the URL of the GitHub Repository' ),
+								value: github_url,
+								onChange: function ( new_url ) {
+									props.setAttributes( { github_url: new_url } )
+								}
 							}
-						}
-					),
-				)
-			),			
-		]
-	},
+						),
+						el (
+							components.PanelBody, {
+								title: i18n.__( 'Theme/Skin' ),
+								initialOpen: true
+							},
+						),
+						el (
+							ToggleControl, {
+								label: i18n.__( 'Is Dark Theme?' ),
+								help: darck_theme ? i18n.__( 'Light colors will be used to counteract the dark colors of themes or skins.' ) : i18n.__( 'Dark colors will be used to counteract the light colors of themes or skins.' ),
+								checked: darck_theme,
+								onChange: function ( value ) {
+									props.setAttributes( { darck_theme: value } )
+								}
+							}
+						),
+						el (
+							RadioControl, {
+								label: i18n.__( 'Source of Icon Images' ),
+								help: icon_type_source == "file_svg" ? i18n.__( 'SVG files will be used as the source of the images.' ) : i18n.__( 'Font Awesome will be used as a source for the images.' ),
+								selected: icon_type_source,
+								options: [
+									{ label: 'Image SVG', value: 'file_svg' },
+									{ label: 'Font Awesome', value: 'font_awesome' },
+								],
+								onChange: function ( value ) {
+									props.setAttributes( { icon_type_source: value } )
+								}
+							}
+						),
+						
+					)
+				),			
+			]
+		},
 
-	save: (props) => {
-		return null
-	}
+		save: function() {
+			return null;
+		},
 
-})
+	})
 
 })(
 	window.wp.blocks,
