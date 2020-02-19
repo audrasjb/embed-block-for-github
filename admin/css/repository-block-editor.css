@@ -20,6 +20,14 @@
 	padding-top: 0.40em !important;
 }
 
+.ebg-br-wrapper .ebg-br-img-color-auto {
+	-webkit-filter: invert(0) !important;
+	-moz-filter: invert(0) !important;
+	-o-filter: invert(0) !important;
+	-ms-filter: invert(0) !important;
+	filter: invert(0) !important;
+}
+
 
 /*
 	CSS > Template Error
@@ -43,6 +51,9 @@
 	background-color: white !important;
 }
 
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-icon.ebg-br-cfg-icon-type-source-file_svg {
+	width: 17px !important;
+}
 
 /*
 	Class button status dark Theme
@@ -71,10 +82,10 @@
 	font-size: smaller;
 }
 
-.ebg-br-wrapper-dark-theme-on .egb-br-dark_theme-status .egb-br-dark_theme-status-img {
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-on .egb-br-dark_theme-status .egb-br-dark_theme-status-img {
 	background-position: 0px 0px !important;
 }
 
-.ebg-br-wrapper-dark-theme-off .egb-br-dark_theme-status .egb-br-dark_theme-status-img {
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-off .egb-br-dark_theme-status .egb-br-dark_theme-status-img {
 	background-position: 0px -35px !important;	
 }

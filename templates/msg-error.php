@@ -1,7 +1,8 @@
 <div class="ebg-br-wrapper">
-	<div class="%%_WRAPPER_DARK_THEME_%% ebg-br-template-error">
+	<div class="%%_CFG_DARK_THEME_%% ebg-br-template-error">
 		<div class="ebg-br-body ebg-br-border ebg-br-background-color">
-			<i class="ebg-br-logo fab fa-github"></i>
+			<i class="%%_CFG_ICON_TYPE_SOURCE_-_FONT_AWESOME_%% ebg-br-logo fab fa-github"></i>
+			<i class="%%_CFG_ICON_TYPE_SOURCE_-_FILE_SVG_%% ebg-br-logo ebg-br-icon-github ebg-br-img-color-auto">&nbsp;</i>
 			<div class="ebg-br-col ebg-br-col-sidebar">&nbsp;</div>
 			<div class="ebg-br-col ebg-br-col-main">
 				<p class="ebg-br-title">
