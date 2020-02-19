@@ -199,9 +199,6 @@ class embed_block_for_github {
 		$darck_theme = (in_array("darck_theme", $attributes) ? $attributes['darck_theme'] : false);
 		$icon_type_source = (! empty($attributes['icon_type_source']) ? $attributes['icon_type_source'] : "file_svg");
 		
-
-
-
 		$transient_id = $this::transient_id("", sanitize_title_with_dashes( $github_url ) );
 		$transi = new embed_block_for_github_transient($transient_id, true);
 		
@@ -291,10 +288,6 @@ class embed_block_for_github {
 			return $content;
 		}
 	}
-
-
-
-
 
 	private function template_file_require( $template, $data = array() ) {
 		ob_start();
