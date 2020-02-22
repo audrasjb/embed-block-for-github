@@ -41,13 +41,23 @@
 				type: 'string',
 				default: 'file_svg',
 			},
+			api_cache: {
+				type: 'boolean',
+				default: true,
+			},
+			api_cache_expire: {
+				type: 'string',
+				default: '0',
+			},
 		},
 
 		edit: function ( props ) {
 			var attributes = props.attributes,
 				github_url = props.attributes.github_url,
 				darck_theme = props.attributes.darck_theme,
-				icon_type_source = props.attributes.icon_type_source;
+				icon_type_source = props.attributes.icon_type_source,
+				api_cache = props.attributes.api_cache,
+				api_cache_expire = props.attributes.api_cache_expire;
 
 			return [
 				el( 'div', { className: 'components-block-description' },
@@ -78,36 +88,69 @@
 						el (
 							components.PanelBody, {
 								title: i18n.__( 'Theme/Skin' ),
-								initialOpen: true
+								className: 'block-github-repository-theme',
+								initialOpen: false
 							},
+							el (
+								ToggleControl, {
+									label: i18n.__( 'Is Dark Theme?' ),
+									help: darck_theme ? i18n.__( 'Light colors will be used to counteract the dark colors of themes or skins.' ) : i18n.__( 'Dark colors will be used to counteract the light colors of themes or skins.' ),
+									checked: darck_theme,
+									onChange: function ( value ) {
+										props.setAttributes( { darck_theme: value } )
+									}
+								}
+							),
+							el (
+								RadioControl, {
+									label: i18n.__( 'Source of Icon Images' ),
+									help: icon_type_source == "file_svg" ? i18n.__( 'SVG files will be used as the source of the images.' ) : i18n.__( 'Font Awesome will be used as a source for the images.' ),
+									selected: icon_type_source,
+									options: [
+										{ label: 'Image SVG', value: 'file_svg' },
+										{ label: 'Font Awesome', value: 'font_awesome' },
+									],
+									onChange: function ( value ) {
+										props.setAttributes( { icon_type_source: value } )
+									}
+								}
+							),
 						),
 						el (
-							ToggleControl, {
-								label: i18n.__( 'Is Dark Theme?' ),
-								help: darck_theme ? i18n.__( 'Light colors will be used to counteract the dark colors of themes or skins.' ) : i18n.__( 'Dark colors will be used to counteract the light colors of themes or skins.' ),
-								checked: darck_theme,
-								onChange: function ( value ) {
-									props.setAttributes( { darck_theme: value } )
+							components.PanelBody, {
+								title: i18n.__( 'Cache' ),
+								className: 'block-github-repository-cache',
+								initialOpen: true,
+							},
+							i18n.__( 'WARNING: Github has a limit of hourly queries, it is recommended to use cache to avoid exceeding said limit.' ),
+							el ( components.HorizontalRule ),
+							el (
+								ToggleControl, {
+									label: i18n.__( 'Enabled Cache' ),
+									help: api_cache ? i18n.__( 'Save the results of the query in cache, for future consultations.' ) : i18n.__( 'It does not use data stored in cache, they are read in real time.' ),
+									checked: api_cache,
+									onChange: function ( value ) {
+										props.setAttributes( { api_cache: value } )
+									}
+								},
+							),
+							el (
+								TextControl, {
+									label: i18n.__( 'Expire' ),
+									help:  i18n.__( 'The maximum value in seconds that we will keep the data in cache before refreshing it. Default 0 (no expiration)' ),
+									value: api_cache_expire,
+									onChange: function ( value ) {
+										if ( isNaN(value) ) {
+											alert (i18n.__( 'Only numbers are allowed.' ));
+										} else {
+											props.setAttributes( { api_cache_expire: value } );
+										}
+									}
 								}
-							}
+							),
 						),
-						el (
-							RadioControl, {
-								label: i18n.__( 'Source of Icon Images' ),
-								help: icon_type_source == "file_svg" ? i18n.__( 'SVG files will be used as the source of the images.' ) : i18n.__( 'Font Awesome will be used as a source for the images.' ),
-								selected: icon_type_source,
-								options: [
-									{ label: 'Image SVG', value: 'file_svg' },
-									{ label: 'Font Awesome', value: 'font_awesome' },
-								],
-								onChange: function ( value ) {
-									props.setAttributes( { icon_type_source: value } )
-								}
-							}
-						),
-						
 					)
-				),			
+				),
 			]
 		},
 

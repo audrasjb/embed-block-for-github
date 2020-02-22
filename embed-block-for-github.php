@@ -61,6 +61,8 @@ class embed_block_for_github {
 				'github_url' => array( 'type' => 'string' ),
 				'darck_theme' => array( 'type' => 'boolean' ),
 				'icon_type_source' => array( 'type' => 'string' ),
+				'api_cache' => array( 'type' => 'boolean' ),
+				'api_cache_expire' => array( 'type' => 'string' ),
 			),
 		) );
 	}
@@ -130,6 +132,14 @@ class embed_block_for_github {
 			case "info_no_available":
 				$msg_return = '<p>' . esc_html__( 'No information available. Please check your URL.', 'embed-block-for-github' ) . '</p>';
 			break;
+
+			case "error_cache_data":
+				$msg_return = '<p>' . esc_html__( 'Error detected in cache data. Refresh the page to load the correct data.', 'embed-block-for-github' ) . '</p>';
+				break;
+
+			case "error_data_is_null":
+				$msg_return = '<p>' . esc_html__( 'No data detected. Please check your URL.', 'embed-block-for-github' ) . '</p>';
+				break;
 		}
 		return $msg_return;
 	}
@@ -159,106 +169,123 @@ class embed_block_for_github {
 				return "url_not_github";
 			break;
 		}
-		return "";
+		return NULL;
 	}
 
 	/* Detect type request (user, repo, etc...) */
 	private function detect_request($github_url) {
 		$slug = str_replace( 'https://github.com/', '', $github_url );
 		
-		$data_return = [];
+		$data_return = (object)array();
 		switch ( count(explode("/", $slug)) )
 		{
 			case 1:
 				/* User */
-				$data_return['request'] = wp_remote_get( 'https://api.github.com/users/' . explode("/", $slug)[0] );
-				$data_return['type'] = "user";
+				$data_return->request = wp_remote_get( 'https://api.github.com/users/' . explode("/", $slug)[0] );
+				$data_return->type = "user";
 				break;
 
 			case 2:
 				/* Repo */
-				$data_return['request'] = wp_remote_get( 'https://api.github.com/repos/' . $slug );
-				$data_return['type'] = "repo";
+				$data_return->request = wp_remote_get( 'https://api.github.com/repos/' . $slug );
+				$data_return->type = "repo";
 				break;
 
 			default:
 				/* ??? */
-				/*
-				$data_return['request'] = "";
-				$data_return['type'] = "";
-				*/
-				$data_return = NULL;
+				$data_return->type = NULL;
 		}
 		return $data_return;
+	}
+	
+	/* Get data api github */
+	private function github_api_get($github_url) {
+		$error = NULL;
 
+		/* We check and validate the propiedases are good. */
+		$error = $this::check_github_url($github_url);
+
+		if (is_null($error)) {
+			$data = (object)array();
+			$data = $this::detect_request($github_url);
+			if (! is_null( $data->type ) )
+			{
+				$body = wp_remote_retrieve_body( $data->request );
+				$data->data = json_decode( $body );
+				if (is_wp_error( $data->response ) ) {
+					$error = "info_no_available";
+					//TODO: Pendiente mirar $response
+					//$response->get_error_message()
+				}
+				unset($body);
+			} else 
+			{
+				$error = "url_not_valid";
+			}
+		}
+		return array($error, $data);
 	}
 
-
 	public function ebg_embed_repository( $attributes ) {
+		/* get attributes value and if value is empty set default value */
 		$github_url = trim( $attributes['github_url'] );
 		$darck_theme = (in_array("darck_theme", $attributes) ? $attributes['darck_theme'] : false);
 		$icon_type_source = (! empty($attributes['icon_type_source']) ? $attributes['icon_type_source'] : "file_svg");
+		$api_cache = (in_array("api_cache", $attributes) ? $attributes['api_cache'] : true);
+		$api_cache_expire = (! empty($attributes['api_cache_expire']) ? $attributes['api_cache_expire'] : 0);
 		
 		$transient_id = $this::transient_id("", sanitize_title_with_dashes( $github_url ) );
 		$transi = new embed_block_for_github_transient($transient_id, true);
 		
-		/* We check and validate the propiedases are good. */
-		$error['type'] = $this::check_github_url($github_url);
-		
-		/* If no errors have been detected, we obtain the data from github. */
-		if (empty($error['type']))
+		/* DEV: CLEAN TRANSIENT */
+		if ($this->dev_mode) { $transi->delete(true); }
+		/* DEV: CLEAN TRANSIENT */
+
+		if (! $api_cache) {
+			$transi->delete(true);
+		}
+		if ( ! $transi->isExist() )
 		{
-			/* DEV: CLEAN TRANSIENT */
-			if ($this->dev_mode) {
-				$transi->delete(true);
-			}
-			/* DEV: CLEAN TRANSIENT */
-			
-			if (! $transi->isExist() )
-			{
-				$data_all = $this::detect_request($github_url);
-
-				if (! is_null( $data_all ) )
-				{
-					$body = wp_remote_retrieve_body( $data_all['request'] );
-					$data_all['data'] = json_decode( $body );
-
-					if (! is_wp_error( $response ) ) {
-						$transi->set($data_all);
-					} else {
-						$error['type'] = "info_no_available";
-						//$response->get_error_message()
-					}
-					unset($body);
-				} else 
-				{
-					$error['type'] = "url_not_valid";
+			list($error['type'], $data_all) = $this->github_api_get($github_url);
+			if (empty($error['type'])) {
+				if ($api_cache) {
+					$transi->set($data_all, $api_cache_expire);
 				}
-			}
-
-			if (empty($error['type'])) 
-			{
-				$data_all = $transi->get();
-
-				if (isset($data_all->data)) 
-				{
-					/* We check if any error has been received from github. */
-					if (isset( $data_all->data->message ) )
-					{
-						$error['type'] = "get_error_from_github";
-						$error['msg_custom'] =  $this::check_message($data_all->data->message, $data_all->data->documentation_url);
-					}
-
-					/* If all went well, we loaded the template and generated the replacements. */
-					$content = $this::template_generate_info($data_all, $a_remplace);
-					if (is_null($content)) {
-						$error['type'] = "url_not_valid";
-					}
-				}
-
-				unset($data_all);
 			}
 		}
+		if (empty($error['type'])) 
+		{
+			if ( empty($data_all) )
+			{
+				$data_all = $transi->get();
+			}
+
+			if (isset($data_all->data)) 
+			{
+				/* We check if any error has been received from github. */
+				if (isset( $data_all->data->message ) )
+				{
+					$error['type'] = "get_error_from_github";
+					$error['msg_custom'] =  $this::check_message($data_all->data->message, $data_all->data->documentation_url);
+				}
+
+				/* If all went well, we loaded the template and generated the replacements. */
+				$content = $this::template_generate_info($data_all, $a_remplace);
+				if (is_null($content)) {
+					$error['type'] = "url_not_valid";
+				}
+			} else {
+				if ( $transi->isExist() ) {
+					$error['type'] = "error_cache_data";
+					$transi->delete(true);
+				} else {
+					$error['type'] = "error_data_is_null";
+				}
+			}
+		}
+		if (isset($data_all)) {
+			unset($data_all);
+		}		
 
 		/* If there is an error, we prepare the error message that has been detected. */
 		if (! empty($error['type'])) {

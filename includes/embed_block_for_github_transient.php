@@ -31,9 +31,9 @@ class embed_block_for_github_transient {
 		}
 	}
 
-	function set ($data) {
+	function set ($data, $expiration = 0) {
 		if ( ( $this->enabled ) && ( $this->isSetId() ) ) {
-			set_transient( $this->id, json_encode( $data ) );
+			set_transient( $this->id, json_encode( $data ) , $expiration);
 			return True;
 		}
 		return False;
