@@ -15,42 +15,70 @@
  * Text Domain:       embed-block-for-github
  */
 
+namespace EmbedBlockForGithub;
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-class embed_block_for_github {
+//DIRECTORY_SEPARATOR
+
+
+
+require_once ( __DIR__ . '/includes/Plugin/PluginBase.php' );
+require_once ( __DIR__ . '/includes/Cache/Transient.php' );
+require_once ( __DIR__ . '/includes/Languages/Message.php' );
+require_once ( __DIR__ . '/includes/GitHub/GitHubAPI.php' );
+
+
+use EmbedBlockForGithub\Plugin\PluginBase;
+use EmbedBlockForGithub\Cache\Transient;
+use EmbedBlockForGithub\Lang\Message;
+use EmbedBlockForGithub\GitHub\API\GitHubAPI;
+
+
+
+class embed_block_for_github extends PluginBase {
 
 	private $dev_mode = false;
+	private static $instance;
 
-	private function msgdebug ($msg) {
-		//$this->msgdebug("PAHT:".plugin_dir_path( __FILE__ ));
-		error_log("DEBUG: ".$msg, 0);
+	public static function get_instance() {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self;
+		}
+		return self::$instance;
 	}
 
-	public function __construct() {
+	protected function __construct() 
+	{
+		# Plugin base
+		parent::__construct( __FILE__);
+		
+		add_action( 'admin_init', array( $this, 'register_settings' )  );
 		add_action( 'init', array( $this, 'init_wp_register' ) );
+		add_action( 'admin_menu', array( $this, 'addAdminMenu' ) );
 	}
 
 	public function init_wp_register() {
 		wp_register_script(
 			'ebg-repository-editor',
-			$this->plugin_url('admin/js/repository-block.js'),
+			$this->getURL('admin/js/repository-block.js'),
 			array( 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-editor' ),
-			$this->plugin_file_ver('admin/js/repository-block.js')
+			$this->getVersionFile('admin/js/repository-block.js')
 		);
 		wp_register_style(
 			'ebg-repository-editor',
-			$this->plugin_url('admin/css/repository-block-editor.css'),
+			$this->getURL('admin/css/repository-block-editor.css'),
 			array(),
-			$this->plugin_file_ver('admin/css/repository-block-editor.css')
+			$this->getVersionFile('admin/css/repository-block-editor.css')
 		);
 		wp_register_style(
 			'ebg-repository',
-			$this->plugin_url('public/css/repository-block.css'),
+			$this->getURL('public/css/repository-block.css'),
 			array(),
-			$this->plugin_file_ver('public/css/repository-block.css')
+			$this->getVersionFile('public/css/repository-block.css')
 		);
 		register_block_type( 'embed-block-for-github/repository', array(
 			'editor_script'   => 'ebg-repository-editor',
@@ -67,36 +95,49 @@ class embed_block_for_github {
 		) );
 	}
 
-	/* Get Path install plugin */
-	private function plugin_path(){
-		return plugin_dir_path( __FILE__ );
+	function addAdminMenu() {
+		/* 
+		https://developer.wordpress.org/reference/functions/add_menu_page/ 
+		*/
+		add_menu_page( 
+			'WordPress Embed Block for GitHub', 
+			'Embed Block for GitHub', 
+			'manage_options', 
+			'embed-block-for-github', 
+			array($this, 'pageAdminMenu'), 
+			plugins_url( 'embed-block-for-github/icon.png'),
+			/*4*/
+		);
 	}
 
-	/* Get Path install plugin and file name. */
-	private function plugin_file($file){
-		if (strlen(trim($file)) > 0) {
-			return $this::plugin_path().$file;
-		}
-		return "";
+	function register_settings() {
+		/* 
+			https://developer.wordpress.org/reference/functions/register_setting/
+		 */
+		$args = array(
+            'type' => 'boolean',
+            'default' => true,
+            );
+		register_setting( 'embed-block-for-github', 'darck_theme', $args );
+		$args = array(
+            'type' => 'string',
+            'default' => true,
+            );
+		register_setting( 'embed-block-for-github', 'icon_type_source', $args );
+		$args = array(
+            'type' => 'boolean',
+            'default' => true,
+            );
+		register_setting( 'embed-block-for-github', 'api_cache', $args );
+		$args = array(
+            'type' => 'string',
+            'default' => '0',
+            );
+    	register_setting( 'embed-block-for-github', 'api_cache_expire', $args );
+
 	}
 
-	/* Get version of the file using modified date. */
-	private function plugin_file_ver($file) {
-		return filemtime($this::plugin_file($file));
-	}
 
-	/* Get folder name plugin */
-	private function plugin_name() {
-		return basename( dirname( __FILE__ ) );
-	}
-
-	/* Get Url Plugin */
-	private function plugin_url($file) {
-		if (strlen(trim($file)) > 0) {
-			return plugins_url( $file, __FILE__ );
-		}
-		return "";
-	}
 
 	/* Message according to the error received from GitHub. */
 	private function check_message($message, $documentation_url) {
@@ -113,46 +154,6 @@ class embed_block_for_github {
 		}
 	}
 
-	/* All messages shown to the user. */
-	private function message($message, $arg = array()) {
-		$msg_return = "";
-		switch($message) {
-			case "url_is_null":
-				$msg_return = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
-			break;
-
-			case "url_not_valid":
-				$msg_return = '<p>' . esc_html__( 'The specified URL is not valid. Check the address using the sidebar to add the repository URL.', 'embed-block-for-github' ) . '</p>';				
-			break;
-
-			case "url_not_github":
-				$msg_return = '<p>' . esc_html__( 'The specified URL is not from GitHub. Check the address using the sidebar to add the correct GitHub repository URL (only https allowed).', 'embed-block-for-github' ) . '</p>';
-			break;
-
-			case "info_no_available":
-				$msg_return = '<p>' . esc_html__( 'No information available. Please check your URL.', 'embed-block-for-github' ) . '</p>';
-			break;
-
-			case "error_cache_data":
-				$msg_return = '<p>' . esc_html__( 'Error detected in cache data. Refresh the page to load the correct data.', 'embed-block-for-github' ) . '</p>';
-				break;
-
-			case "error_data_is_null":
-				$msg_return = '<p>' . esc_html__( 'No data detected. Please check your URL.', 'embed-block-for-github' ) . '</p>';
-				break;
-		}
-		return $msg_return;
-	}
-
-	private function transient_id($prefix = "", $postfix = "") {
-		$plugin_data = get_plugin_data( __FILE__ );
-		$plugin_version = $plugin_data['Version'];
-
-		$id = "_ebg_repository_".$plugin_version."_";
-		if (! empty($prefix)) 	{ $id = "_".$prefix.$id; }
-		if (! empty($postfix)) 	{ $id = $id.$postfix."_"; }
-		return $id;
-	}
 
 	/* Check if the URL is correct */
 	private function check_github_url($github_url) {
@@ -234,22 +235,23 @@ class embed_block_for_github {
 		$api_cache = (in_array("api_cache", $attributes) ? $attributes['api_cache'] : true);
 		$api_cache_expire = (! empty($attributes['api_cache_expire']) ? $attributes['api_cache_expire'] : 0);
 		
-		$transient_id = $this::transient_id("", sanitize_title_with_dashes( $github_url ) );
-		$transi = new embed_block_for_github_transient($transient_id, true);
+		$cache = Transient::get_instance($this);
+		$cache->setId("", sanitize_title_with_dashes( $github_url ));
+
 		
 		/* DEV: CLEAN TRANSIENT */
-		if ($this->dev_mode) { $transi->delete(true); }
+		if ($this->dev_mode) { $cache->delete(true); }
 		/* DEV: CLEAN TRANSIENT */
 
 		if (! $api_cache) {
-			$transi->delete(true);
+			$cache->delete(true);
 		}
-		if ( ! $transi->isExist() )
+		if ( ! $cache->isExist() )
 		{
 			list($error['type'], $data_all) = $this->github_api_get($github_url);
 			if (empty($error['type'])) {
 				if ($api_cache) {
-					$transi->set($data_all, $api_cache_expire);
+					$cache->set($data_all, $api_cache_expire);
 				}
 			}
 		}
@@ -257,7 +259,7 @@ class embed_block_for_github {
 		{
 			if ( empty($data_all) )
 			{
-				$data_all = $transi->get();
+				$data_all = $cache->get();
 			}
 
 			if (isset($data_all->data)) 
@@ -275,9 +277,9 @@ class embed_block_for_github {
 					$error['type'] = "url_not_valid";
 				}
 			} else {
-				if ( $transi->isExist() ) {
+				if ( $cache->isExist() ) {
 					$error['type'] = "error_cache_data";
-					$transi->delete(true);
+					$cache->delete(true);
 				} else {
 					$error['type'] = "error_data_is_null";
 				}
@@ -290,24 +292,24 @@ class embed_block_for_github {
 		/* If there is an error, we prepare the error message that has been detected. */
 		if (! empty($error['type'])) {
 			/* Clean Transient is error detected. */
-			$transi->delete(true);
+			$cache->delete(true);
 
 			$content = $this::template_file_require('msg-error.php');
 			$a_remplace['%%_ERROR_TITLE_%%'] = "ERROR";
 			if (empty($error['msg_custom'])) {
-				$a_remplace['%%_ERROR_MESSAGE_%%'] = $this::message($error['type']);
+				$a_remplace['%%_ERROR_MESSAGE_%%'] = Message::getMessage($error['type']);
 			} else {
 				$a_remplace['%%_ERROR_MESSAGE_%%'] = $error['msg_custom'];
 			}
 		}
-		unset ($transi);
+		unset ($cache);
 		
 		/* If "$content" is not empty, we execute the replaces in the template. */
 		if (! empty($content)) { 
 			$a_remplace['%%_CFG_DARK_THEME_%%'] = "ebg-br-cfg-dark-theme-" . ($darck_theme ? "on" : "off");
 			$a_remplace['%%_CFG_ICON_TYPE_SOURCE_-_FILE_SVG_%%'] = ($icon_type_source == "file_svg" ? "ebg-br-cfg-icon-type-source-file_svg" : "ebg-br-hide");
 			$a_remplace['%%_CFG_ICON_TYPE_SOURCE_-_FONT_AWESOME_%%'] = ($icon_type_source == "font_awesome" ? "ebg-br-cfg-icon-type-source-font_awesome" : "ebg-br-hide");
-			$a_remplace['%%_URL_ICO_LINK_%%'] = $this::plugin_url("public/images/link.svg");
+			$a_remplace['%%_URL_ICO_LINK_%%'] = $this->getURL("public/images/link.svg");
 
 			foreach ($a_remplace as $key => $val) {
 				$content = str_replace($key, $val, $content);
@@ -318,8 +320,8 @@ class embed_block_for_github {
 
 	private function template_file_require( $template, $data = array() ) {
 		ob_start();
-		if ( ! locate_template( $this->plugin_name() . '/' . $template, true, false) ) {
-			$filename = $this::plugin_path() . 'templates/' . $template;
+		if ( ! locate_template( $this->getName() . '/' . $template, true, false) ) {
+			$filename = $this->getPath('templates/' . $template);
 			if (! file_exists( $filename ) ) {
 				return NULL;
 			}
@@ -365,8 +367,13 @@ class embed_block_for_github {
 		return $content;
 	}
 
+
+	function pageAdminMenu() {
+		echo "Hola Mundo!!";
+	}
+
 }
 
-require_once ( __DIR__ . '/includes/embed_block_for_github_transient.php' );
 
-$embed_block_for_github = new embed_block_for_github();
+//$embed_block_for_github = new embed_block_for_github();
+embed_block_for_github::get_instance();
