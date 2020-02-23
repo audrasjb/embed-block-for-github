@@ -15,11 +15,11 @@ class GitHubAPI {
 
 	private static $instance;
 
-    private $github_url = "https://github.com";
-    private $github_api = "https://api.github.com";
+	private $github_url = "https://github.com";
+	private $github_api = "https://api.github.com";
 
-    public $url = "";
-    private $owner = "";
+	public $url = "";
+	private $owner = "";
 	private $repository = "";
 	private $type_url = "";
 	private $error = "";
