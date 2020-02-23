@@ -41,6 +41,7 @@ use EmbedBlockForGithub\GitHub\API\GitHubAPI;
 
 class embed_block_for_github extends PluginBase {
 
+	private $api;
 	private $dev_mode = false;
 	private static $instance;
 
@@ -51,11 +52,14 @@ class embed_block_for_github extends PluginBase {
 		return self::$instance;
 	}
 
-	protected function __construct() 
+	protected function __construct()
 	{
 		# Plugin base
 		parent::__construct( __FILE__);
 		
+		$this->api = GitHubAPI::get_instance($this);
+		$this->api->hooks_customMessageGitHub = array($this, 'customMessageGitHub');
+
 		add_action( 'admin_init', array( $this, 'register_settings' )  );
 		add_action( 'init', array( $this, 'init_wp_register' ) );
 		add_action( 'admin_menu', array( $this, 'addAdminMenu' ) );
@@ -137,10 +141,11 @@ class embed_block_for_github extends PluginBase {
 
 	}
 
-
-
-	/* Message according to the error received from GitHub. */
-	private function check_message($message, $documentation_url) {
+	/**
+	 * Message according to the error received from GitHub.
+	 * 
+	 */
+	public static function customMessageGitHub($message, $documentation_url) {
 		if ($message == "Not Found") {
 			return '<p>' . esc_html__( 'Repository not found. Please check your URL.', 'embed-block-for-github' ) . '</p>';
 		}
@@ -155,106 +160,45 @@ class embed_block_for_github extends PluginBase {
 	}
 
 
-	/* Check if the URL is correct */
-	private function check_github_url($github_url) {
-		switch(True) {
-			case ( '' === trim( $github_url ) ):
-				return "url_is_null";
-			break;
-
-			case (! filter_var( $github_url, FILTER_VALIDATE_URL ) ):
-				return "url_not_valid";
-			break;
-			
-			case ( strpos( $github_url, 'https://github.com/' ) !== 0 ):
-				return "url_not_github";
-			break;
-		}
-		return NULL;
-	}
-
-	/* Detect type request (user, repo, etc...) */
-	private function detect_request($github_url) {
-		$slug = str_replace( 'https://github.com/', '', $github_url );
-		
-		$data_return = (object)array();
-		switch ( count(explode("/", $slug)) )
-		{
-			case 1:
-				/* User */
-				$data_return->request = wp_remote_get( 'https://api.github.com/users/' . explode("/", $slug)[0] );
-				$data_return->type = "user";
-				break;
-
-			case 2:
-				/* Repo */
-				$data_return->request = wp_remote_get( 'https://api.github.com/repos/' . $slug );
-				$data_return->type = "repo";
-				break;
-
-			default:
-				/* ??? */
-				$data_return->type = NULL;
-		}
-		return $data_return;
-	}
-	
-	/* Get data api github */
-	private function github_api_get($github_url) {
-		$error = NULL;
-
-		/* We check and validate the propiedases are good. */
-		$error = $this::check_github_url($github_url);
-
-		if (is_null($error)) {
-			$data = (object)array();
-			$data = $this::detect_request($github_url);
-			if (! is_null( $data->type ) )
-			{
-				$body = wp_remote_retrieve_body( $data->request );
-				$data->data = json_decode( $body );
-				if (is_wp_error( $data->response ) ) {
-					$error = "info_no_available";
-					//TODO: Pendiente mirar $response
-					//$response->get_error_message()
-				}
-				unset($body);
-			} else 
-			{
-				$error = "url_not_valid";
-			}
-		}
-		return array($error, $data);
-	}
 
 	public function ebg_embed_repository( $attributes ) {
 		/* get attributes value and if value is empty set default value */
 		$github_url = trim( $attributes['github_url'] );
-		$darck_theme = (in_array("darck_theme", $attributes) ? $attributes['darck_theme'] : false);
+		$darck_theme = (isset($attributes['darck_theme']) ? $attributes['darck_theme'] : false);
 		$icon_type_source = (! empty($attributes['icon_type_source']) ? $attributes['icon_type_source'] : "file_svg");
-		$api_cache = (in_array("api_cache", $attributes) ? $attributes['api_cache'] : true);
+		$api_cache = (isset($attributes['api_cache']) ? $attributes['api_cache'] : true);
 		$api_cache_expire = (! empty($attributes['api_cache_expire']) ? $attributes['api_cache_expire'] : 0);
 		
 		$cache = Transient::get_instance($this);
 		$cache->setId("", sanitize_title_with_dashes( $github_url ));
-
 		
 		/* DEV: CLEAN TRANSIENT */
-		if ($this->dev_mode) { $cache->delete(true); }
+		if ($this->dev_mode) { 
+			$cache->delete(true); 
+		}
 		/* DEV: CLEAN TRANSIENT */
 
 		if (! $api_cache) {
 			$cache->delete(true);
 		}
-		if ( ! $cache->isExist() )
+		
+		if (!  $cache->isExist() )
 		{
-			list($error['type'], $data_all) = $this->github_api_get($github_url);
-			if (empty($error['type'])) {
-				if ($api_cache) {
-					$cache->set($data_all, $api_cache_expire);
+			if ( $this->api->setURL($github_url) ) {
+				$data_all = (object)array();
+				$data_all->type = $this->api->getTypeURL();
+				$data_all->data = $this->api->getData();
+				if (! empty($data_all->data)) {
+					if ($api_cache) {
+						$cache->set($data_all, $api_cache_expire);
+					}
 				}
 			}
+			if ($this->api->isSetError()) {
+				$error['type'] = $this->api->getError();
+			}
 		}
+
 		if (empty($error['type'])) 
 		{
 			if ( empty($data_all) )
@@ -264,13 +208,6 @@ class embed_block_for_github extends PluginBase {
 
 			if (isset($data_all->data)) 
 			{
-				/* We check if any error has been received from github. */
-				if (isset( $data_all->data->message ) )
-				{
-					$error['type'] = "get_error_from_github";
-					$error['msg_custom'] =  $this::check_message($data_all->data->message, $data_all->data->documentation_url);
-				}
-
 				/* If all went well, we loaded the template and generated the replacements. */
 				$content = $this::template_generate_info($data_all, $a_remplace);
 				if (is_null($content)) {
@@ -279,16 +216,12 @@ class embed_block_for_github extends PluginBase {
 			} else {
 				if ( $cache->isExist() ) {
 					$error['type'] = "error_cache_data";
-					$cache->delete(true);
 				} else {
 					$error['type'] = "error_data_is_null";
 				}
 			}
 		}
-		if (isset($data_all)) {
-			unset($data_all);
-		}		
-
+		
 		/* If there is an error, we prepare the error message that has been detected. */
 		if (! empty($error['type'])) {
 			/* Clean Transient is error detected. */
@@ -296,12 +229,18 @@ class embed_block_for_github extends PluginBase {
 
 			$content = $this::template_file_require('msg-error.php');
 			$a_remplace['%%_ERROR_TITLE_%%'] = "ERROR";
+
+			if ($error['type'] == "get_error_from_github") {
+				$error['msg_custom'] = $data_all->data->message;
+			}
+			
 			if (empty($error['msg_custom'])) {
 				$a_remplace['%%_ERROR_MESSAGE_%%'] = Message::getMessage($error['type']);
 			} else {
 				$a_remplace['%%_ERROR_MESSAGE_%%'] = $error['msg_custom'];
 			}
 		}
+		unset ($data_all);
 		unset ($cache);
 		
 		/* If "$content" is not empty, we execute the replaces in the template. */

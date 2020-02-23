@@ -2,7 +2,7 @@
 
 namespace EmbedBlockForGithub\Plugin;
 
-class PluginBase {
+abstract class PluginBase {
 
 	private $file;
 	private $fileName;
