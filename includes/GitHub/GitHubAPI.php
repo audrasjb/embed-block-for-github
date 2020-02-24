@@ -122,7 +122,7 @@ class GitHubAPI {
 				$return_data = 2;
 			break;
 			
-			case ( strpos( $url, 'https://github.com/' ) !== 0 ):
+			case ( ! preg_match('/^(?:https|http):\/\/?(?:www.)?github.com\//', $url) ):
 				$this->error = "url_not_github";
 				$return_data = 3;
 			break;
@@ -144,7 +144,7 @@ class GitHubAPI {
 			$this->error = 'url_is_null';
 			$return_data = false;
 		} else {
-			$slug = str_replace( 'https://github.com/', '', $url );
+			$slug = preg_replace('/^(?:https|http):\/\/?(?:www.)?github.com\//', '', $url);
 			$arr_slug = explode("/", $slug, 2);
 			
 			switch ( count($arr_slug) ) {
