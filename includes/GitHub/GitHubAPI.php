@@ -15,7 +15,6 @@ class GitHubAPI {
 
 	private static $instance;
 
-	private $github_url = "https://github.com";
 	private $github_api = "https://api.github.com";
 
 	public $url = "";
@@ -224,15 +223,13 @@ class GitHubAPI {
 		if (! $this->isSetError()) {
 			$url_api = $this->getGitHubURL();
 			if (! empty( $url_api ) ) {
-				$response = wp_remote_get( $url_api );
+				$response = $this->callAPI( $url_api );
 				$return_data = json_decode( wp_remote_retrieve_body( $response ) );
-				/*
-				if (is_wp_error( $response ) ) {
-					$error = "info_no_available";
+				if ( is_wp_error( $results ) || ! isset( $results['response']['code'] ) || $results['response']['code'] != '200' ) {
+					//$error = "info_no_available";
 					//TODO: Pendiente mirar $response
 					//$response->get_error_message()
 				}
-				*/
 
 				/* We check if any error has been received from github. */
 				if ( isset( $return_data->message ) )
@@ -247,6 +244,24 @@ class GitHubAPI {
 		return $return_data;
 	}
 
-	
-	
+	public function callAPI($url) {
+		$args = array();
+		
+		$results = wp_remote_get($url, $args);
+		if ( is_wp_error( $results ) || ! isset( $results['response']['code'] ) || $results['response']['code'] != '200' ) {
+			//$error = "info_no_available";
+			//TODO: Pendiente mirar $response
+			//echo $results->get_error_message();
+		}
+		return $results;
+	}
+
+
+	public function getRate($json_decode = true) {
+		$data = $this->callAPI($this->github_api.'/rate_limit') ;
+		if ($json_decode) {
+			$data = json_decode(wp_remote_retrieve_body( $data ));
+		}
+		return $data;
+	}
 }

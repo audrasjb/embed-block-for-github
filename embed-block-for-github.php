@@ -31,19 +31,25 @@ require_once ( __DIR__ . '/includes/Cache/Transient.php' );
 require_once ( __DIR__ . '/includes/Languages/Message.php' );
 require_once ( __DIR__ . '/includes/GitHub/GitHubAPI.php' );
 
+require_once ( __DIR__ . '/admin/PagAdmin.php' );
+
 
 use EmbedBlockForGithub\Plugin\PluginBase;
 use EmbedBlockForGithub\Cache\Transient;
 use EmbedBlockForGithub\Lang\Message;
 use EmbedBlockForGithub\GitHub\API\GitHubAPI;
 
+use EmbedBlockForGithub\Admin\Config\PagAdmin;
+
 
 
 class embed_block_for_github extends PluginBase {
 
-	private $api;
+	public $api;
 	private $dev_mode = false;
 	private static $instance;
+
+	private $pag_admin;
 
 	public static function get_instance() {
 		if ( is_null( self::$instance ) ) {
@@ -60,9 +66,11 @@ class embed_block_for_github extends PluginBase {
 		$this->api = GitHubAPI::get_instance($this);
 		$this->api->hooks_customMessageGitHub = array($this, 'customMessageGitHub');
 
-		add_action( 'admin_init', array( $this, 'register_settings' )  );
 		add_action( 'init', array( $this, 'init_wp_register' ) );
-		add_action( 'admin_menu', array( $this, 'addAdminMenu' ) );
+
+		if ( is_admin() ) {
+			$pag_admin = new PagAdmin($this);
+		}
 	}
 
 	public function init_wp_register() {
@@ -99,47 +107,6 @@ class embed_block_for_github extends PluginBase {
 		) );
 	}
 
-	function addAdminMenu() {
-		/* 
-		https://developer.wordpress.org/reference/functions/add_menu_page/ 
-		*/
-		add_menu_page( 
-			'WordPress Embed Block for GitHub', 
-			'Embed Block for GitHub', 
-			'manage_options', 
-			'embed-block-for-github', 
-			array($this, 'pageAdminMenu'), 
-			plugins_url( 'embed-block-for-github/icon.png'),
-			/*4*/
-		);
-	}
-
-	function register_settings() {
-		/* 
-			https://developer.wordpress.org/reference/functions/register_setting/
-		 */
-		$args = array(
-            'type' => 'boolean',
-            'default' => true,
-            );
-		register_setting( 'embed-block-for-github', 'darck_theme', $args );
-		$args = array(
-            'type' => 'string',
-            'default' => true,
-            );
-		register_setting( 'embed-block-for-github', 'icon_type_source', $args );
-		$args = array(
-            'type' => 'boolean',
-            'default' => true,
-            );
-		register_setting( 'embed-block-for-github', 'api_cache', $args );
-		$args = array(
-            'type' => 'string',
-            'default' => '0',
-            );
-    	register_setting( 'embed-block-for-github', 'api_cache_expire', $args );
-
-	}
 
 	/**
 	 * Message according to the error received from GitHub.
@@ -306,13 +273,7 @@ class embed_block_for_github extends PluginBase {
 		return $content;
 	}
 
-
-	function pageAdminMenu() {
-		echo "Hola Mundo!!";
-	}
-
 }
 
 
-//$embed_block_for_github = new embed_block_for_github();
 embed_block_for_github::get_instance();
