@@ -253,7 +253,7 @@ class embed_block_for_github extends PluginBase {
 		/* If "$content" is not empty, we execute the replaces in the template. */
 		if (! empty($content)) { 
 			$a_remplace['%%_CFG_DARK_THEME_%%'] = "ebg-br-cfg-dark-theme-" . ($darck_theme ? "on" : "off");
-			$a_remplace['%%_CFG_ICON_TYPE_SOURCE_-_FILE_SVG_%%'] = ($icon_type_source == "file_svg" ? "ebg-br-cfg-icon-type-source-file_svg" : "ebg-br-hide");
+			$a_remplace['%%_CFG_ICON_TYPE_SOURCE_-_FILE_SVG_%%'] = ($icon_type_source == "file" ? "ebg-br-cfg-icon-type-source-file" : "ebg-br-hide");
 			$a_remplace['%%_CFG_ICON_TYPE_SOURCE_-_FONT_AWESOME_%%'] = ($icon_type_source == "font_awesome" ? "ebg-br-cfg-icon-type-source-font_awesome" : "ebg-br-hide");
 			$a_remplace['%%_URL_ICO_LINK_%%'] = $this->getURL("public/images/link.svg");
 
