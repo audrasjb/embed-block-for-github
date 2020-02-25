@@ -69,18 +69,17 @@ class embed_block_for_github extends PluginBase {
 		parent::__construct( __FILE__);
 		
 		$this->config = Config::get_instance($this);
-		$this->config->prefix = strtolower($this->getName());
-		$this->config->group = strtolower($this->getName());
+		$this->config->prefix 	= strtolower($this->getName());
+		$this->config->group 	= strtolower($this->getName());
 		
 		$this->api = GitHubAPI::get_instance($this);
+		$this->api->access_token 		= $this->config->get_option_html("api_access_token");
+		$this->api->access_token_user 	= $this->config->get_option_html("api_access_token_user");
 		$this->api->hooks_customMessageGitHub = array($this, 'customMessageGitHub');
-		$this->api->access_token = $this->config->get_option_html("api_access_token");
-		$this->api->access_token_user = $this->config->get_option_html("api_access_token_user");
 	
 
 		add_action( 'init', array( $this, 'init_wp_register' ) );
-		//add_action( 'admin_init', array( $this, 'registerSettings' ) );
-		$this->registerSettings();
+		add_action( 'admin_init', array( $this, 'registerSettings' ) );
 
 		if ( is_admin() ) {
 			$pag_admin = new PagAdmin($this);
@@ -127,10 +126,10 @@ class embed_block_for_github extends PluginBase {
 	 * 
 	 */
 	public function registerSettings() {
-		$this->config->register_setting( 'darck_theme', 		array( 'type' => 'boolean', 'default' => true ) );
-		$this->config->register_setting( 'icon_type_source', 	array( 'type' => 'string', 	'default' => 'file_svg' ) );
+		$this->config->register_setting( 'darck_theme', 		array( 'type' => 'boolean', 'default' => false ) );
+		$this->config->register_setting( 'icon_type_source', 	array( 'type' => 'string', 	'default' => 'file' ) );
 
-		$this->config->register_setting( 'api_cache', 			array( 'type' => 'boolean', 'default' => true ) );
+		$this->config->register_setting( 'api_cache_disable', 	array( 'type' => 'boolean', 'default' => false ) );
 		$this->config->register_setting( 'api_cache_expire', 	array( 'type' => 'string', 	'default' => '0' ) );
 
 		$this->config->register_setting( 'api_access_token', 		array( 'type' => 'string', 	'default' => '' ) );
@@ -156,14 +155,26 @@ class embed_block_for_github extends PluginBase {
 	}
 
 
-
+	/**
+	 * 
+	 * 
+	 */
 	public function ebg_embed_repository( $attributes ) {
+		// Config globla
+		$darck_theme 		= $this->config->get_option_html('darck_theme', false);
+		$icon_type_source 	= $this->config->get_option_html('icon_type_source', 'file');
+		$api_cache_disable	= $this->config->get_option_html('api_cache_disable', false);
+		$api_cache_expire 	= $this->config->get_option_html('api_cache_expire', 0);
+
 		/* get attributes value and if value is empty set default value */
-		$github_url = trim( $attributes['github_url'] );
-		$darck_theme = (isset($attributes['darck_theme']) ? $attributes['darck_theme'] : false);
-		$icon_type_source = (! empty($attributes['icon_type_source']) ? $attributes['icon_type_source'] : "file_svg");
-		$api_cache = (isset($attributes['api_cache']) ? $attributes['api_cache'] : true);
-		$api_cache_expire = (! empty($attributes['api_cache_expire']) ? $attributes['api_cache_expire'] : 0);
+		$github_url 		= trim( $attributes['github_url'] );
+
+		//TODO: Modificar config custom
+		$darck_theme 		= (isset($attributes['darck_theme']) ? $attributes['darck_theme'] : false);
+		$icon_type_source 	= (! empty($attributes['icon_type_source']) ? $attributes['icon_type_source'] : $icon_type_source);
+		$api_cache 			= (isset($attributes['api_cache']) ? $attributes['api_cache'] : true);
+		$api_cache_expire 	= (! empty($attributes['api_cache_expire']) ? $attributes['api_cache_expire'] : $api_cache_expire);
+
 		
 		$cache = Transient::get_instance($this);
 		$cache->setId("", sanitize_title_with_dashes( $github_url ));

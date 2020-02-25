@@ -39,7 +39,7 @@
 			},
 			icon_type_source: {
 				type: 'string',
-				default: 'file_svg',
+				default: 'file',
 			},
 			api_cache: {
 				type: 'boolean',
@@ -104,10 +104,10 @@
 							el (
 								RadioControl, {
 									label: i18n.__( 'Source of Icon Images' ),
-									help: icon_type_source == "file_svg" ? i18n.__( 'SVG files will be used as the source of the images.' ) : i18n.__( 'Font Awesome will be used as a source for the images.' ),
+									help: icon_type_source == "file" ? i18n.__( 'SVG files will be used as the source of the images.' ) : i18n.__( 'Font Awesome will be used as a source for the images.' ),
 									selected: icon_type_source,
 									options: [
-										{ label: 'Image SVG', value: 'file_svg' },
+										{ label: 'File Image', value: 'file' },
 										{ label: 'Font Awesome', value: 'font_awesome' },
 									],
 									onChange: function ( value ) {
