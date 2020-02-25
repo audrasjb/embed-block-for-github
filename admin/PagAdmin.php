@@ -20,7 +20,6 @@ class PagAdmin {
 		}
 
 		add_action( 'admin_menu', array( $this, 'addMenuItem' ) );
-        add_action( 'admin_init', array( $this, 'registerPluginSettings' ) );
 	}
 
 	/**
@@ -51,114 +50,116 @@ class PagAdmin {
 		*/
 	}
 
-
-	/**
-	 * https://developer.wordpress.org/reference/functions/register_setting/
-	 * 
-	 */
-	public function registerPluginSettings() {
-		$args = array(
-            'type' => 'boolean',
-            'default' => true,
-            );
-		register_setting( 'embed-block-for-github', 'darck_theme', $args );
-
-		$args = array(
-            'type' => 'string',
-            'default' => 'file_svg',
-            );
-		register_setting( 'embed-block-for-github', 'icon_type_source', $args );
-
-		$args = array(
-            'type' => 'boolean',
-            'default' => true,
-            );
-		register_setting( 'embed-block-for-github', 'api_cache', $args );
-
-		$args = array(
-            'type' => 'string',
-            'default' => '0',
-            );
-		register_setting( 'embed-block-for-github', 'api_cache_expire', $args );
-
-		$args = array(
-            'type' => 'string',
-            'default' => '',
-            );
-		register_setting( 'embed-block-for-github', 'api_access_token_user', $args );
-
-		$args = array(
-            'type' => 'string',
-            'default' => '',
-            );
-		register_setting( 'embed-block-for-github', 'api_access_token', $args );
-	}
-
-   
     public function createPage()
     {
+		$config[] = array (
+			"lable" => "Theme/Skin",
+			"items" => array(
+				0 => array (
+					"type" => 'checkbox',
+					"label" => "Dark Theme",
+					"name" => $this->parent->config->get_option_full('darck_theme'),
+					"value" => $this->parent->config->get_option_html('darck_theme')
+				),
+				1 => array (
+					"type" => 'select',
+					"label" => "Icon Source",
+					"name" => $this->parent->config->get_option_full('icon_type_source'),
+					"value" => $this->parent->config->get_option_html('icon_type_source'),
+					"options" => array (
+						'file_svg' => "Image SVG",
+						'font_awesome' => "Font Awesome"
+					)
+				)
+			)
+		);
+
+		$config[] = array (
+			"lable" => "Cache",
+			"items" => array(
+				0 => array (
+					"type" => 'checkbox',
+					"label" => "Disable Cache",
+					"name" => $this->parent->config->get_option_full('api_cache'),
+					"value" => $this->parent->config->get_option_html('api_cache')
+				),
+				1 => array (
+					"type" => 'number',
+					"label" => "Cache Time Expire",
+					"name" => $this->parent->config->get_option_full('api_cache_expire'),
+					"value" => $this->parent->config->get_option_html('api_cache_expire'),
+					"min" => 0
+				)
+			)
+		);
+
+		$config[] = array (
+			"lable" => "API GitHub",
+			"items" => array(
+				0 => array (
+					"type" => 'text',
+					"label" => "Access Token",
+					"name" => $this->parent->config->get_option_full('api_access_token'),
+					"value" => $this->parent->config->get_option_html('api_access_token')
+				),
+				1 => array (
+					"type" => 'text',
+					"label" => "Access Tocken User",
+					"name" => $this->parent->config->get_option_full('api_access_token_user'),
+					"value" => $this->parent->config->get_option_html('api_access_token_user')
+				),
+			)
+		);
+
+	
+/*
+echo '<textarea  rows="15" cols="150">';
+print_r($config);
+echo "</textarea><br>";
+*/
+
 		?>
 		<div class="wrap">
 			<h1>Global Settings Embed Block for GitHub</h1>
 
 			<form method="post" action="options.php">
-				<?php settings_fields( 'embed-block-for-github' ); ?>
-				<?php do_settings_sections( 'embed-block-for-github' ); ?>
+				<?php
+				settings_fields( 'embed-block-for-github' );
+				do_settings_sections( 'embed-block-for-github' );
 
-				<h2>Theme/Skin</h2>
-				<table class="form-table">
-				<tr valign="top">
-					<th scope="row"><label for="darck_theme">Dark Theme</label></th>
-					<td><input type="checkbox" name="darck_theme" value="checked" <?php echo esc_attr( get_option('darck_theme') ); ?> /></td>
-					</tr>
-					<th scope="row">Icon Source</th>
-					<td>
-						<select name="icon_type_source">
-							<?php
-								$icon_type_source = esc_attr( get_option('icon_type_source') );
-								$list_opt = array( 
-									'file_svg' => "Image SVG",
-									'font_awesome' => "Font Awesome"
-								);
-								foreach ($list_opt as $key => $val) {
-									printf('<option value="%s" %s>%s</option>', $key, ($icon_type_source == $key ? ' selected="selected" ' : ''), $val);
-								}
-								unset($icon_type_source);
-								unset($list_opt);
-							?>
-						</select>
-					</td>
-					</tr>
-
-				</table>
-
-				<h2>Cache</h2>
-				<table class="form-table">
-					<tr valign="top">
-					<th scope="row"><label for="api_cache">Disable Cache</label></th>
-					<td><input type="checkbox" name="api_cache" value="checked" <?php echo esc_attr( get_option('api_cache') ); ?> /></td>
-					</tr>
-
-					<tr valign="top">
-					<th scope="row">api_cache_expire</th>
-					<td><input type="number" name="api_cache_expire"  min="0" value="<?php echo esc_attr( get_option('api_cache_expire') ); ?>" /></td>
-					</tr>
-				</table>
-				
-
-				<h2>API GitHub</h2>
-				<table class="form-table">
-					<tr valign="top">
-					<th scope="row">api_access_token_user</th>
-					<td><input type="text" name="api_access_token_user" value="<?php echo esc_attr( get_option('api_access_token_user') ); ?>" /></td>
-					</tr>
-					
-					<tr valign="top">
-					<th scope="row">api_access_token</th>
-					<td><input type="text" name="api_access_token" value="<?php echo esc_attr( get_option('api_access_token') ); ?>" /></td>
-					</tr>
-				</table>
-
+				foreach ($config as $sections) {
+					printf("<h2>%s</h2>", $sections['lable']);
+					if ( is_array($sections['items']) ) {
+						echo '<table class="form-table">';
+						foreach ($sections['items'] as $items) {
+							echo 	'<tr valign="top">';
+							printf	('	<th scope="row"><label for="%s">%s</label></th>', $items['name'], $items['label'] );
+							echo 	'	<td>';
+							switch(strtolower($items['type'])) {
+								case "text":
+									printf('<input type="text" name="%s" value="%s" />', $items['name'], $items['value'] );
+									break;
+								case "number":
+									printf('<input type="number" name="%s" min="%u" value="%s" />', $items['name'], $items['min'], $items['value'] );
+									break;
+								case "checkbox":
+									printf('<input type="checkbox" name="%s" value="checked" %s />', $items['name'], $items['value'] );
+									break;
+								case "select":
+									printf('<select name="%s">', $items['name']);
+									foreach ($items['options'] as $key => $val) {
+										printf('<option value="%s" %s>%s</option>', $key, ($items['value'] == $key ? ' selected="selected" ' : ''), $val);
+									}
+									echo "</select>";
+									break;
+							}
+							echo 	'	</td>';
+							echo 	'</tr>';
+						}
+						echo "</table>";
+					}
+				}
+				?>
 
 				<br><br>
 
@@ -166,26 +167,26 @@ class PagAdmin {
 				<?php
 					$data = $this->parent->api->getRate();
 					if (! empty($data)) {
-						echo "<table>";
-						foreach ($data->rate as $key => $val) {
-							echo "<tr>";
-							echo "<td>$key</td>";
-							echo "<td>$val</td>";
-							echo "</tr>";
+						if (isset($data->message)) {
+							echo "Api Error: ".$data->message."<br>";
+						} else {
+							echo "<table>";
+							foreach ($data->rate as $key => $val) {
+								echo "<tr>";
+								echo "<td>$key</td>";
+								echo "<td>$val</td>";
+								echo "</tr>";
+							}
+							echo "</table>";
 						}
-						echo "</table>";
 					}
 				?>
 				<a href="https://api.github.com/rate_limit">Rate Limit</a>
 
 
-				
 				<?php submit_button(); ?>
-
 			</form>
 		</div>
-
-
 		<?php
     }
 

@@ -27,6 +27,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 
 require_once ( __DIR__ . '/includes/Plugin/PluginBase.php' );
+require_once ( __DIR__ . '/includes/Plugin/Config.php' );
 require_once ( __DIR__ . '/includes/Cache/Transient.php' );
 require_once ( __DIR__ . '/includes/Languages/Message.php' );
 require_once ( __DIR__ . '/includes/GitHub/GitHubAPI.php' );
@@ -35,6 +36,7 @@ require_once ( __DIR__ . '/admin/PagAdmin.php' );
 
 
 use EmbedBlockForGithub\Plugin\PluginBase;
+use EmbedBlockForGithub\Plugin\Config;
 use EmbedBlockForGithub\Cache\Transient;
 use EmbedBlockForGithub\Lang\Message;
 use EmbedBlockForGithub\GitHub\API\GitHubAPI;
@@ -45,9 +47,12 @@ use EmbedBlockForGithub\Admin\Config\PagAdmin;
 
 class embed_block_for_github extends PluginBase {
 
-	public $api;
 	private $dev_mode = false;
+
 	private static $instance;
+
+	public $api;
+	public $config;
 
 	private $pag_admin;
 
@@ -63,10 +68,19 @@ class embed_block_for_github extends PluginBase {
 		# Plugin base
 		parent::__construct( __FILE__);
 		
+		$this->config = Config::get_instance($this);
+		$this->config->prefix = strtolower($this->getName());
+		$this->config->group = strtolower($this->getName());
+		
 		$this->api = GitHubAPI::get_instance($this);
 		$this->api->hooks_customMessageGitHub = array($this, 'customMessageGitHub');
+		$this->api->access_token = $this->config->get_option_html("api_access_token");
+		$this->api->access_token_user = $this->config->get_option_html("api_access_token_user");
+	
 
 		add_action( 'init', array( $this, 'init_wp_register' ) );
+		//add_action( 'admin_init', array( $this, 'registerSettings' ) );
+		$this->registerSettings();
 
 		if ( is_admin() ) {
 			$pag_admin = new PagAdmin($this);
@@ -107,6 +121,21 @@ class embed_block_for_github extends PluginBase {
 		) );
 	}
 
+
+	/**
+	 * 
+	 * 
+	 */
+	public function registerSettings() {
+		$this->config->register_setting( 'darck_theme', 		array( 'type' => 'boolean', 'default' => true ) );
+		$this->config->register_setting( 'icon_type_source', 	array( 'type' => 'string', 	'default' => 'file_svg' ) );
+
+		$this->config->register_setting( 'api_cache', 			array( 'type' => 'boolean', 'default' => true ) );
+		$this->config->register_setting( 'api_cache_expire', 	array( 'type' => 'string', 	'default' => '0' ) );
+
+		$this->config->register_setting( 'api_access_token', 		array( 'type' => 'string', 	'default' => '' ) );
+		$this->config->register_setting( 'api_access_token_user', 	array( 'type' => 'string', 	'default' => '' ) );
+	}
 
 	/**
 	 * Message according to the error received from GitHub.

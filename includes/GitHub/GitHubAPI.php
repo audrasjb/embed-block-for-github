@@ -23,6 +23,10 @@ class GitHubAPI {
 	private $type_url = "";
 	private $error = "";
 
+	public $access_token = null;
+	public $access_token_user = null;
+
+
 	public static function get_instance($parent = null) {
 		if ( is_null (self::$instance ) ) {
 			self::$instance = new self;
@@ -33,8 +37,12 @@ class GitHubAPI {
 		return self::$instance;
 	}
 	
-	public function __construct() {
-		$this->parent = (object)array();
+	public function __construct($parent = null) {
+		if (is_null($parent)) {
+			$this->parent = (object)array();
+		} else {
+			$this->parent = $parent;
+		}
 	}
 
 	/**
@@ -246,11 +254,15 @@ class GitHubAPI {
 
 	public function callAPI($url) {
 		$args = array();
-		
+		$args['user-agent'] = 'Plugin WordPress - embed-block-for-github - https://github.com/vsc55/embed-block-for-github';
+		if ( (! empty( $this->access_token_user) ) && (! empty($this->access_token) ) ) {
+			$args['headers'] = [
+				'Authorization' => 'Basic ' . base64_encode( $this->access_token_user . ':' . $this->access_token ),
+			];
+		}
 		$results = wp_remote_get($url, $args);
 		if ( is_wp_error( $results ) || ! isset( $results['response']['code'] ) || $results['response']['code'] != '200' ) {
-			//$error = "info_no_available";
-			//TODO: Pendiente mirar $response
+			//TODO: Pendiente mirar si se hace algo con get_error_message
 			//echo $results->get_error_message();
 		}
 		return $results;
