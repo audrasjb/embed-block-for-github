@@ -201,7 +201,7 @@
 	line-height: 1.2em;
 }
 
-.ebg-br-wrapper .ebg-br-icon.ebg-br-cfg-icon-type-source-file_svg {
+.ebg-br-wrapper .ebg-br-icon.ebg-br-cfg-icon-type-source-file {
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: 100% auto;
@@ -332,6 +332,6 @@
 	background-color: #1d201d;
 }
 
-.ebg-br-wrapper .ebg-br-template-user .ebg-br-icon.ebg-br-cfg-icon-type-source-file_svg {
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-icon.ebg-br-cfg-icon-type-source-file {
 	width: 12px !important;
 }
