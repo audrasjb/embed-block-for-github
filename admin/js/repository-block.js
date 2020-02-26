@@ -22,7 +22,7 @@
 			}
 			)
 		)
-
+	
 	registerBlockType( 'embed-block-for-github/repository', {
 		title: i18n.__( 'GitHub Repo' ),
 		description: i18n.__( 'A block to embed a GitHub Repository.' ),
@@ -33,30 +33,40 @@
 			github_url: {
 				type: 'string',
 			},
-			darck_theme: {
+			custom_theme: {
 				type: 'boolean',
 				default: false,
 			},
+			darck_theme: {
+				type: 'boolean',
+				default: ebg_repository_editor_gloabl_config.darck_theme === "" ? false : true,
+			},
 			icon_type_source: {
 				type: 'string',
-				default: 'file',
+				default: ebg_repository_editor_gloabl_config.icon_type_source,
 			},
-			api_cache: {
+			custom_api_cache: {
 				type: 'boolean',
-				default: true,
+				default: false,
+			},
+			api_cache_disable: {
+				type: 'boolean',
+				default: ebg_repository_editor_gloabl_config.api_cache_disable === "" ? false : true,
 			},
 			api_cache_expire: {
 				type: 'string',
-				default: '0',
+				default: ebg_repository_editor_gloabl_config.api_cache_expire,
 			},
 		},
 
 		edit: function ( props ) {
 			var attributes = props.attributes,
 				github_url = props.attributes.github_url,
+				custom_theme = props.attributes.custom_theme,
 				darck_theme = props.attributes.darck_theme,
 				icon_type_source = props.attributes.icon_type_source,
-				api_cache = props.attributes.api_cache,
+				custom_api_cache = props.attributes.custom_api_cache,
+				api_cache_disable = props.attributes.api_cache_disable,
 				api_cache_expire = props.attributes.api_cache_expire;
 
 			return [
@@ -86,9 +96,29 @@
 							}
 						),
 						el (
+							ToggleControl, {
+								label: i18n.__( 'Activate Custom Theme/Skin' ),
+								help: custom_theme ? i18n.__( 'Use custom settings for the block.' ) : i18n.__( 'The general settings will be used.' ),
+								checked: custom_theme,
+								onChange: function ( value ) {
+									props.setAttributes( { custom_theme: value } )
+								}
+							},
+						),
+						el (
+							ToggleControl, {
+								label: i18n.__( 'Activate Custom Cache' ),
+								help: custom_api_cache ? i18n.__( 'Use custom settings for the block.' ) : i18n.__( 'The general settings will be used.' ),
+								checked: custom_api_cache,
+								onChange: function ( value ) {
+									props.setAttributes( { custom_api_cache: value } )
+								}
+							},
+						),
+						el (
 							components.PanelBody, {
-								title: i18n.__( 'Theme/Skin' ),
-								className: 'block-github-repository-theme',
+								title: i18n.__( 'Custom Theme/Skin' ),
+								className: 'block-github-repository-custom-theme-skin',
 								initialOpen: false
 							},
 							el (
@@ -107,8 +137,8 @@
 									help: icon_type_source == "file" ? i18n.__( 'SVG files will be used as the source of the images.' ) : i18n.__( 'Font Awesome will be used as a source for the images.' ),
 									selected: icon_type_source,
 									options: [
-										{ label: 'File Image', value: 'file' },
-										{ label: 'Font Awesome', value: 'font_awesome' },
+										{ label: i18n.__( 'File Image' ), value: 'file' },
+										{ label: i18n.__( 'Font Awesome' ), value: 'font_awesome' },
 									],
 									onChange: function ( value ) {
 										props.setAttributes( { icon_type_source: value } )
@@ -118,19 +148,19 @@
 						),
 						el (
 							components.PanelBody, {
-								title: i18n.__( 'Cache' ),
+								title: i18n.__( 'Custom Cache' ),
 								className: 'block-github-repository-cache',
-								initialOpen: true,
+								initialOpen: false,
 							},
 							i18n.__( 'WARNING: Github has a limit of hourly queries, it is recommended to use cache to avoid exceeding said limit.' ),
 							el ( components.HorizontalRule ),
 							el (
 								ToggleControl, {
-									label: i18n.__( 'Enabled Cache' ),
-									help: api_cache ? i18n.__( 'Save the results of the query in cache, for future consultations.' ) : i18n.__( 'It does not use data stored in cache, they are read in real time.' ),
-									checked: api_cache,
+									label: i18n.__( 'Disable Cache' ),
+									help: api_cache_disable ? i18n.__( 'It does not use data stored in cache, they are read in real time.' ) : i18n.__( 'Save the results of the query in cache, for future consultations.' ),
+									checked: api_cache_disable,
 									onChange: function ( value ) {
-										props.setAttributes( { api_cache: value } )
+										props.setAttributes( { api_cache_disable: value } )
 									}
 								},
 							),

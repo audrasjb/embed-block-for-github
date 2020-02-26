@@ -29,8 +29,8 @@ class PagAdmin {
 	public function addMenuItem() {
 		// Crea una seccion en el menu genral.
 		add_menu_page(
-			'WordPress Embed Block for GitHub', 
-			'Embed Block for GitHub', 
+			esc_html__( 'WordPress Embed Block for GitHub', $this->parent->getName() ),
+			esc_html__( 'Embed Block for GitHub', $this->parent->getName() ),
 			'manage_options', 
 			'embed-block-for-github', 
 			array($this, 'createPage'), 
@@ -53,75 +53,78 @@ class PagAdmin {
     public function createPage()
     {
 		$config[] = array (
-			"lable" => "Theme/Skin",
+			"lable" => esc_html__( 'Theme/Skin', $this->parent->getName() ),
 			"items" => array(
 				0 => array (
 					"type" => 'checkbox',
-					"label" => "Dark Theme",
-					"name" => $this->parent->config->get_option_full('darck_theme'),
-					"value" => $this->parent->config->get_option_html('darck_theme')
+					"label" => esc_html__( 'Dark Theme', $this->parent->getName() ),
+					"name" => $this->parent->config->getNameOptionFull('darck_theme'),
+					"value" => $this->parent->config->getOption('darck_theme'),
 				),
 				1 => array (
 					"type" => 'select',
-					"label" => "Icon Source",
-					"name" => $this->parent->config->get_option_full('icon_type_source'),
-					"value" => $this->parent->config->get_option_html('icon_type_source', 'file'),
+					"label" => esc_html__( 'Icon Source', $this->parent->getName() ),
+					"name" => $this->parent->config->getNameOptionFull('icon_type_source'),
+					"value" => $this->parent->config->getOption('icon_type_source'),
 					"options" => array (
-						'file' => "File Image",
-						'font_awesome' => "Font Awesome"
-					)
+						'file' => esc_html__( 'File Image', $this->parent->getName() ),
+						'font_awesome' => esc_html__( 'Font Awesome', $this->parent->getName() ),
+					),
 				)
 			)
 		);
 
 		$config[] = array (
-			"lable" => "Cache",
+			"lable" => esc_html__( 'Cache', $this->parent->getName() ),
 			"items" => array(
 				0 => array (
 					"type" => 'checkbox',
-					"label" => "Disable Cache",
-					"name" => $this->parent->config->get_option_full('api_cache_disable'),
-					"value" => $this->parent->config->get_option_html('api_cache_disable'),
-					"info" => esc_html__( 'WARNING: Github has a limit of hourly queries, it is recommended to use cache to avoid exceeding said limit.', $this->parent->getName() )
+					"label" => esc_html__( 'Disable Cache', $this->parent->getName() ),
+					"name" => $this->parent->config->getNameOptionFull('api_cache_disable'),
+					"value" => $this->parent->config->getOption('api_cache_disable'),
+					"info" => esc_html__( 'WARNING: Github has a limit of hourly queries, it is recommended to use cache to avoid exceeding said limit.', $this->parent->getName() ),
 				),
 				1 => array (
 					"type" => 'number',
-					"label" => "Cache Time Expire",
-					"name" => $this->parent->config->get_option_full('api_cache_expire'),
-					"value" => $this->parent->config->get_option_html('api_cache_expire'),
+					"label" => esc_html__( 'Cache Time Expire', $this->parent->getName() ),
+					"name" => $this->parent->config->getNameOptionFull('api_cache_expire'),
+					"value" => $this->parent->config->getOption('api_cache_expire'),
 					"min" => 0,
 					"info" => esc_html__( 'The maximum value in seconds that we will keep the data in cache before refreshing it. Default 0 (no expiration)', $this->parent->getName() ),
 					"default" => "0",
-				)
+				),
 			)
 		);
 
 		$config[] = array (
-			"lable" => "Token API GitHub",
+			"lable" => esc_html__( 'Token API GitHub', $this->parent->getName() ),
 			"items" => array(
 				0 => array (
 					"type" => 'text',
-					"label" => "Access User",
-					"name" => $this->parent->config->get_option_full('api_access_token_user'),
-					"value" => $this->parent->config->get_option_html('api_access_token_user')
+					"label" => esc_html__( 'Access User', $this->parent->getName() ),
+					"name" => $this->parent->config->getNameOptionFull('api_access_token_user'),
+					"value" => $this->parent->config->getOption('api_access_token_user'),
 				),
 				1 => array (
 					"type" => 'text',
-					"label" => "Access Token",
-					"name" => $this->parent->config->get_option_full('api_access_token'),
-					"value" => $this->parent->config->get_option_html('api_access_token')
+					"label" => esc_html__( 'Access Token', $this->parent->getName() ),
+					"name" => $this->parent->config->getNameOptionFull('api_access_token'),
+					"value" => $this->parent->config->getOption('api_access_token'),
 				),
 			)
-		);	
+		);
 /*
 echo '<textarea  rows="15" cols="150">';
 print_r($config);
 echo "</textarea><br>";
+
+echo '<textarea  rows="15" cols="150">';
+print_r($this->parent->config->getOptions(true));
+echo "</textarea><br>";
 */
 		?>
 		<div class="wrap">
-			<h1>Global Settings Embed Block for GitHub</h1>
-
+			<h1><?php echo esc_html__( 'Global Settings Embed Block for GitHub', $this->parent->getName() ); ?></h1>
 			<form method="post" action="options.php">
 				<?php
 				settings_fields( 'embed-block-for-github' );
@@ -167,13 +170,16 @@ echo "</textarea><br>";
 					}
 				}
 
-
-
+				/**
+				 * Section Status Rate
+				 */
 				$data = $this->parent->api->getRate();
 				if (! empty($data)) {
-					echo "<h2>API GitHub - Status Rate</h2>";
+					echo "<h2>".esc_html__( 'API GitHub - Status Rate', $this->parent->getName() )."</h2>";
 					if (isset($data->message)) {
-						echo "Api Error: ".$data->message."<br>";
+						echo "<p>";
+						printf("'Api Error: %s'", $data->message);
+						echo "</p>";
 					} else {
 						echo "<table>";
 						foreach ($data->rate as $key => $val) {
