@@ -2,7 +2,6 @@
 
 namespace EmbedBlockForGithub\Admin\Config;
 
-
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
@@ -194,12 +193,9 @@ echo "</textarea><br>";
 				?>
 				<a href="https://api.github.com/rate_limit" target="_blank">All Data - Rate Limit</a>
 
-
 				<?php submit_button(); ?>
 			</form>
 		</div>
 		<?php
-    }
-
-   
+    }  
 }

@@ -47,8 +47,6 @@ use EmbedBlockForGithub\Admin\Config\PagAdmin;
 
 class embed_block_for_github extends PluginBase {
 
-	private $dev_mode = false;
-
 	private static $instance;
 
 	public $api;
@@ -172,22 +170,21 @@ class embed_block_for_github extends PluginBase {
 		}
 		if ($custom_cache) {
 			$api_cache_disable 	= (isset($attributes['api_cache_disable']) ? $attributes['api_cache_disable'] : $api_cache_disable);
-			$api_cache_expire 	= (! empty($attributes['api_cache_expire']) ? $attributes['api_cache_expire'] : $api_cache_expire);
+			//$api_cache_expire 	= (! empty($attributes['api_cache_expire']) ? $attributes['api_cache_expire'] : $api_cache_expire);
 		}
 
 		
 		$cache = Transient::get_instance($this);
-		$cache->setId("", sanitize_title_with_dashes( $github_url ));
+		$cache->setStatus		(! $api_cache_disable);
+		$cache->setUrl			($github_url);
+		$cache->setExpiration	($api_cache_expire);
+
 		
 		/* DEV: CLEAN TRANSIENT */
-		if ($this->dev_mode) { 
-			$cache->delete(true); 
+		if ( 1 == 2) {
+			$cache->cleanCache(true); 
 		}
 		/* DEV: CLEAN TRANSIENT */
-
-		if (! $api_cache) {
-			$cache->delete(true);
-		}
 		
 		if (!  $cache->isExist() )
 		{
@@ -196,9 +193,7 @@ class embed_block_for_github extends PluginBase {
 				$data_all->type = $this->api->getTypeURL();
 				$data_all->data = $this->api->getData();
 				if (! empty($data_all->data)) {
-					if ($api_cache) {
-						$cache->set($data_all, $api_cache_expire);
-					}
+					$cache->set($data_all, $api_cache_expire);
 				}
 			}
 			if ($this->api->isSetError()) {

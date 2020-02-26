@@ -1,5 +1,4 @@
 <?php
-
 namespace EmbedBlockForGithub\Plugin;
 
 abstract class PluginBase {
@@ -77,10 +76,9 @@ abstract class PluginBase {
 	public function getPluginData($data, $default = "") {
 		$return_data = $default;
 		if (! is_null($this->pluginData) ) {
-			if ( in_array($data, $this->pluginData) ) {
+			if ( array_key_exists($data, $this->pluginData) ) {
 				$return_data = $this->pluginData[$data];
 			}
-			
 		}
 		return $return_data;
 	}
