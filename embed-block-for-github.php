@@ -32,6 +32,8 @@ require_once ( __DIR__ . '/includes/Cache/Transient.php' );
 require_once ( __DIR__ . '/includes/Languages/Message.php' );
 require_once ( __DIR__ . '/includes/GitHub/GitHubAPI.php' );
 
+require_once ( __DIR__ . '/includes/Cache/CacheStoreTable.php' );
+
 require_once ( __DIR__ . '/admin/PagAdmin.php' );
 
 
@@ -43,6 +45,8 @@ use EmbedBlockForGithub\GitHub\API\GitHubAPI;
 
 use EmbedBlockForGithub\Admin\Config\PagAdmin;
 
+use EmbedBlockForGithub\Cache\CacheStoreTable;
+
 
 
 class embed_block_for_github extends PluginBase {
@@ -51,6 +55,8 @@ class embed_block_for_github extends PluginBase {
 
 	public $api;
 	public $config;
+
+	public $cache;
 
 	private $pag_admin;
 
@@ -69,10 +75,11 @@ class embed_block_for_github extends PluginBase {
 		$this->config = Config::get_instance($this);
 		$this->config->prefix 	= strtolower($this->getName());
 		$this->config->group 	= strtolower($this->getName());
+		$this->config->addOption('db_version', 'string', '');
 		$this->config->addOption('darck_theme', 'boolean', false);
 		$this->config->addOption('icon_type_source', 'string', 'file');
 		$this->config->addOption('api_cache_disable', 'boolean', false);
-		$this->config->addOption('api_cache_expire', 'string', '0');
+		$this->config->addOption('api_cache_expire', 'string', '3600');
 		$this->config->addOption('api_access_token', 'string', '', true);
 		$this->config->addOption('api_access_token_user', 'string', '', true);
 
@@ -81,6 +88,11 @@ class embed_block_for_github extends PluginBase {
 		$this->api->access_token_user 	= $this->config->getOption("api_access_token_user");
 		$this->api->hooks_customMessageGitHub = array($this, 'customMessageGitHub');
 	
+		$this->cache = CacheStoreTable::get_instance($this);
+		$this->cache->setVersion		( $this->getPluginData('Version') );
+		$this->cache->setTableName		( str_ireplace("-", "_", $this->getName() )."_cache_store" );
+		$this->cache->setExpiration 	( $this->config->getOption('api_cache_expire') );
+
 		add_action( 'init', array( $this, 'init_wp_register' ) );
 		if ( is_admin() ) {
 			$pag_admin = new PagAdmin($this);
@@ -170,28 +182,21 @@ class embed_block_for_github extends PluginBase {
 			$api_cache_disable 	= (isset($attributes['api_cache_disable']) ? $attributes['api_cache_disable'] : $api_cache_disable);
 			//$api_cache_expire 	= (! empty($attributes['api_cache_expire']) ? $attributes['api_cache_expire'] : $api_cache_expire);
 		}
-
-		
-		$cache = Transient::get_instance($this);
-		$cache->setStatus		(! $api_cache_disable);
-		$cache->setUrl			($github_url);
-		$cache->setExpiration	($api_cache_expire);
-
 		
 		/* DEV: CLEAN TRANSIENT */
 		if ( 1 == 2) {
-			$cache->cleanCache(true); 
+			$this->cache->cleanCache();
 		}
 		/* DEV: CLEAN TRANSIENT */
-		
-		if (!  $cache->isExist() )
+
+		if (!  $this->cache->isExist($github_url) )
 		{
 			if ( $this->api->setURL($github_url) ) {
 				$data_all = (object)array();
 				$data_all->type = $this->api->getTypeURL();
 				$data_all->data = $this->api->getData();
 				if (! empty($data_all->data)) {
-					$cache->set($data_all, $api_cache_expire);
+					$this->cache->set($data_all, $github_url);
 				}
 			}
 			if ($this->api->isSetError()) {
@@ -203,7 +208,7 @@ class embed_block_for_github extends PluginBase {
 		{
 			if ( empty($data_all) )
 			{
-				$data_all = $cache->get();
+				$data_all = $this->cache->get($github_url);
 			}
 
 			if (isset($data_all->data)) 
@@ -214,7 +219,7 @@ class embed_block_for_github extends PluginBase {
 					$error['type'] = "url_not_valid";
 				}
 			} else {
-				if ( $cache->isExist() ) {
+				if ( $this->cache->isExist($github_url) ) {
 					$error['type'] = "error_cache_data";
 				} else {
 					$error['type'] = "error_data_is_null";
@@ -225,7 +230,8 @@ class embed_block_for_github extends PluginBase {
 		/* If there is an error, we prepare the error message that has been detected. */
 		if (! empty($error['type'])) {
 			/* Clean Transient is error detected. */
-			$cache->delete(true);
+			$this->cache->delete(true, $github_url);
+			
 
 			$content = $this::template_file_require('msg-error.php');
 			$a_remplace['%%_ERROR_TITLE_%%'] = "ERROR";
@@ -241,7 +247,6 @@ class embed_block_for_github extends PluginBase {
 			}
 		}
 		unset ($data_all);
-		unset ($cache);
 		
 		/* If "$content" is not empty, we execute the replaces in the template. */
 		if (! empty($content)) { 
