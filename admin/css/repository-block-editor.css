@@ -55,14 +55,19 @@
 	width: 17px !important;
 }
 
+
 /*
-	Class button status dark Theme
+	Class button status Dark Theme, Cache
 */
 .ebg-br-wrapper .ebg-br-body {
 	padding-bottom: 40px !important;
 }
 
-.ebg-br-wrapper .egb-br-dark_theme-status {
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-body {
+	padding-bottom: 80px !important;
+}
+
+.ebg-br-wrapper .ebg-br-box-status {
 	position: absolute;
 	display: block;
 	right: 0;
@@ -71,7 +76,7 @@
 	padding-bottom: 0.5em;
 }
 
-.ebg-br-wrapper .egb-br-dark_theme-status .egb-br-dark_theme-status-img {
+.ebg-br-wrapper .ebg-br-box-status .egb-br-status-img-on-off {
 	display: inline-block;
 	margin-right: 0.5em;
 	padding-left: calc(64px + 0.5em);
@@ -80,12 +85,16 @@
 	background-repeat: no-repeat;
 	background-size: 65px auto;
 	font-size: smaller;
+	/* Default: No show Image */
+	background-position: -100px -100px;
 }
 
-.ebg-br-wrapper .ebg-br-cfg-dark-theme-on .egb-br-dark_theme-status .egb-br-dark_theme-status-img {
+.ebg-br-wrapper .ebg-br-box-status .egb-br-cache-status .ebg-br-cfg-cache-on .egb-br-status-img-on-off,
+.ebg-br-wrapper .ebg-br-box-status .egb-br-dark_theme-status .ebg-br-cfg-dark-theme-on .egb-br-status-img-on-off {
 	background-position: 0px 0px !important;
 }
 
-.ebg-br-wrapper .ebg-br-cfg-dark-theme-off .egb-br-dark_theme-status .egb-br-dark_theme-status-img {
-	background-position: 0px -35px !important;	
+.ebg-br-wrapper .ebg-br-box-status .egb-br-cache-status .ebg-br-cfg-cache-off .egb-br-status-img-on-off,
+.ebg-br-wrapper .ebg-br-box-status .egb-br-dark_theme-status .ebg-br-cfg-dark-theme-off .egb-br-status-img-on-off {
+	background-position: 0px -35px !important;
 }

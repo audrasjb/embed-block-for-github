@@ -82,8 +82,6 @@ class embed_block_for_github extends PluginBase {
 		$this->api->hooks_customMessageGitHub = array($this, 'customMessageGitHub');
 	
 		add_action( 'init', array( $this, 'init_wp_register' ) );
-		add_action( 'admin_init', array( $this->config, 'registerSettings' ) );
-
 		if ( is_admin() ) {
 			$pag_admin = new PagAdmin($this);
 		}
@@ -162,13 +160,13 @@ class embed_block_for_github extends PluginBase {
 		$github_url 		= trim( $attributes['github_url'] );
 
 		$custom_theme 		= (isset($attributes['custom_theme']) ? $attributes['custom_theme'] : false);
-		$custom_cache 		= (isset($attributes['custom_cache']) ? $attributes['custom_cache'] : false);
+		$custom_api_cache	= (isset($attributes['custom_api_cache']) ? $attributes['custom_api_cache'] : false);
 
 		if ($custom_theme) {
 			$darck_theme 		= (isset($attributes['darck_theme']) ? $attributes['darck_theme'] : $darck_theme);
 			$icon_type_source 	= (! empty($attributes['icon_type_source']) ? $attributes['icon_type_source'] : $icon_type_source);
 		}
-		if ($custom_cache) {
+		if ($custom_api_cache) {
 			$api_cache_disable 	= (isset($attributes['api_cache_disable']) ? $attributes['api_cache_disable'] : $api_cache_disable);
 			//$api_cache_expire 	= (! empty($attributes['api_cache_expire']) ? $attributes['api_cache_expire'] : $api_cache_expire);
 		}
@@ -248,6 +246,9 @@ class embed_block_for_github extends PluginBase {
 		/* If "$content" is not empty, we execute the replaces in the template. */
 		if (! empty($content)) { 
 			$a_remplace['%%_CFG_DARK_THEME_%%'] = "ebg-br-cfg-dark-theme-" . ($darck_theme ? "on" : "off");
+			
+			$a_remplace['%%_CFG_CACHE_%%'] = "ebg-br-cfg-cache-" . ($api_cache_disable ? "off" : "on");
+			
 			$a_remplace['%%_CFG_ICON_TYPE_SOURCE_-_FILE_SVG_%%'] = ($icon_type_source == "file" ? "ebg-br-cfg-icon-type-source-file" : "ebg-br-hide");
 			$a_remplace['%%_CFG_ICON_TYPE_SOURCE_-_FONT_AWESOME_%%'] = ($icon_type_source == "font_awesome" ? "ebg-br-cfg-icon-type-source-font_awesome" : "ebg-br-hide");
 			$a_remplace['%%_URL_ICO_LINK_%%'] = $this->getURL("public/images/link.svg");

@@ -9,7 +9,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 class Config {
 
-    public $parent = null;
+    private $parent = null;
     private static $instance;
 
     public $prefix = "";
@@ -19,21 +19,18 @@ class Config {
 
     public static function get_instance($parent = null) {
 		if ( is_null (self::$instance ) ) {
-			self::$instance = new self;
-		}
-		if ( ! is_null( $parent ) ) {
-			self::$instance->parent = $parent;
-		}
+			self::$instance = new self ($parent);
+        }
 		return self::$instance;
 	}
 
     protected function __construct($parent = null) {
-        $this->parent = (object)array();
         $this->list_options = array();
-
+        $this->parent = (object)array();
 		if (! is_null($parent)) {
 			$this->parent = $parent;
         }
+        add_action( 'admin_init', array( $this, 'registerOptions' ) );
     }
 
     /**
@@ -105,7 +102,7 @@ class Config {
      * Register in wordpress all the options we have added.
      * https://developer.wordpress.org/reference/functions/register_setting/
      */
-    public function registerSettings() {
+    public function registerOptions() {
         foreach ($this->list_options as $key => &$val) {
             if ($val['register']) {
                 continue;

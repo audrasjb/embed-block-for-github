@@ -22,7 +22,7 @@
 					</em>
 				</p>
 				<p class="ebg-br-description %%_DATA_USER_BIO_%_CLASS_HIDE_IS_NULL_%%">%%_DATA_USER_BIO_%%</p>
-				<p class="ebg-br-footer">
+				<div class="ebg-br-footer">
 					<div class="ebg-br-box-ul">
 						<ul>
 							<li>
@@ -40,6 +40,7 @@
 							</li>
 						</ul>
 					</div>
+
 					<div class="ebg-br-box-ul">
 						<ul>
 							<li class="%%_CUSTOM_DATA_USER_CREATED_AT_ONLY_DATE_%_CLASS_HIDE_IS_NULL_%%">
@@ -76,6 +77,7 @@
 							</li>
 						</ul>
 					</div>
+
 					<div class="ebg-br-box-ul">
 						<ul>
 							<li class="%%_DATA_USER_PUBLIC_REPOS_%_CLASS_HIDE_IS_NULL_%%">
@@ -93,9 +95,17 @@
 				</div>
 			</div>
 		</div>
-
-		<div class="ebg-br-editmode egb-br-dark_theme-status">
-			<span class="egb-br-dark_theme-status-img"><?php echo esc_html__( 'Dark Theme', 'embed-block-for-github' ); ?></span>
+	</div>
+	<div class="ebg-br-editmode ebg-br-box-status">
+		<div class="egb-br-cache-status">
+			<div class="%%_CFG_CACHE_%%">
+				<span class="egb-br-status-img-on-off"><?php echo esc_html__( 'Cache', 'embed-block-for-github' ); ?></span>
+			</div>
+		</div>
+		<div class="egb-br-dark_theme-status">
+			<div class="%%_CFG_DARK_THEME_%%">
+				<span class="egb-br-status-img-on-off"><?php echo esc_html__( 'Dark Theme', 'embed-block-for-github' ); ?></span>
+			</div>
 		</div>
 	</div>
 </div>

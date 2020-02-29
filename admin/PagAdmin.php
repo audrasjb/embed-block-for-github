@@ -9,7 +9,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 class PagAdmin {
 
-	public $parent = null;
+	private $parent = null;
 	private $options;
 
 	public function __construct($parent = null) {

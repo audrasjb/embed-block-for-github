@@ -47,9 +47,17 @@
 				</p>
 			</div>
 		</div>
-
-		<div class="ebg-br-editmode egb-br-dark_theme-status">
-			<span class="egb-br-dark_theme-status-img"><?php echo esc_html__( 'Dark Theme', 'embed-block-for-github' ); ?></span>
+	</div>
+	<div class="ebg-br-editmode ebg-br-box-status">
+		<div class="egb-br-cache-status">
+			<div class="%%_CFG_CACHE_%%">
+				<span class="egb-br-status-img-on-off"><?php echo esc_html__( 'Cache', 'embed-block-for-github' ); ?></span>
+			</div>
+		</div>
+		<div class="egb-br-dark_theme-status">
+			<div class="%%_CFG_DARK_THEME_%%">
+				<span class="egb-br-status-img-on-off"><?php echo esc_html__( 'Dark Theme', 'embed-block-for-github' ); ?></span>
+			</div>
 		</div>
 	</div>
 </div>
