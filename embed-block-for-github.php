@@ -88,8 +88,7 @@ class embed_block_for_github extends PluginBase {
 		$this->api->access_token_user 	= $this->config->getOption("api_access_token_user");
 		$this->api->hooks_customMessageGitHub = array($this, 'customMessageGitHub');
 	
-
-
+		
 		//$this->cache = CacheStoreTransient::get_instance($this);
 		$this->cache = CacheStoreTable::get_instance($this);
 
@@ -192,14 +191,18 @@ class embed_block_for_github extends PluginBase {
 		}
 		/* DEV: CLEAN TRANSIENT */
 
-		if (!  $this->cache->isExist($github_url) )
+		if ( (!  $this->cache->isExist($github_url) ) || ( $api_cache_disable ) ) 
 		{
-			if ( $this->api->setURL($github_url) ) {
+			if ( $this->api->setURL($github_url) ) 
+			{
 				$data_all = (object)array();
 				$data_all->type = $this->api->getTypeURL();
 				$data_all->data = $this->api->getData();
-				if (! empty($data_all->data)) {
-					$this->cache->set($data_all, $github_url);
+				if (! empty($data_all->data)) 
+				{
+					if (! $api_cache_disable) {
+						$this->cache->set($data_all, $github_url);
+					}
 				}
 			}
 			if ($this->api->isSetError()) {
