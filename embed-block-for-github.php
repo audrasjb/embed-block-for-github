@@ -82,8 +82,6 @@ class embed_block_for_github extends PluginBase {
 		$this->api->hooks_customMessageGitHub = array($this, 'customMessageGitHub');
 	
 		add_action( 'init', array( $this, 'init_wp_register' ) );
-		add_action( 'admin_init', array( $this->config, 'registerSettings' ) );
-
 		if ( is_admin() ) {
 			$pag_admin = new PagAdmin($this);
 		}

@@ -28,22 +28,22 @@ class Transient {
 	
 	public static function get_instance($parent = null) {
 		if ( is_null (self::$instance ) ) {
-			self::$instance = new self;
-		}
-		if ( ! is_null( $parent ) ) {
-			self::$instance->parent = $parent;
+			self::$instance = new self ($parent);
 		}
 		return self::$instance;
 	}
 	
-	public function __construct() {
-		$this->parent 		= (object)array();
+	public function __construct($parent) {
 		$this->id 			= "";
 		$this->status 		= true;
 		$this->url			= "";
 		$this->url_fix		= "";
 		$this->expiration	= 0;
-
+		$this->parent 		= (object)array();
+		if (! is_null($parent)) {
+			$this->parent = $parent;
+		}
+		
 		$this->transient_cache_version 	= "_ebg_repository_cache_version";
 		$this->transient_cache_storage 	= "_ebg_repository_cache_storage";
 	}

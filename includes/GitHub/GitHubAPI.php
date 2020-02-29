@@ -29,18 +29,14 @@ class GitHubAPI {
 
 	public static function get_instance($parent = null) {
 		if ( is_null (self::$instance ) ) {
-			self::$instance = new self;
-		}
-		if ( ! is_null( $parent ) ) {
-			self::$instance->parent = $parent;
+			self::$instance = new self ($parent);
 		}
 		return self::$instance;
 	}
 	
 	public function __construct($parent = null) {
-		if (is_null($parent)) {
-			$this->parent = (object)array();
-		} else {
+		$this->parent = (object)array();
+		if (! is_null($parent)) {
 			$this->parent = $parent;
 		}
 	}
