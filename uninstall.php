@@ -7,6 +7,10 @@
  * @package           Embed Block for GitHub
  * @subpackage        Uninstall
  * 
+ * Author:            VSC55
+ * Author URI:        https://github.com/vsc55/embed-block-for-github
+ * License:           GPL-2.0+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
 // Exit if accessed directly
@@ -42,3 +46,11 @@ foreach ($array_transients as $transient) {
 }
 unset($array_transients);
 unset($prefix_transients);
+
+
+// Delete tables in database
+global $wpdb;
+$table_name = 'embed_block_for_github_cache_store';
+$table_name_full = $wpdb->prefix .$table_name;
+$wpdb->query("DROP TABLE IF EXISTS `$table_name`");
+delete_option($table_name.'_db_version');
