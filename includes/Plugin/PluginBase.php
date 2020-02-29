@@ -26,7 +26,6 @@ abstract class PluginBase {
 	private $pluginData;
 
 	protected function __construct($file) {
-		$pluginClass = get_class($this);
 		$this->file =& $file;
 		$this->fileName = basename($this->file);
 		$this->directory = dirname($this->file);

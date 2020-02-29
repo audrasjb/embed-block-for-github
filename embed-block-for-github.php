@@ -28,24 +28,24 @@ if ( ! defined( 'WPINC' ) ) {
 
 require_once ( __DIR__ . '/includes/Plugin/PluginBase.php' );
 require_once ( __DIR__ . '/includes/Plugin/Config.php' );
-require_once ( __DIR__ . '/includes/Cache/Transient.php' );
 require_once ( __DIR__ . '/includes/Languages/Message.php' );
 require_once ( __DIR__ . '/includes/GitHub/GitHubAPI.php' );
 
 require_once ( __DIR__ . '/includes/Cache/CacheStoreTable.php' );
+require_once ( __DIR__ . '/includes/Cache/CacheStoreTransient.php' );
 
 require_once ( __DIR__ . '/admin/PagAdmin.php' );
 
 
 use EmbedBlockForGithub\Plugin\PluginBase;
 use EmbedBlockForGithub\Plugin\Config;
-use EmbedBlockForGithub\Cache\Transient;
+
 use EmbedBlockForGithub\Lang\Message;
 use EmbedBlockForGithub\GitHub\API\GitHubAPI;
-
 use EmbedBlockForGithub\Admin\Config\PagAdmin;
 
 use EmbedBlockForGithub\Cache\CacheStoreTable;
+use EmbedBlockForGithub\Cache\CacheStoreTransient;
 
 
 
@@ -88,9 +88,12 @@ class embed_block_for_github extends PluginBase {
 		$this->api->access_token_user 	= $this->config->getOption("api_access_token_user");
 		$this->api->hooks_customMessageGitHub = array($this, 'customMessageGitHub');
 	
+
+
+		//$this->cache = CacheStoreTransient::get_instance($this);
 		$this->cache = CacheStoreTable::get_instance($this);
+
 		$this->cache->setVersion		( $this->getPluginData('Version') );
-		$this->cache->setTableName		( str_ireplace("-", "_", $this->getName() )."_cache_store" );
 		$this->cache->setExpiration 	( $this->config->getOption('api_cache_expire') );
 
 		add_action( 'init', array( $this, 'init_wp_register' ) );

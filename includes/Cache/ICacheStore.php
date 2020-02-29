@@ -43,9 +43,10 @@ interface ICacheStore {
 	/**
 	 * Get the cache version.
 	 * 
+	 * @param bool $only_version	True only number version, False NameClass + version
 	 * @return string 
 	 */
-	public function getVersion();
+	public function getVersion($only_version = false);
 
 	/**
 	 * Set the cache version.
