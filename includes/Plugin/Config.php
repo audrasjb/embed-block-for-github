@@ -9,7 +9,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 class Config {
 
-    public $parent = null;
+    private $parent = null;
     private static $instance;
 
     public $prefix = "";

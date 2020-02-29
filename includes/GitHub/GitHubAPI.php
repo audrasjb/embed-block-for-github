@@ -10,14 +10,14 @@ if ( ! defined( 'WPINC' ) ) {
 
 class GitHubAPI {
 
-	public $parent = null;
+	private $parent = null;
 	public $hooks_customMessageGitHub = null;
 
 	private static $instance;
 
 	private $github_api = "https://api.github.com";
 
-	public $url = "";
+	private $url = "";
 	private $owner = "";
 	private $repository = "";
 	private $type_url = "";

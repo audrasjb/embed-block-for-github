@@ -17,7 +17,7 @@ class Transient {
 
 	private static $instance;
 
-	public $parent = null;
+	private $parent = null;
 
 	private $status;
 	private $url;
