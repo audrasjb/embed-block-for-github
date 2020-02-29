@@ -79,21 +79,17 @@ class CacheStoreBase {
 	}
 
 	/**
-	 * Get the name of the option where the database version is saved.
-	 * 
-	 * @return string 
-	 */
-	public function getOptionNameToCacheVersion() {
-		return $this->getTableName()."_db_version";
-	}
-
-	/**
 	 * Get the cache version.
 	 * 
+	 * @param bool $only_version	True only number version, False NameClass + version
 	 * @return string 
 	 */
-	public function getVersion() {
-		return $this->version;
+	public function getVersion($only_version = false) {
+		$return_data = $this->version;
+		if (! $only_version) {
+			$return_data = get_class($this)."_".$return_data;
+		} 
+		return $return_data;
 	}
 
 	/**

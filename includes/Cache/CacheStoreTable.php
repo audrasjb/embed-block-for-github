@@ -43,9 +43,26 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 		} else {
 			$this->table_cache = "cache_store";
 			if (! is_null($parent)) {
-				$this->table_cache = str_ireplace("-", "_", $parent->getName() )."_".$this->table_cache;
+				$this->table_cache = $this->fixTableName( $parent->getName() )."_".$this->table_cache;
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * 
+	 */
+	private function fixTableName($table_name) {
+		return str_ireplace("-", "_", $table_name );
+	}
+
+	/**
+	 * Get the name of the option where the database version is saved.
+	 * 
+	 * @return string 
+	 */
+	public function getOptionNameToCacheVersion() {
+		return $this->getTableName()."_db_version";
 	}
 
 	/**
