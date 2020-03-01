@@ -7,134 +7,99 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * 
  */
-namespace EmbedBlockForGithub\Admin\Config;
+namespace EmbedBlockForGithub\Pags\Admin;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-class PagAdmin {
+require_once ('IPage.php' );
+require_once ('PageBase.php' );
 
-	private $parent = null;
-	private $options;
+use EmbedBlockForGithub\Pages\IPage;
+use EmbedBlockForGithub\Pages\PageBase;
+
+class PagAdmin extends PageBase implements IPage {
 
 	public function __construct($parent = null) {
-		$this->parent = (object)array();
-		if (! is_null($parent)) {
-			$this->parent = $parent;
-		}
+		parent::__construct( $parent );
 
-		add_action( 'admin_menu', array( $this, 'addMenuItem' ) );
-	}
-
-	/**
-	 * https://developer.wordpress.org/reference/functions/add_menu_page/ 
-	 * 
-	 */
-	public function addMenuItem() {
-		// Crea una seccion en el menu genral.
-		add_menu_page(
-			esc_html__( 'WordPress Embed Block for GitHub', $this->parent->getName() ),
-			esc_html__( 'Embed Block for GitHub', $this->parent->getName() ),
-			'manage_options', 
-			'embed-block-for-github', 
-			array($this, 'createPage'), 
-			plugins_url( 'embed-block-for-github/icon.png'),
-			/*4*/
-		);
-
-		// Crea una seccion de la seccion Settings.
-		/*
-		add_options_page(
-            'Config Embed Block for GitHub', 
-            'Embed Block for GitHub',
-            'manage_options', 
-            'embed-block-for-github',
-            array( $this, 'createPage' )
-		);
-		*/
+		$this->setPageTitle ( esc_html__( 'WordPress Embed Block for GitHub', $this->getNameParent() ) );
+		$this->setMenuTitle ( esc_html__( 'Embed Block for GitHub', $this->getNameParent() ) );
+		$this->setMenuSlug ( 'embed-block-for-github-admin' );
+		$this->setFunction ( array($this, 'createPage') );
+		$this->setIconUrl ( plugins_url( 'embed-block-for-github/icon.png') );
+		$this->setSubMenuTitle ( esc_html__( 'Settings', $this->getNameParent() ) );
+		//$this->setPosition = 4;
 	}
 
     public function createPage()
     {
 		$config[] = array (
-			"lable" => esc_html__( 'Theme/Skin', $this->parent->getName() ),
+			"lable" => esc_html__( 'Theme/Skin', $this->getNameParent() ),
 			"items" => array(
 				0 => array (
 					"type" => 'checkbox',
-					"label" => esc_html__( 'Dark Theme', $this->parent->getName() ),
+					"label" => esc_html__( 'Dark Theme', $this->getNameParent() ),
 					"name" => $this->parent->config->getNameOptionFull('darck_theme'),
 					"value" => $this->parent->config->getOption('darck_theme'),
 				),
 				1 => array (
 					"type" => 'select',
-					"label" => esc_html__( 'Icon Source', $this->parent->getName() ),
+					"label" => esc_html__( 'Icon Source', $this->getNameParent() ),
 					"name" => $this->parent->config->getNameOptionFull('icon_type_source'),
 					"value" => $this->parent->config->getOption('icon_type_source'),
 					"options" => array (
-						'file' => esc_html__( 'File Image', $this->parent->getName() ),
-						'font_awesome' => esc_html__( 'Font Awesome', $this->parent->getName() ),
+						'file' => esc_html__( 'File Image', $this->getNameParent() ),
+						'font_awesome' => esc_html__( 'Font Awesome', $this->getNameParent() ),
 					),
 				)
 			)
 		);
 
 		$config[] = array (
-			"lable" => esc_html__( 'Cache', $this->parent->getName() ),
+			"lable" => esc_html__( 'Cache', $this->getNameParent() ),
 			"items" => array(
 				0 => array (
 					"type" => 'checkbox',
-					"label" => esc_html__( 'Disable Cache', $this->parent->getName() ),
+					"label" => esc_html__( 'Disable Cache', $this->getNameParent() ),
 					"name" => $this->parent->config->getNameOptionFull('api_cache_disable'),
 					"value" => $this->parent->config->getOption('api_cache_disable'),
-					"info" => esc_html__( 'WARNING: Github has a limit of hourly queries, it is recommended to use cache to avoid exceeding said limit.', $this->parent->getName() ),
+					"info" => esc_html__( 'WARNING: Github has a limit of hourly queries, it is recommended to use cache to avoid exceeding said limit.', $this->getNameParent() ),
 				),
 				1 => array (
 					"type" => 'number',
-					"label" => esc_html__( 'Cache Time Expire', $this->parent->getName() ),
+					"label" => esc_html__( 'Cache Time Expire', $this->getNameParent() ),
 					"name" => $this->parent->config->getNameOptionFull('api_cache_expire'),
 					"value" => $this->parent->config->getOption('api_cache_expire'),
 					"min" => 0,
-					"info" => esc_html__( 'The maximum value in seconds that we will keep the data in cache before refreshing it. Default 0 (no expiration)', $this->parent->getName() ),
+					"info" => esc_html__( 'The maximum value in seconds that we will keep the data in cache before refreshing it. Default 0 (no expiration)', $this->getNameParent() ),
 					"default" => "0",
 				),
 			)
 		);
 
 		$config[] = array (
-			"lable" => esc_html__( 'Token API GitHub', $this->parent->getName() ),
+			"lable" => esc_html__( 'Token API GitHub', $this->getNameParent() ),
 			"items" => array(
 				0 => array (
 					"type" => 'text',
-					"label" => esc_html__( 'Access User', $this->parent->getName() ),
+					"label" => esc_html__( 'Access User', $this->getNameParent() ),
 					"name" => $this->parent->config->getNameOptionFull('api_access_token_user'),
 					"value" => $this->parent->config->getOption('api_access_token_user'),
 				),
 				1 => array (
 					"type" => 'text',
-					"label" => esc_html__( 'Access Token', $this->parent->getName() ),
+					"label" => esc_html__( 'Access Token', $this->getNameParent() ),
 					"name" => $this->parent->config->getNameOptionFull('api_access_token'),
 					"value" => $this->parent->config->getOption('api_access_token'),
 				),
 			)
 		);
-/*
-echo '<textarea  rows="15" cols="150">';
-print_r($config);
-echo "</textarea><br>";
-
-echo '<textarea  rows="15" cols="150">';
-print_r($this->parent->config->getOptions(true));
-echo "</textarea><br>";
-*/
-
-		
-
-
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'Global Settings Embed Block for GitHub', $this->parent->getName() ); ?></h1>
+			<h1><?php echo esc_html__( 'Global Settings Embed Block for GitHub', $this->getNameParent() ); ?></h1>
 			<form method="post" action="options.php">
 				<?php
 				settings_fields( 'embed-block-for-github' );
@@ -185,7 +150,7 @@ echo "</textarea><br>";
 				 */
 				$data = $this->parent->api->getRate();
 				if (! empty($data)) {
-					echo "<h2>".esc_html__( 'API GitHub - Status Rate', $this->parent->getName() )."</h2>";
+					echo "<h2>".esc_html__( 'API GitHub - Status Rate', $this->getNameParent() )."</h2>";
 					if (isset($data->message)) {
 						echo "<p>";
 						printf("'Api Error: %s'", $data->message);
@@ -208,5 +173,6 @@ echo "</textarea><br>";
 			</form>
 		</div>
 		<?php
-    }  
+	}
+	
 }

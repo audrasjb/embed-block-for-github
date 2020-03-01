@@ -35,6 +35,7 @@ require_once ( __DIR__ . '/includes/Cache/CacheStoreTable.php' );
 require_once ( __DIR__ . '/includes/Cache/CacheStoreTransient.php' );
 
 require_once ( __DIR__ . '/admin/PagAdmin.php' );
+require_once ( __DIR__ . '/admin/PagAdminCache.php' );
 
 
 use EmbedBlockForGithub\Plugin\PluginBase;
@@ -42,10 +43,12 @@ use EmbedBlockForGithub\Plugin\Config;
 
 use EmbedBlockForGithub\Lang\Message;
 use EmbedBlockForGithub\GitHub\API\GitHubAPI;
-use EmbedBlockForGithub\Admin\Config\PagAdmin;
 
 use EmbedBlockForGithub\Cache\CacheStoreTable;
 use EmbedBlockForGithub\Cache\CacheStoreTransient;
+
+use EmbedBlockForGithub\Pags\Admin\PagAdmin;
+use EmbedBlockForGithub\Pags\Admin\PagAdminCache;
 
 
 
@@ -97,7 +100,8 @@ class embed_block_for_github extends PluginBase {
 
 		add_action( 'init', array( $this, 'init_wp_register' ) );
 		if ( is_admin() ) {
-			$pag_admin = new PagAdmin($this);
+			$pag_admin['main'] = new PagAdmin($this);
+			$pag_admin['cache'] = new PagAdminCache($this);
 		}
 	}
 
