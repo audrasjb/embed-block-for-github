@@ -36,6 +36,7 @@ require_once ( __DIR__ . '/includes/Cache/CacheStoreTransient.php' );
 
 require_once ( __DIR__ . '/admin/PagAdmin.php' );
 require_once ( __DIR__ . '/admin/PagAdminCache.php' );
+require_once ( __DIR__ . '/admin/PagAdminApiGitHubRate.php' );
 
 
 use EmbedBlockForGithub\Plugin\PluginBase;
@@ -49,6 +50,7 @@ use EmbedBlockForGithub\Cache\CacheStoreTransient;
 
 use EmbedBlockForGithub\Pags\Admin\PagAdmin;
 use EmbedBlockForGithub\Pags\Admin\PagAdminCache;
+use EmbedBlockForGithub\Pags\Admin\PagAdminApiGitHubRate;
 
 
 
@@ -102,6 +104,8 @@ class embed_block_for_github extends PluginBase {
 		if ( is_admin() ) {
 			$pag_admin['main'] = new PagAdmin($this);
 			$pag_admin['cache'] = new PagAdminCache($this);
+			$pag_admin['api_github_rate'] = new PagAdminApiGitHubRate($this);
+			
 		}
 	}
 

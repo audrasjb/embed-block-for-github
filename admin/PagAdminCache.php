@@ -37,6 +37,17 @@ class PagAdminCache extends PageBase implements IPage {
 		<div class="wrap">
 			<h1><?php echo esc_html__( 'Cache Manager - Embed Block for GitHub', $this->getNameParent() ); ?></h1>
 
+			<?php
+				if ( get_class($this->parent->cache) !== "EmbedBlockForGithub\Cache\CacheStoreTable" ) {
+					echo "<p>Only support cache Table mode!</p>";
+					//echo "<p>Actual mode (".get_class($this->parent->cache).")</p>";
+				} else {
+
+					
+				}
+			?>
+
+
 		</div>
 		<?php
 	}	

@@ -48,6 +48,19 @@ abstract class PageBase {
         add_action( 'admin_menu', array( $this, 'addMenuItem' ) );
     }
 
+    /**
+     * 
+     */
+    public function wp_create_nonce($id) {
+        if( !function_exists('wp_create_nonce') ){
+            require_once( ABSPATH . 'wp-includes/pluggable.php' );
+        }
+        return wp_create_nonce($id);
+    }
+
+    /**
+     * 
+     */
     public function addMenuItem() {
 
         $add_menu = $this->inMainMenu();

@@ -30,7 +30,7 @@ class PagAdmin extends PageBase implements IPage {
 		$this->setMenuSlug ( 'embed-block-for-github-admin' );
 		$this->setFunction ( array($this, 'createPage') );
 		$this->setIconUrl ( plugins_url( 'embed-block-for-github/icon.png') );
-		$this->setSubMenuTitle ( esc_html__( 'Settings', $this->getNameParent() ) );
+		$this->setSubMenuTitle ( esc_html__( 'Global Settings', $this->getNameParent() ) );
 		//$this->setPosition = 4;
 	}
 
@@ -99,7 +99,7 @@ class PagAdmin extends PageBase implements IPage {
 		);
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'Global Settings Embed Block for GitHub', $this->getNameParent() ); ?></h1>
+			<h1><?php echo esc_html__( 'Global Settings - Embed Block for GitHub', $this->getNameParent() ); ?></h1>
 			<form method="post" action="options.php">
 				<?php
 				settings_fields( 'embed-block-for-github' );
@@ -144,30 +144,7 @@ class PagAdmin extends PageBase implements IPage {
 						echo "</table>";
 					}
 				}
-
-				/**
-				 * Section Status Rate
-				 */
-				$data = $this->parent->api->getRate();
-				if (! empty($data)) {
-					echo "<h2>".esc_html__( 'API GitHub - Status Rate', $this->getNameParent() )."</h2>";
-					if (isset($data->message)) {
-						echo "<p>";
-						printf("'Api Error: %s'", $data->message);
-						echo "</p>";
-					} else {
-						echo "<table>";
-						foreach ($data->rate as $key => $val) {
-							echo "<tr>";
-							echo "<td>$key</td>";
-							echo "<td>$val</td>";
-							echo "</tr>";
-						}
-						echo "</table>";
-					}
-				}
 				?>
-				<a href="https://api.github.com/rate_limit" target="_blank">All Data - Rate Limit</a>
 
 				<?php submit_button(); ?>
 			</form>
