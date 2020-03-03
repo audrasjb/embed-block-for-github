@@ -5,6 +5,8 @@ jQuery(document).ready( function () {
 
 });
 
+//TODO: Pending i18n
+//TODO: Pending Style Table
 
 function embed_block_for_github_admin_api_github_rate_info_update() {
     var namefun = arguments.callee.name;
@@ -30,7 +32,7 @@ function embed_block_for_github_admin_api_github_rate_info_update() {
             var rest = (limit - remaining);
             var porcent_rest = ((100 / limit) * remaining).toFixed(0);
 
-            var html = `<p>Rate: ${limit}/${remaining} (${porcent_rest}% remaining)</p>`;
+            var html = `<p>Rate: ${remaining}/${limit} (${porcent_rest}% remaining)</p>`;
             if (jQuery('#'+id_info_rate).html() != html) {
                 jQuery('#'+id_info_rate).html(html);
             }
