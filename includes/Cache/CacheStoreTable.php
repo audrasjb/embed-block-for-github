@@ -116,7 +116,9 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 						$this->getTableNameFull(),
 						$wpdb->collate );
 
-				require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+				if( !function_exists('dbDelta') ){
+					require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+				}
 				dbDelta( $sql );
 				$return_data = $this->isExistTable() ;
 			}
