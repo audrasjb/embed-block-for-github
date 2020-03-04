@@ -49,7 +49,6 @@ class PagAdminCache extends PageBase implements IPage {
 		wp_register_style( 'jquery-datatables-css', $this->parent->getURL('admin/css/jquery.dataTables.css'), array() );
 		wp_enqueue_style( 'jquery-datatables-css' );
 		
-
 		wp_localize_script( 'embed_block_for_github_admin_ajax', 'ajax_var', array(
 			'url'    		=> admin_url( 'admin-ajax.php' ),
 			'action' 		=> $this->js_acction['ajax_get'],
@@ -58,7 +57,7 @@ class PagAdminCache extends PageBase implements IPage {
 	}
 
 	public function ajax_json_data() {
-		//check_ajax_referer( 'check_nonce-'.$this->js_acction['ajax_get'], 'security' );
+		check_ajax_referer( 'check_nonce-'.$this->js_acction['ajax_get'], 'security' );
 
 		global $wpdb;
 		$return['data'] = $wpdb->get_results( "SELECT id, time_update, TIMESTAMPADD(SECOND, expire, time_update) as time_expire, expire, url FROM `wp_embed_block_for_github_cache_store`" );
