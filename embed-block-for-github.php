@@ -101,15 +101,41 @@ class embed_block_for_github extends PluginBase {
 		$this->cache->setExpiration 	( $this->config->getOption('api_cache_expire') );
 
 		add_action( 'init', array( $this, 'init_wp_register' ) );
+	
 		if ( is_admin() ) {
-			$pag_admin['main'] = new PagAdmin($this);
-			$pag_admin['cache'] = new PagAdminCache($this);
-			$pag_admin['api_github_rate'] = new PagAdminApiGitHubRate($this);
-			
+			$this->initPagsAdmin();
 		}
 	}
 
+	/**
+	 * 
+	 */
+	private function initPagsAdmin() {
+
+		$pag_admin['main'] = new PagAdmin($this);
+		$pag_admin['cache'] = new PagAdminCache($this);
+		$pag_admin['api_github_rate'] = new PagAdminApiGitHubRate($this);
+
+		if ( ! empty( $_GET['page'] ) ) {
+			foreach ($pag_admin as $key => &$val) {
+				if ( $_GET['page'] == $val->getMenuSlug() ) {
+					$val->add_action_wp_register();
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * 
+	 */
 	public function init_wp_register() {
+		wp_enqueue_script( 
+			"embed_block_for_github_admin_ajax", 
+			$this->getURL( 'admin/js/admin-ajax.js'), 
+			array('jquery'),
+			$this->getVersionFile('admin/js/admin-ajax.js')
+		);
 
 		wp_register_script(
 			'ebg-repository-editor',

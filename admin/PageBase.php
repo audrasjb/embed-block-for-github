@@ -51,6 +51,15 @@ abstract class PageBase {
     /**
      * 
      */
+    public function add_action_wp_register () {
+        if (method_exists ($this, 'init_wp_register')) {
+            add_action( 'init', array( $this, 'init_wp_register' ) );
+        }
+    }
+
+    /**
+     * 
+     */
     public function wp_create_nonce($id) {
         if( !function_exists('wp_create_nonce') ){
             require_once( ABSPATH . 'wp-includes/pluggable.php' );

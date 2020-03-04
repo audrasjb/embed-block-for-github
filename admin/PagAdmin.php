@@ -34,6 +34,10 @@ class PagAdmin extends PageBase implements IPage {
 		//$this->setPosition = 4;
 	}
 
+	public function init_wp_register() {
+		
+	}
+
     public function createPage()
     {
 		$config[] = array (

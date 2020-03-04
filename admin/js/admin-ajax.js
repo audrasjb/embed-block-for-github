@@ -1,8 +1,17 @@
 
 jQuery(document).ready( function () {
+    switch(pagenow) {
+        case "embed-block-for-github_page_embed-block-for-github-admin-api-github-rate":
+            embed_block_for_github_admin_api_github_rate_info_update();
+            break;
 
-    embed_block_for_github_admin_api_github_rate_info_update();
+        case "embed-block-for-github_page_embed-block-for-github-admin-cache":
+            embed_block_for_github_admin_cache_info_update();
+            break;
 
+        default:
+            console.log("admin-ajax > Page ("+pagenow+") not used JS!!");
+    }
 });
 
 //TODO: Pending i18n
@@ -13,6 +22,7 @@ function embed_block_for_github_admin_api_github_rate_info_update() {
     var id_info_rate = "embed_block_for_github_admin_api_github_rate_info_rate";
     var id_info_resources = "embed_block_for_github_admin_api_github_rate_info_resources";
 
+    
     //console.log(ajax_var);
     jQuery.ajax({
         type: "POST",
@@ -81,4 +91,57 @@ function embed_block_for_github_admin_api_github_rate_info_update() {
         }
     });
     
+}
+
+function embed_block_for_github_admin_cache_info_update() {
+    var namefun = arguments.callee.name;
+    var id_info_table = "embed_block_for_github_admin_cache_table";
+    
+    //https://datatables.net/examples/ajax/null_data_source.html
+
+    var datatable = jQuery('#'+id_info_table).DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            type: "POST",
+            url: ajax_var.url,
+            data: function ( d ) {
+                d.action = ajax_var.action;
+                d.security = ajax_var.check_nonce;
+            }
+        },
+        
+        columns: [
+            {data:"id"},
+            {data:"time_update"},
+            {data:"time_expire"},
+            {data:"expire"},
+            {data:"url"},
+            {
+                data: null,
+                defaultContent: '<button>Delete</button>'
+            }
+        ]
+        
+    });
+
+
+    jQuery('#'+id_info_table+' tbody').on( 'click', 'button', function () {
+        var data = datatable.row( jQuery(this).parents('tr') ).data();
+
+        //console.log(data);
+
+        var r = confirm("Are you sure you wish to remove this record (" + data['id'] + ")?");
+        if (r == true) {
+            alert("You pressed OK!")
+        } else {
+            alert("You pressed Cancel!")
+        } 
+
+    } );
+
+    
+
+    
+      
 }
