@@ -147,6 +147,15 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * 
 	 */
+	private function wpdb_get_results($str_query) {
+		global $wpdb;
+		return $wpdb->get_results( $str_query );
+	}
+
+	/**
+	 * 
+	 * 
+	 */
 	private function dropTable() {
 		if ($this->isExistTable()) {
 			$query = sprintf("DROP TABLE IF EXISTS `%s`", $this->getTableNameFull() );
@@ -404,6 +413,51 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 			}
 		}
 		return $return_data;
+	}
+
+
+
+	/**
+	 * 
+	 */
+	public function isExistID($id = null) {
+		$return_data = false;
+		if (! is_null($id)) {
+			$id = trim( $id );
+			if ( ! empty( $id ) ) {
+				$query = sprintf("SELECT count(*) FROM `%s` WHERE `id` = %s", $this->getTableNameFull(), $id );
+				$count = $this->wpdb_get_var( $query );
+				if ($count > 0) {
+					$return_data = true;
+				}
+			}
+		}
+		return $return_data;
+	}
+
+	/**
+	 * 
+	 */
+	public function removeId($id = "") {
+		$return_data = false;
+		if ($this->isExistID($id)) {
+			$id = trim( $id );
+			$query = sprintf("DELETE FROM `%s` WHERE `id` = %s", $this->getTableNameFull(), $id );
+			$this->wpdb_query($query);
+
+			if (! $this->isExistID($id)) { 
+				$return_data = true;
+			}
+		}
+		return $return_data;
+	}
+
+	/**
+	 * 
+	 */
+	public function getAllList (){
+		$query = sprintf("SELECT id, time_update, TIMESTAMPADD(SECOND, expire, time_update) as time_expire, expire, url FROM `%s`", $this->getTableNameFull() );
+		return $this->wpdb_get_results($query);
 	}
 
 }

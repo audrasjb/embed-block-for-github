@@ -22,7 +22,7 @@ function embed_block_for_github_admin_api_github_rate_info_update() {
     var id_info_rate = "embed_block_for_github_admin_api_github_rate_info_rate";
     var id_info_resources = "embed_block_for_github_admin_api_github_rate_info_resources";
 
-    
+
     //console.log(ajax_var);
     jQuery.ajax({
         type: "POST",
@@ -93,6 +93,9 @@ function embed_block_for_github_admin_api_github_rate_info_update() {
     
 }
 
+var timer_datatable_refres;
+
+
 function embed_block_for_github_admin_cache_info_update() {
     var namefun = arguments.callee.name;
     var id_info_table = "embed_block_for_github_admin_cache_table";
@@ -100,14 +103,13 @@ function embed_block_for_github_admin_cache_info_update() {
     //https://datatables.net/examples/ajax/null_data_source.html
 
     var datatable = jQuery('#'+id_info_table).DataTable({
-        processing: true,
-        serverSide: true,
+        //processing: true,
         ajax: {
             type: "POST",
             url: ajax_var.url,
             data: function ( d ) {
-                d.action = ajax_var.action;
-                d.security = ajax_var.check_nonce;
+                d.action = ajax_var.action_list;
+                d.security = ajax_var.check_nonce_list;
             }
         },
         
@@ -121,27 +123,65 @@ function embed_block_for_github_admin_cache_info_update() {
                 data: null,
                 defaultContent: '<button>Delete</button>'
             }
+        ],
+
+        columnDefs:[
+            { targets: [1,2], render: function(data) {
+                var options = { hour: '2-digit', minute: '2-digit', second: '2-digit',  year: 'numeric', month: '2-digit', day: '2-digit', hourCycle: 'h24' };
+                var d = new Date(data);
+                //return d.toLocaleString("en-US", options);
+                return d.toLocaleString("es-ES", options);
+            } },
+            { targets: 4, render: function(data) { return `<a href="${data}" target="_blank">${data}</a>`; } }
         ]
-        
+
     });
 
-
     jQuery('#'+id_info_table+' tbody').on( 'click', 'button', function () {
-        var data = datatable.row( jQuery(this).parents('tr') ).data();
 
-        //console.log(data);
+        var select_row = datatable.row( jQuery(this).parents('tr') );
+        var id_remove = select_row.data()['id'];
 
-        var r = confirm("Are you sure you wish to remove this record (" + data['id'] + ")?");
+        clearInterval(timer_datatable_refres);
+
+        var r = confirm("Are you sure you wish to remove this record (" + id_remove + ")?");
         if (r == true) {
-            alert("You pressed OK!")
-        } else {
-            alert("You pressed Cancel!")
-        } 
+            jQuery.ajax({
+                type: "POST",
+                url: ajax_var.url,
+                dataType: 'JSON',
+                data: {
+                    action : ajax_var.action_remove,
+                    security : ajax_var.check_nonce_remove,
+                    remove_id : id_remove
+                },
+                success: function(result){
+                    //console.log("OK");
+                    //console.log(result);
 
+                    if (result.code != 0) {
+                        alert (result.message);
+                    } else {
+                        select_row.remove().draw();
+                    }
+                },
+                error: function(result) {
+                    //console.log("Error!!");
+                    //console.log(result);
+                    alert("Error:" + result.statusText);
+                }
+            });
+        }
+        
+        embed_block_for_github_admin_cache_auto_update(datatable);
     } );
 
-    
+    embed_block_for_github_admin_cache_auto_update(datatable);
+}
 
-    
-      
+function embed_block_for_github_admin_cache_auto_update(datatable) {
+    timer_datatable_refres = setInterval( function () {
+        datatable.ajax.reload().draw();
+        console.log("refres");
+    }, 5000 );
 }
