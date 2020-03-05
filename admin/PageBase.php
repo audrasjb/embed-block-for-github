@@ -51,12 +51,59 @@ abstract class PageBase {
     /**
      * 
      */
-    public function add_action_wp_register () {
-        if (method_exists ($this, 'init_wp_register')) {
-            add_action( 'init', array( $this, 'init_wp_register' ) );
-        }
+    public function add_action_all () {
+        $this->add_action_init();
+        $this->add_action_admin_init();
+        $this->add_action_wp_enqueue_scripts();
+        $this->add_action_admin_enqueue_scripts();
     }
 
+    /*
+	public function action_init() { }
+	public function action_admin_init() { }
+	public function action_wp_enqueue_scripts() { }
+	public function action_admin_enqueue_scripts () { }
+	*/
+
+    /**
+     * 
+     */
+    public function add_action_init () {
+        return $this->add_action('init');
+    }
+
+    /**
+     * 
+     */
+    public function add_action_admin_init () {
+        return $this->add_action('admin_init');
+    }
+
+    /**
+     * 
+     */
+    public function add_action_wp_enqueue_scripts() {
+        return $this->add_action('wp_enqueue_scripts');
+    }
+
+    /**
+     * 
+     */
+    public function add_action_admin_enqueue_scripts() {
+        return $this->add_action('admin_enqueue_scripts');
+    }
+
+    /**
+     * 
+     */
+    private function add_action($action) {
+        if (method_exists ($this, 'action_'.$action)) {
+            add_action($action, array($this, 'action_'.$action) );
+            return true;
+        }
+        return false;
+    }
+    
     /**
      * 
      */

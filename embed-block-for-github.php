@@ -100,8 +100,11 @@ class embed_block_for_github extends PluginBase {
 		$this->cache->setVersion		( $this->getPluginData('Version') );
 		$this->cache->setExpiration 	( $this->config->getOption('api_cache_expire') );
 
-		add_action( 'init', array( $this, 'init_wp_register' ) );
-	
+		add_action( 'init', array( $this, 'register_blocks' ) );
+		add_action( 'init', array( $this, 'block_assets' ) );
+		add_action( 'init', array( $this, 'editor_assets' ) );
+		add_action( 'admin_init', array( $this, 'admin_ajax_scripts' ) );
+
 		if ( is_admin() ) {
 			$this->initPagsAdmin();
 		}
@@ -119,44 +122,20 @@ class embed_block_for_github extends PluginBase {
 		if ( ! empty( $_GET['page'] ) ) {
 			foreach ($pag_admin as $key => &$val) {
 				if ( $_GET['page'] == $val->getMenuSlug() ) {
-					$val->add_action_wp_register();
+					$val->add_action_all();
 				}
 			}
 		}
 	}
 
-
 	/**
 	 * 
 	 */
-	public function init_wp_register() {
-		wp_enqueue_script( 
-			"embed_block_for_github_admin_ajax", 
-			$this->getURL( 'admin/js/admin-ajax.js'), 
-			array('jquery'),
-			$this->getVersionFile('admin/js/admin-ajax.js')
-		);
-
-		wp_register_script(
-			'ebg-repository-editor',
-			$this->getURL('admin/js/repository-block.js'),
-			array( 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-editor' ),
-			$this->getVersionFile('admin/js/repository-block.js')
-		);
-		wp_localize_script('ebg-repository-editor', 'ebg_repository_editor_gloabl_config', $this->config->getOptions(false));
-
-		wp_register_style(
-			'ebg-repository-editor',
-			$this->getURL('admin/css/repository-block-editor.css'),
-			array(),
-			$this->getVersionFile('admin/css/repository-block-editor.css')
-		);
-		wp_register_style(
-			'ebg-repository',
-			$this->getURL('public/css/repository-block.css'),
-			array(),
-			$this->getVersionFile('public/css/repository-block.css')
-		);
+	public function register_blocks() {
+		if ( ! function_exists( 'register_block_type' ) ) {
+			// Gutenberg is not active.
+			return;
+		}
 		register_block_type( 'embed-block-for-github/repository', array(
 			'editor_script'   => 'ebg-repository-editor',
 			'editor_style'    => 'ebg-repository-editor',
@@ -172,6 +151,53 @@ class embed_block_for_github extends PluginBase {
 				'api_cache_expire' => array( 'type' => 'string' ),
 			),
 		) );
+	}
+
+	/**
+	 * 
+	 */
+	public function block_assets() {
+		// Styles.
+		wp_register_style (
+			'ebg-repository',
+			$this->getURL('public/css/repository-block.css'),
+			array(),
+			$this->getVersionFile('public/css/repository-block.css')
+		);
+	}
+
+	/**
+	 * 
+	 */
+	public function editor_assets() {
+		// Styles.
+		wp_register_style (
+			'ebg-repository-editor',
+			$this->getURL('admin/css/repository-block-editor.css'),
+			array(),
+			$this->getVersionFile('admin/css/repository-block-editor.css')
+		);
+
+		// Scripts.
+		wp_register_script(
+			'ebg-repository-editor',
+			$this->getURL('admin/js/repository-block.js'),
+			array( 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-editor' ),
+			$this->getVersionFile('admin/js/repository-block.js')
+		);
+		wp_localize_script('ebg-repository-editor', 'ebg_repository_editor_gloabl_config', $this->config->getOptions(false));
+	}
+
+	/**
+	 * 
+	 */
+	public function admin_ajax_scripts() {
+		wp_enqueue_script(
+			"embed_block_for_github_admin_ajax", 
+			$this->getURL( 'admin/js/admin-ajax.js'), 
+			array('jquery'),
+			$this->getVersionFile('admin/js/admin-ajax.js'),
+		);
 	}
 
 	/**
@@ -191,7 +217,6 @@ class embed_block_for_github extends PluginBase {
 			return '<p>' . esc_html( sprintf( 'Error: %s', $message ) , 'embed-block-for-github' ) . '</p>';
 		}
 	}
-
 
 	/**
 	 * 

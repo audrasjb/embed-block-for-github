@@ -24,7 +24,7 @@ class PagAdminCache extends PageBase implements IPage {
 
 	private $js_acction;
 
-	public function __construct($parent = null, $auto_init = false) {
+	public function __construct($parent = null, $auto_action = false) {
 		parent::__construct( $parent );
 		$this->setParentSlug ( 'embed-block-for-github-admin' );
 		$this->setPageTitle ( esc_html__( 'WordPress Embed Block for GitHub - Cache Manager', $this->getNameParent() ) );
@@ -35,8 +35,8 @@ class PagAdminCache extends PageBase implements IPage {
 		$this->js_acction['root'] =  str_ireplace("-", "_", $this->getMenuSlug());
 		$this->js_acction['ajax_get'] = $this->js_acction['root']."-get_ajax";
 
-		if ($auto_init) {
-			$this->add_action_wp_register();
+		if ($auto_action) {
+			$this->add_action_all();
 		}
 
 		add_action( 'wp_ajax_'.$this->js_acction['ajax_get'], array($this, 'ajax_json_data') );
@@ -44,16 +44,16 @@ class PagAdminCache extends PageBase implements IPage {
 	}
 
 
-	public function init_wp_register() {
-		wp_enqueue_script( 'jquery-datatables-js', $this->parent->getURL( 'admin/js/jquery.dataTables.js'), array('jquery') );
-		wp_register_style( 'jquery-datatables-css', $this->parent->getURL('admin/css/jquery.dataTables.css'), array() );
-		wp_enqueue_style( 'jquery-datatables-css' );
-		
+	public function action_admin_enqueue_scripts() {
 		wp_localize_script( 'embed_block_for_github_admin_ajax', 'ajax_var', array(
 			'url'    		=> admin_url( 'admin-ajax.php' ),
 			'action' 		=> $this->js_acction['ajax_get'],
 			'check_nonce' 	=> $this->wp_create_nonce( 'check_nonce-'.$this->js_acction['ajax_get'] )
 		) );
+		
+		wp_enqueue_script( 'jquery-datatables-js', $this->parent->getURL( 'admin/js/jquery.dataTables.js'), array('jquery') );
+		wp_register_style( 'jquery-datatables-css', $this->parent->getURL('admin/css/jquery.dataTables.css'), array() );
+		wp_enqueue_style( 'jquery-datatables-css' );
 	}
 
 	public function ajax_json_data() {

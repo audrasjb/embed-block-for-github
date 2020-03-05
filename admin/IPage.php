@@ -20,5 +20,4 @@ interface IPage {
 
     public function createPage();
 
-    public function init_wp_register();
 }
