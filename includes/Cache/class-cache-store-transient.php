@@ -15,11 +15,11 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-require_once ('ICacheStore.php' );
-require_once ('CacheStoreBase.php' );
+require_once ('interface-cache-store.php' );
+require_once ('class-cache-store-base.php' );
 
-use EmbedBlockForGithub\Cache\ICacheStore;
-use EmbedBlockForGithub\Cache\CacheStoreBase;
+use EmbedBlockForGithub\Cache\ICache_Store;
+use EmbedBlockForGithub\Cache\Cache_Store_Base;
 
 /**
  * TODO: Pendiente controlar posibles solapamientos en las funciones set, get, delete 
@@ -27,7 +27,7 @@ use EmbedBlockForGithub\Cache\CacheStoreBase;
  * Posible solución crear una tabla para el cache.
  */
 
-class CacheStoreTransient extends CacheStoreBase implements ICacheStore {
+class Cache_Store_Transient extends Cache_Store_Base implements ICache_Store {
 
 	private static $instance;
 
@@ -51,9 +51,9 @@ class CacheStoreTransient extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * @return bool
 	 */
-	public function isCacheExist() {
+	public function is_cache_exist() {
 		$return_data = true;
-		if (! get_transient($this->transient_cache_storage) ) {
+		if ( ! get_transient($this->transient_cache_storage) ) {
 			$return_data = false;
 		}
 		return $return_data;
@@ -64,13 +64,13 @@ class CacheStoreTransient extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * @param bool $only_clean True only clean cache, False Clean and regenerate cache.
 	 */
-	public function cleanCache ($only_clean = false) {
-		if (get_transient($this->transient_cache_storage) ) {
+	public function clean_cache($only_clean = false) {
+		if ( get_transient($this->transient_cache_storage) ) {
 			delete_transient( $this->transient_cache_storage );
 		}
 		if (! $only_clean) {
 			$cache_data = (object)array();
-			set_transient( $this->transient_cache_storage, json_encode( $cache_data ) , $this->getExpiration());
+			set_transient( $this->transient_cache_storage, json_encode( $cache_data ) , $this->get_expiration() );
 		}
 	}
 
@@ -79,12 +79,12 @@ class CacheStoreTransient extends CacheStoreBase implements ICacheStore {
 	 * For example if plugin version not equal of the storage version the clean and 
 	 * regenerate the cache storage.
 	 */
-	public function controlCacheStorage() {
-		if (! $this->checkCacheVersion()) {
-			$this->cleanCache();
+	public function control_cache_storage() {
+		if ( ! $this->check_cache_version() ) {
+			$this->clean_cache();
 
-			$opt = $this->getOptionNameToCacheVersion();
-			$ver =  $this->getVersion();
+			$opt = $this->get_option_name_to_cache_version();
+			$ver = $this->get_version();
 			if ( get_option( $opt ) !== false ) {
 				update_option( $opt, $ver );
 			} else {
@@ -97,34 +97,34 @@ class CacheStoreTransient extends CacheStoreBase implements ICacheStore {
 	/**
 	 * 
 	 */
-	public function getOptionNameToCacheVersion() {
-		return "embed_block_for_github_cache_store"."_db_version";
+	public function get_option_name_to_cache_version() {
+		return "embed_block_for_github_cache_store" . "_db_version";
 	}
 
 	/**
 	 * 
 	 */
-	public function count () {
-		$this->controlCacheStorage();
+	public function count() {
+		$this->control_cache_storage();
 
 		$cache_json = get_transient( $this->transient_cache_storage );
 		$cache_data = json_decode( $cache_json );
-		$return_data = count ($cache_data);
+		$return_data = count( $cache_data );
 		return $return_data;
 	}
 
 	/**
 	 * 
 	 */
-	public function isExist($url = null) {
-		$this->controlCacheStorage();
+	public function is_exist($url = null) {
+		$this->control_cache_storage();
 
 		$return_data = false;
 		if ( is_null($url) ) {
-			$url = $this->getUrl();
+			$url = $this->get_URL();
 		}
-		if (! $this->isUrlNull($url)) {
-			if ($this->getStatus()) {
+		if ( ! $this->is_URL_null($url) ) {
+			if ( $this->get_status() ) {
 				$cache_json = get_transient( $this->transient_cache_storage );
 				$cache_data = json_decode( $cache_json );
 
@@ -140,20 +140,20 @@ class CacheStoreTransient extends CacheStoreBase implements ICacheStore {
 	/**
 	 * 
 	 */
-	public function set ($data, $url = null) {
-		$this->controlCacheStorage();
+	public function set($data, $url = null) {
+		$this->control_cache_storage();
 
 		$return_data = false;
 		if ( is_null($url) ) {
-			$url = $this->getUrl();
+			$url = $this->get_URL();
 		}
-		if (! $this->isUrlNull($url)) {
-			if ($this->getStatus()) {
+		if ( ! $this->is_URL_null($url) ) {
+			if ( $this->get_status() ) {
 				$url_fix = sanitize_title_with_dashes( $url );
 
-				$cache_data = $this->getCacheStorage();
+				$cache_data = $this->get_cache_storage();
 				$cache_data->{$url_fix} = $data;
-				$this->setCacheStorage($cache_data);
+				$this->set_cache_storage($cache_data);
 				$return_data = true;
 			}
 		}
@@ -164,17 +164,17 @@ class CacheStoreTransient extends CacheStoreBase implements ICacheStore {
 	 *
 	 */
 	public function get($url = null) {
-		$this->controlCacheStorage();
+		$this->control_cache_storage();
 
 		$return_data = "";
 		if ( is_null($url) ) {
-			$url = $this->getUrl();
+			$url = $this->get_URL();
 		}
-		if (! $this->isUrlNull($url)) {
-			if ($this->getStatus()) {
-				if ($this->isExist($url)) {
+		if ( ! $this->is_URL_null($url) ) {
+			if ( $this->get_status() ) {
+				if ( $this->is_exist($url) ) {
 					$url_fix = sanitize_title_with_dashes( $url );
-					$cache_data = $this->getCacheStorage();
+					$cache_data = $this->get_cache_storage();
 					$return_data = $cache_data->{$url_fix};
 				}
 			}
@@ -185,22 +185,22 @@ class CacheStoreTransient extends CacheStoreBase implements ICacheStore {
 	/**
 	 *
 	 */
-	public function delete ($force = false, $url = null) {
-		$this->controlCacheStorage();
+	public function delete($force = false, $url = null) {
+		$this->control_cache_storage();
 
 		$return_data = false;
 		if ( is_null($url) ) {
-			$url = $this->getUrl();
+			$url = $this->get_URL();
 		}
-		if (! $this->isUrlNull($url)) {
-			if ( ($this->getStatus()) || ($force) ) {
-				if ($this->isExist($url)) {
-					$url_fix = sanitize_title_with_dashes( $url );
-					$cache_data = $this->getCacheStorage();
+		if ( ! $this->is_URL_null($url) ) {
+			if ( ( $this->get_status() ) || ( $force ) ) {
+				if ( $this->is_exist($url) ) {
+					$url_fix 	= sanitize_title_with_dashes( $url );
+					$cache_data = $this->get_cache_storage();
 				  	unset ($cache_data->{$url_fix});
-					$this->setCacheStorage($cache_data);
+					$this->set_cache_storage($cache_data);
 
-					if (! $this->isExist($url) ) {
+					if ( ! $this->is_exist($url) ) {
 						$return_data = true;
 					}
 				}
@@ -214,8 +214,8 @@ class CacheStoreTransient extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * @return object
 	 */
-	private function getCacheStorage(){
-		$this->controlCacheStorage();
+	private function get_cache_storage() {
+		$this->control_cache_storage();
 		$return_data = json_decode( get_transient( $this->transient_cache_storage ) );
 		return $return_data;
 	}
@@ -225,9 +225,9 @@ class CacheStoreTransient extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * @param object $data
 	 */
-	private function setCacheStorage($data) {
-		$this->controlCacheStorage();
-		set_transient( $this->transient_cache_storage, json_encode( $data ), $this->getExpiration() );
+	private function set_cache_storage($data) {
+		$this->control_cache_storage();
+		set_transient( $this->transient_cache_storage, json_encode( $data ), $this->get_expiration() );
 	}
 
 }

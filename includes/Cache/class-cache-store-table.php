@@ -15,14 +15,14 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-require_once ('ICacheStore.php' );
-require_once ('CacheStoreBase.php' );
+require_once ('interface-cache-store.php' );
+require_once ('class-cache-store-base.php' );
 
-use EmbedBlockForGithub\Cache\ICacheStore;
-use EmbedBlockForGithub\Cache\CacheStoreBase;
+use EmbedBlockForGithub\Cache\ICache_Store;
+use EmbedBlockForGithub\Cache\Cache_Store_Base;
 
 
-class CacheStoreTable extends CacheStoreBase implements ICacheStore {
+class Cache_Store_Table extends Cache_Store_Base implements ICache_Store {
 
 	private static $instance;
 
@@ -38,12 +38,12 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	public function __construct($parent = null, $table_name = null) {
 		parent::__construct( $parent );
 
-		if (! is_null($table_name)) {
+		if ( ! is_null($table_name) ) {
 			$this->table_cache = $table_name;
 		} else {
 			$this->table_cache = "cache_store";
-			if (! is_null($parent)) {
-				$this->table_cache = $this->fixTableName( $parent->getName() )."_".$this->table_cache;
+			if ( ! is_null($parent) ) {
+				$this->table_cache = $this->fix_table_name( $parent->get_name() ) . "_" . $this->table_cache;
 			}
 		}
 	}
@@ -52,7 +52,7 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * 
 	 */
-	private function fixTableName($table_name) {
+	private function fix_table_name($table_name) {
 		return str_ireplace("-", "_", $table_name );
 	}
 
@@ -61,27 +61,27 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * @return string 
 	 */
-	public function getOptionNameToCacheVersion() {
-		return $this->getTableName()."_db_version";
+	public function get_option_name_to_cache_version() {
+		return $this->get_table_name() . "_db_version";
 	}
 
 	/**
 	 * 
 	 * 
 	 */
-	public function getTableNameFull() {
+	public function get_table_name_full() {
 		global $wpdb;
-		return $this->getTableName($wpdb->prefix);
+		return $this->get_table_name($wpdb->prefix);
 	}
 
 	/**
 	 * 
 	 * 
 	 */
-	public function getTableName ($prefix = "") {
+	public function get_table_name($prefix = "") {
 		$return_data = $this->table_cache;
-		if (! empty($prefix) ) {
-			$return_data = $prefix.$return_data;
+		if ( ! empty($prefix) ) {
+			$return_data = $prefix . $return_data;
 		}
 		return $return_data;
 	}
@@ -90,7 +90,7 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * 
 	 */
-	public function setTableName ($name) {
+	public function set_table_name($name) {
 		$this->table_cache = $name;
 	}
 
@@ -98,10 +98,10 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * 
 	 */
-	private function createTable(){
+	private function create_table() {
 		$return_data = false;
-		if (! empty( $this->getTableName() ) ) {
-			if ( ! $this->isExistTable() ) {
+		if (! empty( $this->get_table_name() ) ) {
+			if ( ! $this->is_exist_table() ) {
 				global $wpdb;
 				$sql = sprintf("CREATE TABLE IF NOT EXISTS `%s` (
 									`id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -113,14 +113,14 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 									UNIQUE KEY `URL_UNIQUE` (`url`) USING BTREE, KEY `URL_INDEX` (`url`) USING BTREE
 								)
 								COLLATE %s", 
-						$this->getTableNameFull(),
+						$this->get_table_name_full(),
 						$wpdb->collate );
 
-				if( !function_exists('dbDelta') ){
+				if( ! function_exists('dbDelta') ) {
 					require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 				}
 				dbDelta( $sql );
-				$return_data = $this->isExistTable() ;
+				$return_data = $this->is_exist_table() ;
 			}
 		}
 		return $return_data;
@@ -156,24 +156,24 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * 
 	 */
-	private function dropTable() {
-		if ($this->isExistTable()) {
-			$query = sprintf("DROP TABLE IF EXISTS `%s`", $this->getTableNameFull() );
+	private function drop_table() {
+		if ($this->is_exist_table()) {
+			$query = sprintf("DROP TABLE IF EXISTS `%s`", $this->get_table_name_full() );
 			$this->wpdb_query($query);
 		}
-		return (! $this->isExistTable() );
+		return (! $this->is_exist_table() );
 	}
 
 	/**
 	 * 
 	 * 
 	 */
-	private function truncateTable() {
+	private function truncate_table() {
 		$return_data  = false;
-		if ($this->isExistTable()) {
-			$query = sprintf("TRUNCATE TABLE `%s`", $this->getTableNameFull() );
+		if ( $this->is_exist_table() ) {
+			$query = sprintf("TRUNCATE TABLE `%s`", $this->get_table_name_full() );
 			$this->wpdb_query( $query );
-			if ($this->count() == 0) {
+			if ( 0 === $this->count() ) {
 				$return_data = true;
 			}
 		}
@@ -184,9 +184,9 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * 
 	 */
-	private function isExistTable($table_name = null) {
+	private function is_exist_table($table_name = null) {
 		if ( is_null($table_name) ) {
-			$table_name = $this->getTableNameFull();
+			$table_name = $this->get_table_name_full();
 		}
 		
 		/**
@@ -198,7 +198,7 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 		$table_name_fix =  str_ireplace("_", "\_", $table_name );
 
 		$query = sprintf("SHOW TABLES LIKE '%s'", $table_name_fix );
-		if ( $this->wpdb_get_var($query) == $table_name ) {
+		if ( $this->wpdb_get_var($query) === $table_name ) {
 			return true;
 		}
 		return false;
@@ -208,11 +208,11 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * 
 	 */
-	private function getIdByUrl($url = null) {
+	private function get_id_by_URL($url = null) {
 		if ( is_null($url) ) {
-			$url = $this->getUrl();
+			$url = $this->get_URL();
 		}
-		$query = sprintf("SELECT id FROM `%s` WHERE url = '%s'", $this->getTableNameFull(), $url );
+		$query = sprintf("SELECT id FROM `%s` WHERE url = '%s'", $this->get_table_name_full(), $url );
 		$return_data = $this->wpdb_get_var( $query );
 		return $return_data;
 	}
@@ -221,12 +221,12 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * 
 	 */
-	private function isExistDataExpred() {
+	private function is_exist_data_expred() {
 		$return_data = false;
-		if ($this->isExistTable()) {
-			$query = sprintf("SELECT count(*) FROM `%s` WHERE `expire` > 0 and  now() > TIMESTAMPADD(SECOND, expire, time_update)", $this->getTableNameFull() );
+		if ( $this->is_exist_table() ) {
+			$query = sprintf("SELECT count(*) FROM `%s` WHERE `expire` > 0 and  now() > TIMESTAMPADD(SECOND, expire, time_update)", $this->get_table_name_full() );
 			$count = $this->wpdb_get_var( $query );
-			if ($count > 0) {
+			if ( $count > 0 ) {
 				$return_data = true;
 			}
 		}
@@ -237,10 +237,10 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	 * 
 	 * 
 	 */
-	private function cleanExpiredData() {
+	private function clean_expired_data() {
 		$return_data = false;
-		if ($this->isExistTable()) {
-			$table_name = $this->getTableNameFull();
+		if ( $this->is_exist_table() ) {
+			$table_name = $this->get_table_name_full();
 			$query = sprintf("DELETE FROM `%s` WHERE `id` IN ( SELECT ID FROM `%s` WHERE `expire` > 0 and  now() > TIMESTAMPADD(SECOND, expire, time_update) )", 
 							$table_name,
 							$table_name
@@ -257,8 +257,8 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	 */
 	public function count() {
 		$return_data = 0;
-		if ($this->isExistTable()) {
-			$query = sprintf("SELECT COUNT(*) FROM `%s`", $this->getTableNameFull() );
+		if ($this->is_exist_table()) {
+			$query = sprintf("SELECT COUNT(*) FROM `%s`", $this->get_table_name_full() );
 			$return_data = $this->wpdb_get_var( $query );
 		}
 		return settype($return_data, "integer");
@@ -267,33 +267,33 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	/**
 	 * 
 	 */
-	public function isCacheExist() {
-		return $this->isExistTable();
+	public function is_cache_exist() {
+		return $this->is_exist_table();
 	}
 
 	/**
 	 * 
 	 */
-	public function cleanCache () {
-		if (! $this->isExistTable()) {
-			$this->createTable();
+	public function clean_cache () {
+		if ( ! $this->is_exist_table() ) {
+			$this->create_table();
 		}
-		if ($this->count() > 0) {
-			$this->truncateTable();
+		if ( $this->count() > 0 ) {
+			$this->truncate_table();
 		}
-	}	
+	}
 
 	/**
 	 * 
 	 */
-	public function controlCacheStorage() {
-		if (! $this->checkCacheVersion()) {
-			if ($this->isExistTable()) {
-				$this->dropTable();
+	public function control_cache_storage() {
+		if ( ! $this->check_cache_version() ) {
+			if ( $this->is_exist_table() ) {
+				$this->drop_table();
 			}
-			if ( $this->createTable() ) {
-				$opt = $this->getOptionNameToCacheVersion();
-				$ver =  $this->getVersion();
+			if ( $this->create_table() ) {
+				$opt = $this->get_option_name_to_cache_version();
+				$ver = $this->get_version();
 				if ( get_option( $opt ) !== false ) {
 					update_option( $opt, $ver );
 				} else {
@@ -301,8 +301,8 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 				}
 			}
 		} else {
-			if ( $this->isExistDataExpred() ) {
-				$this->cleanExpiredData();
+			if ( $this->is_exist_data_expred() ) {
+				$this->clean_expired_data();
 			}
 		}
 	}
@@ -310,16 +310,16 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	/**
 	 * 
 	 */
-	public function isExist($url = null) {
-		$this->controlCacheStorage();
+	public function is_exist($url = null) {
+		$this->control_cache_storage();
 
 		$return_data = false;
 		if ( is_null($url) ) {
-			$url = $this->getUrl();
+			$url = $this->get_URL();
 		}
-		if (! $this->isUrlNull($url)) {
-			if ($this->getStatus()) {
-				$query = sprintf("SELECT COUNT(*) FROM `%s` WHERE url = '%s'", $this->getTableNameFull(), $url );
+		if ( ! $this->is_URL_null($url) ) {
+			if ( $this->get_status() ) {
+				$query = sprintf("SELECT COUNT(*) FROM `%s` WHERE url = '%s'", $this->get_table_name_full(), $url );
 				$num = $this->wpdb_get_var( $query );
 				if ($num > 0 ) {
 					$return_data = true;
@@ -332,35 +332,35 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	/**
 	 * 
 	 */
-	public function set ($data, $url = null) {
-		$this->controlCacheStorage();
+	public function set($data, $url = null) {
+		$this->control_cache_storage();
 
 		$return_data = false;
 		if ( is_null($url) ) {
-			$url = $this->getUrl();
+			$url = $this->get_URL();
 		}
-		if (! $this->isUrlNull($url)) {
-			if ($this->getStatus()) {
+		if (! $this->is_URL_null($url)) {
+			if ($this->get_status()) {
 				
 				$data = json_encode( $data );
 
-				if (! $this->isExist($url)) {
+				if (! $this->is_exist($url)) {
 					$query = sprintf("INSERT INTO `%s` (`id`, `time_update`, `expire`, `url`, `data`) VALUES (NULL, NOW(), '%s', '%s', '%s')", 
-								$this->getTableNameFull(),
-								$this->getExpiration(),
+								$this->get_table_name_full(),
+								$this->get_expiration(),
 								$url,
 								$data
 							);
 				} else {
 					$query = sprintf("UPDATE `%s` SET `time_update` = NOW(), `data` = '%s' WHERE url = '%s'", 
-								$this->getTableNameFull(),
+								$this->get_table_name_full(),
 								$data,
 								$url
 							);
 				}
 				$this->wpdb_query($query);
 
-				if ($this->isExist($url)) {
+				if ( $this->is_exist($url) ) {
 					//TODO: No se controla si UPDATE ha funcionado bien.
 					$return_data = true;
 				}
@@ -373,16 +373,16 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	 * 
 	 */
 	public function get($url = null) {
-		$this->controlCacheStorage();
+		$this->control_cache_storage();
 
 		$return_data = "";
 		if ( is_null($url) ) {
-			$url = $this->getUrl();
+			$url = $this->get_URL();
 		}
-		if (! $this->isUrlNull($url)) {
-			if ($this->getStatus()) {
-				if ($this->isExist($url)) {
-					$query = sprintf("SELECT data FROM `%s` WHERE url = '%s'",  $this->getTableNameFull(), $url );
+		if ( ! $this->is_URL_null($url) ) {
+			if ( $this->get_status() ) {
+				if ( $this->is_exist($url) ) {
+					$query = sprintf("SELECT data FROM `%s` WHERE url = '%s'",  $this->get_table_name_full(), $url );
 					$return_data = $this->wpdb_get_var( $query );
 					$return_data = json_decode( $return_data );
 				}
@@ -394,19 +394,19 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	/**
 	 * 
 	 */
-	public function delete ($force = false, $url = null) {
-		$this->controlCacheStorage();
+	public function delete($force = false, $url = null) {
+		$this->control_cache_storage();
 
 		$return_data = false;
 		if ( is_null($url) ) {
-			$url = $this->getUrl();
+			$url = $this->get_URL();
 		}
-		if (! $this->isUrlNull($url)) {
-			if ( ($this->getStatus()) || ($force) ) {
-				if ($this->isExist($url)) {
-					$query = sprintf("DELETE FROM `%s` WHERE url = '%s'",  $this->getTableNameFull(), $url );
+		if ( ! $this->is_URL_null($url) ) {
+			if ( ( $this->get_status() ) || ( $force ) ) {
+				if ( $this->is_exist($url) ) {
+					$query = sprintf("DELETE FROM `%s` WHERE url = '%s'",  $this->get_table_name_full(), $url );
 					$return_data = $this->wpdb_query( $query );
-					if (! $this->isExist($url)) {
+					if ( ! $this->is_exist($url) ) {
 						$return_data = true;
 					}
 				}
@@ -415,17 +415,15 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 		return $return_data;
 	}
 
-
-
 	/**
 	 * 
 	 */
-	public function isExistID($id = null) {
+	public function is_exist_id($id = null) {
 		$return_data = false;
-		if (! is_null($id)) {
+		if ( ! is_null($id) ) {
 			$id = trim( $id );
 			if ( ! empty( $id ) ) {
-				$query = sprintf("SELECT count(*) FROM `%s` WHERE `id` = %s", $this->getTableNameFull(), $id );
+				$query = sprintf("SELECT count(*) FROM `%s` WHERE `id` = %s", $this->get_table_name_full(), $id );
 				$count = $this->wpdb_get_var( $query );
 				if ($count > 0) {
 					$return_data = true;
@@ -438,14 +436,14 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	/**
 	 * 
 	 */
-	public function removeId($id = "") {
+	public function remove_id($id = "") {
 		$return_data = false;
-		if ($this->isExistID($id)) {
+		if ( $this->is_exist_id($id) ) {
 			$id = trim( $id );
-			$query = sprintf("DELETE FROM `%s` WHERE `id` = %s", $this->getTableNameFull(), $id );
+			$query = sprintf("DELETE FROM `%s` WHERE `id` = %s", $this->get_table_name_full(), $id );
 			$this->wpdb_query($query);
 
-			if (! $this->isExistID($id)) { 
+			if ( ! $this->is_exist_id($id) ) { 
 				$return_data = true;
 			}
 		}
@@ -455,8 +453,8 @@ class CacheStoreTable extends CacheStoreBase implements ICacheStore {
 	/**
 	 * 
 	 */
-	public function getAllList (){
-		$query = sprintf("SELECT id, time_update, TIMESTAMPADD(SECOND, expire, time_update) as time_expire, expire, url FROM `%s`", $this->getTableNameFull() );
+	public function get_all_list() {
+		$query = sprintf("SELECT id, time_update, TIMESTAMPADD(SECOND, expire, time_update) as time_expire, expire, url FROM `%s`", $this->get_table_name_full() );
 		return $this->wpdb_get_results($query);
 	}
 

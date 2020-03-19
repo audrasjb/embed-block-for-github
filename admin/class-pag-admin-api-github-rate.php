@@ -14,26 +14,26 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-require_once ('IPage.php' );
-require_once ('PageBase.php' );
+require_once ( __DIR__ . '/../includes/Pages/interface-page.php' );
+require_once ( __DIR__ . '/../includes/Pages/class-page-base.php' );
 
 use EmbedBlockForGithub\Pages\IPage;
-use EmbedBlockForGithub\Pages\PageBase;
+use EmbedBlockForGithub\Pages\Page_Base;
 
-class PagAdminApiGitHubRate extends PageBase implements IPage {
+class Pag_Admin_API_GitHub_Rate extends Page_Base implements IPage {
 
 	private $js_acction;
 
 	public function __construct($parent = null, $auto_action = false) {
 		parent::__construct( $parent );
-		$this->setParentSlug ( 'embed-block-for-github-admin' );
-		$this->setPageTitle ( esc_html__( 'WordPress Embed Block for GitHub - API GitHub Rate Limit', $this->getNameParent() ) );
-		$this->setMenuTitle ( esc_html__( 'API GitHub Rate Limit', $this->getNameParent() ) );
-		$this->setMenuSlug ( 'embed-block-for-github-admin-api-github-rate' );
-		$this->setFunction ( array($this, 'createPage') );
+		$this->set_parent_slug 	( 'embed-block-for-github-admin' );
+		$this->set_page_title 	( esc_html__( 'WordPress Embed Block for GitHub - API GitHub Rate Limit', $this->get_name_parent() ) );
+		$this->set_menu_title 	( esc_html__( 'API GitHub Rate Limit', $this->get_name_parent() ) );
+		$this->set_menu_slug 	( 'embed-block-for-github-admin-api-github-rate' );
+		$this->set_function 	( array($this, 'create_page') );
 
-		$this->js_acction['root'] =  str_ireplace("-", "_", $this->getMenuSlug());
-		$this->js_acction['ajax_get'] = $this->js_acction['root']."-get_ajax";
+		$this->js_acction['root'] 		= str_ireplace("-", "_", $this->get_menu_slug() );
+		$this->js_acction['ajax_get'] 	= $this->js_acction['root']."-get_ajax";
 
 		if ($auto_action) {
 			$this->add_action_all();
@@ -63,7 +63,7 @@ class PagAdminApiGitHubRate extends PageBase implements IPage {
 		 * https://api.github.com/rate_limit
 		 */
 		check_ajax_referer( 'check_nonce-'.$this->js_acction['ajax_get'], 'security' );
-		$return = $this->parent->api->getRate();
+		$return = $this->parent->api->get_rate();
 		wp_send_json($return);
 		wp_die();
 	}
@@ -71,15 +71,15 @@ class PagAdminApiGitHubRate extends PageBase implements IPage {
 	/**
 	 * 
 	 */
-    public function createPage() {
+    public function create_page() {
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'API GitHub Rate Limit - Embed Block for GitHub', $this->getNameParent() ); ?></h1>
+			<h1><?php echo esc_html__( 'API GitHub Rate Limit - Embed Block for GitHub', $this->get_name_parent() ); ?></h1>
 
-			<h2><?php echo esc_html__( 'Rate Status', $this->getNameParent() ); ?></h2>
+			<h2><?php echo esc_html__( 'Rate Status', $this->get_name_parent() ); ?></h2>
 			<div id="embed_block_for_github_admin_api_github_rate_info_rate">Loading...</div>
 
-			<h2><?php echo esc_html__( 'Resources Status', $this->getNameParent() ); ?></h2>
+			<h2><?php echo esc_html__( 'Resources Status', $this->get_name_parent() ); ?></h2>
 			<div id="embed_block_for_github_admin_api_github_rate_info_resources">Loading...</div>			
 		</div>
 		<?php

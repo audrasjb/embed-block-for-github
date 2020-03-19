@@ -14,26 +14,26 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-require_once ('IPage.php' );
-require_once ('PageBase.php' );
+require_once ( __DIR__ . '/../includes/Pages/interface-page.php' );
+require_once ( __DIR__ . '/../includes/Pages/class-page-base.php' );
 
 use EmbedBlockForGithub\Pages\IPage;
-use EmbedBlockForGithub\Pages\PageBase;
+use EmbedBlockForGithub\Pages\Page_Base;
 
-class PagAdminCache extends PageBase implements IPage {
+class Pag_Admin_Cache extends Page_Base implements IPage {
 
 	private $js_acction;
 
 	public function __construct($parent = null, $auto_action = false) {
 		parent::__construct( $parent );
-		$this->setParentSlug ( 'embed-block-for-github-admin' );
-		$this->setPageTitle ( esc_html__( 'WordPress Embed Block for GitHub - Cache Manager', $this->getNameParent() ) );
-		$this->setMenuTitle ( esc_html__( 'Cache Manager', $this->getNameParent() ) );
-		$this->setMenuSlug ( 'embed-block-for-github-admin-cache' );
-		$this->setFunction ( array($this, 'createPage') );
+		$this->set_parent_slug 	( 'embed-block-for-github-admin' );
+		$this->set_page_title 	( esc_html__( 'WordPress Embed Block for GitHub - Cache Manager', $this->get_name_parent() ) );
+		$this->set_menu_title 	( esc_html__( 'Cache Manager', $this->get_name_parent() ) );
+		$this->set_menu_slug 	( 'embed-block-for-github-admin-cache' );
+		$this->set_function 	( array($this, 'create_page') );
 		
-		$this->js_acction['root'] =  str_ireplace("-", "_", $this->getMenuSlug());
-		$this->js_acction['ajax_get'] = $this->js_acction['root']."-get_ajax";
+		$this->js_acction['root'] 			= str_ireplace("-", "_", $this->get_menu_slug() );
+		$this->js_acction['ajax_get'] 		= $this->js_acction['root']."-get_ajax";
 		$this->js_acction['ajax_remove_id'] = $this->js_acction['root']."-remove_id_ajax";
 
 		if ($auto_action) {
@@ -57,14 +57,14 @@ class PagAdminCache extends PageBase implements IPage {
 			'check_nonce_remove'	=> $this->wp_create_nonce( 'check_nonce-'.$this->js_acction['ajax_remove_id'] )
 		) );
 
-		wp_enqueue_script( 'jquery-datatables-js', $this->parent->getURL( 'admin/js/jquery.dataTables.js'), array('jquery') );
-		wp_register_style( 'jquery-datatables-css', $this->parent->getURL('admin/css/jquery.dataTables.css'), array() );
+		wp_enqueue_script( 'jquery-datatables-js', $this->parent->get_URL( 'admin/js/jquery.dataTables.js'), array('jquery') );
+		wp_register_style( 'jquery-datatables-css', $this->parent->get_URL('admin/css/jquery.dataTables.css'), array() );
 		wp_enqueue_style( 'jquery-datatables-css' );
 	}
 
 	public function ajax_json_data() {
 		check_ajax_referer( 'check_nonce-'.$this->js_acction['ajax_get'], 'security' );
-		$return['data'] = $this->parent->cache->getAllList();
+		$return['data'] = $this->parent->cache->get_all_list();
 		wp_send_json($return);
 		wp_die();
 	}
@@ -78,20 +78,20 @@ class PagAdminCache extends PageBase implements IPage {
 		$id = $_REQUEST['remove_id'];
 
 		if (empty($id)) {
-			$return['code'] = 100;
-			$return['message'] = "Not detected ID!";
+			$return['code'] 	= 100;
+			$return['message'] 	= "Not detected ID!";
 			
 		} else {
-			if ( ! $this->parent->cache->isExistID($id) ) {
-				$return['code'] = 200;
-				$return['message'] = "ID Not exist in DataBase!";
+			if ( ! $this->parent->cache->is_exist_id($id) ) {
+				$return['code'] 	= 200;
+				$return['message'] 	= "ID Not exist in DataBase!";
 			} else {
-				if (! $this->parent->cache->removeId($id)) {
-					$return['code'] = 300;
-					$return['message'] = "Error in the process the remove ID!";
+				if (! $this->parent->cache->remove_id($id)) {
+					$return['code'] 	= 300;
+					$return['message'] 	= "Error in the process the remove ID!";
 				} else {
-					$return['code'] = 0;
-					$return['message'] = "OK";
+					$return['code'] 	= 0;
+					$return['message'] 	= "OK";
 				}
 			}
 		}
@@ -99,16 +99,29 @@ class PagAdminCache extends PageBase implements IPage {
 		wp_die();
 	}
 
-    public function createPage()
-    {
+    public function create_page() {
+		/*
+		$screen = get_current_screen();
+		if ( empty($screen) ) {
+			echo "-----------------------------------screen: IS NULL!!!<br>";
+		} else {
+			echo '<textarea  rows="15" cols="150">';
+			print_r($screen);
+			echo "</textarea>";
+			//echo "------------------------------------screen:".$screen."<br>";
+		}
+		*/
+		
+
+
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'Cache Manager - Embed Block for GitHub', $this->getNameParent() ); ?></h1>
+			<h1><?php echo esc_html__( 'Cache Manager - Embed Block for GitHub', $this->get_name_parent() ); ?></h1>
 			<br />
 			<p>Refres in: <span id="count_seconds_refres_table" ></span> Seconds</p>
 			<br />
 			<?php
-				if ( get_class($this->parent->cache) !== "EmbedBlockForGithub\Cache\CacheStoreTable" ) {
+				if ( get_class($this->parent->cache) !== "EmbedBlockForGithub\Cache\Cache_Store_Table" ) {
 					echo "<p>Only support cache Table mode!</p>";
 					//echo "<p>Actual mode (".get_class($this->parent->cache).")</p>";
 				} else {

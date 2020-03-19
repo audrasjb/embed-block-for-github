@@ -16,8 +16,8 @@ if ( ! defined( 'WPINC' ) ) {
 
 interface IPage {
 
-    public function addMenuItem();
+    public function add_menu_item();
 
-    public function createPage();
+    public function create_page();
 
 }

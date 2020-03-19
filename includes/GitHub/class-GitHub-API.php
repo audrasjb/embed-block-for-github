@@ -16,23 +16,23 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-class GitHubAPI {
-
-	private $parent = null;
-	public $hooks_customMessageGitHub = null;
+class GitHub_API {
 
 	private static $instance;
+	private $parent = null;
+
+	public $hooks_customMessageGitHub = null;
 
 	private $github_api = "https://api.github.com";
 
-	private $url = "";
-	private $owner = "";
+	private $url 		= "";
+	private $owner 		= "";
 	private $repository = "";
-	private $type_url = "";
-	private $error = "";
+	private $type_url 	= "";
+	private $error 		= "";
 
-	public $access_token = null;
-	public $access_token_user = null;
+	public $access_token 		= null;
+	public $access_token_user 	= null;
 
 
 	public static function get_instance($parent = null) {
@@ -44,7 +44,7 @@ class GitHubAPI {
 	
 	public function __construct($parent = null) {
 		$this->parent = (object)array();
-		if (! is_null($parent)) {
+		if ( ! is_null($parent) ) {
 			$this->parent = $parent;
 		}
 	}
@@ -54,15 +54,15 @@ class GitHubAPI {
 	 * 
 	 * @return bool True an error has occurred, False no error detected.
 	 */
-	public function isSetError(){
-		return ( ! empty($this->getError()) );
+	public function is_set_error() {
+		return ( ! empty( $this->get_error() ) );
 	}
 
 	/**
 	 * Get msg error
 	 * 
 	 */
-	public function getError() {
+	public function get_error() {
 		return $this->error;
 	}
 
@@ -70,7 +70,7 @@ class GitHubAPI {
 	 * Get owner.
 	 * 
 	 */
-	public function getOwner(){
+	public function get_owner() {
 		return $this->owner;
 	}
 
@@ -78,7 +78,7 @@ class GitHubAPI {
 	 * Get repository.
 	 * 
 	 */
-	public function getRepository(){
+	public function get_repository() {
 		return $this->repository;
 	}
 
@@ -86,7 +86,7 @@ class GitHubAPI {
 	 * Get Type URL, Repo, Info User, etc... 
 	 *
 	 */
-	public function getTypeURL() {
+	public function get_type_URL() {
 		return $this->type_url;
 	}
 
@@ -94,7 +94,7 @@ class GitHubAPI {
 	 * Get URL.
 	 * 
 	 */
-	public function getURL() {
+	public function get_URL() {
 		return $this->url;
 	}
 
@@ -104,14 +104,14 @@ class GitHubAPI {
 	 * @param string URL
 	 * @return bool True ok, False error.
 	 */
-	public function setURL($url) {
-		$this->cleanData();
+	public function set_URL($url) {
+		$this->clean_data();
 		$this->error = "";
-		$this->url = $url;
-		if ($this->validateURL() == 0) {
-			$this->getDataByURL();
+		$this->url 	 = $url;
+		if (0 === $this->validate_URL()) {
+			$this->get_data_by_URL();
 		}
-		return ( ! $this->isSetError() );
+		return ( ! $this->is_set_error() );
 	}
 
     /**
@@ -119,24 +119,24 @@ class GitHubAPI {
 	 * 
 	 * @return integer 0 ok, other number is error code.
 	 */
-	private function validateURL() {
-		$url = $this->getURL();
+	private function validate_URL() {
+		$url = $this->get_URL();
 		$return_data = 0;
 		switch(True) {
 			case ( '' === trim( $url ) ):
 				$this->error = "url_is_null";
 				$return_data = 1;
-			break;
+				break;
 
-			case (! filter_var( $url, FILTER_VALIDATE_URL ) ):
+			case ( ! filter_var( $url, FILTER_VALIDATE_URL ) ):
 				$this->error = "url_not_valid";
 				$return_data = 2;
-			break;
+				break;
 			
 			case ( ! preg_match('/^(?:https|http):\/\/?(?:www.)?github.com\//', $url) ):
 				$this->error = "url_not_github";
 				$return_data = 3;
-			break;
+				break;
 		}
 		return $return_data;
 	}
@@ -146,11 +146,13 @@ class GitHubAPI {
 	 * 
 	 * @return bool True ok, False error.
 	 */
-	private function getDataByURL() {
-		$this->cleanData();
-		$url = $this->getURL();
-		$error = array();
+	private function get_data_by_URL() {
+		$this->clean_data();
+		
+		$url 		 = $this->get_URL();
+		$error 		 = array();
 		$return_data = true;
+
 		if ( empty($url) ) {
 			$this->error = 'url_is_null';
 			$return_data = false;
@@ -172,7 +174,7 @@ class GitHubAPI {
 						$error['owner_is_null'] = true;
 					}
 			}
-			if ( count ( $error ) == 0 ) {
+			if ( 0 === count ( $error ) ) {
 				switch ( count($arr_slug) ) {
 					case 1:
 						/* User */
@@ -201,27 +203,34 @@ class GitHubAPI {
 	 * 
 	 * 
 	 */
-	private function cleanData(){
-		$this->type_url = "";
-		$this->owner = "";
-		$this->repository = "";
+	private function clean_data() {
+		$this->type_url 	= "";
+		$this->owner 		= "";
+		$this->repository 	= "";
 	}
 
 	/**
 	 * Get the URL of the GitHub API with the data obtained from the URL provided.
 	 * 
 	 */
-	private function getGitHubURL(){
+	private function get_GitHub_URL( $type = "auto" ) {
 		$return_data = "";
-		switch ($this->getTypeURL())
-		{
-			case "user":
-				$return_data = $this->github_api.'/users/'.$this->owner;
+		switch ( $type ) {
+			case "rate_limit":
+				$return_data = $this->github_api . '/rate_limit';
 				break;
 
-			case "repo":
-				$return_data = $this->github_api.'/repos/'.$this->owner.'/'.$this->repository;
-				break;			
+			case "auto":
+				switch ( $this->get_type_URL() ) {
+					case "user":
+						$return_data = $this->github_api . '/users/' . $this->get_owner();
+						break;
+		
+					case "repo":
+						$return_data = $this->github_api . '/repos/' . $this->get_owner() . '/' . $this->repository;
+						break;			
+				}
+				break;
 		}
 		return $return_data;
 	}
@@ -230,12 +239,12 @@ class GitHubAPI {
 	 * 
 	 * 
 	 */
-	public function getData() {
+	public function get_data() {
 		$return_data = NULL;
-		if (! $this->isSetError()) {
-			$url_api = $this->getGitHubURL();
-			if (! empty( $url_api ) ) {
-				$response = $this->callAPI( $url_api );
+		if ( ! $this->is_set_error() ) {
+			$url_api = $this->get_GitHub_URL();
+			if ( ! empty( $url_api ) ) {
+				$response = $this->call_API( $url_api );
 				$return_data = json_decode( wp_remote_retrieve_body( $response ) );
 				if ( is_wp_error( $results ) || ! isset( $results['response']['code'] ) || $results['response']['code'] != '200' ) {
 					//$error = "info_no_available";
@@ -247,7 +256,7 @@ class GitHubAPI {
 				if ( isset( $return_data->message ) )
 				{
 					$this->error = 'get_error_from_github';
-					if (! is_null( $this->hooks_customMessageGitHub) ) {
+					if ( ! is_null( $this->hooks_customMessageGitHub) ) {
 						$return_data->message = call_user_func($this->hooks_customMessageGitHub, $return_data->message, $return_data->documentation_url);
 					}
 				}
@@ -256,7 +265,10 @@ class GitHubAPI {
 		return $return_data;
 	}
 
-	public function callAPI($url) {
+	/**
+	 * 
+	 */
+	public function call_API($url) {
 		$args = array();
 		$args['user-agent'] = 'Plugin WordPress - embed-block-for-github - https://github.com/vsc55/embed-block-for-github';
 		if ( (! empty( $this->access_token_user) ) && (! empty($this->access_token) ) ) {
@@ -272,11 +284,14 @@ class GitHubAPI {
 		return $results;
 	}
 
-
-	public function getRate($json_decode = true) {
-		$data = $this->callAPI($this->github_api.'/rate_limit') ;
+	/**
+	 * 
+	 */
+	public function get_rate($json_decode = true) {
+		$url_api = $this->get_GitHub_URL("rate_limit");
+		$data = $this->call_API( $url_api );
 		if ($json_decode) {
-			$data = json_decode(wp_remote_retrieve_body( $data ));
+			$data = json_decode( wp_remote_retrieve_body( $data ) );
 		}
 		return $data;
 	}
