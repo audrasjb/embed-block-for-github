@@ -105,29 +105,15 @@ class Pag_Admin_Cache extends Page_Base implements IPage {
 	}
 
     public function create_page() {
-		/*
-		$screen = get_current_screen();
-		if ( empty($screen) ) {
-			echo "-----------------------------------screen: IS NULL!!!<br>";
-		} else {
-			echo '<textarea  rows="15" cols="150">';
-			print_r($screen);
-			echo "</textarea>";
-			//echo "------------------------------------screen:".$screen."<br>";
-		}
-		*/
-		
-
-
+		//TODO: Pending implement WP_List_Table
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html__( 'Cache Manager - Embed Block for GitHub', $this->get_name_parent() ); ?></h1>
 			<br />
-			<p>Refres in: <span id="count_seconds_refres_table" ></span> Seconds</p>
-			<br />
+			
 			<?php
 				if ( get_class($this->parent->cache) !== "EmbedBlockForGithub\Cache\Cache_Store_Table" ) {
-					echo "<p>Only support cache Table mode!</p>";
+					echo "<p>" . esc_html__( 'Only support cache Table mode!', $this->get_name_parent() ) . "</p>";
 					//echo "<p>Actual mode (".get_class($this->parent->cache).")</p>";
 				} else {
 					//echo '<div id="embed_block_for_github_admin_cache_table">Loading...</div>';
@@ -136,25 +122,14 @@ class Pag_Admin_Cache extends Page_Base implements IPage {
 <table id="embed_block_for_github_admin_cache_table" class="display" cellspacing="0" width="100%">
 	<thead>
 		<tr>
-			<th width="40px">ID</th>
-			<th width="120px">time_update</th>
-			<th width="120px">time_expire</th>
-			<th width="40px">expire</th>
-			<th width="">url</th>
-			<th width="100px">Actions</th>
+			<th width="40px"><?php echo esc_html__( 'ID', $this->get_name_parent() ); ?></th>
+			<th width="120px"><?php echo esc_html__( 'Time Update', $this->get_name_parent() ); ?> </th>
+			<th width="120px"><?php echo esc_html__( 'Time Expire', $this->get_name_parent() ); ?> </th>
+			<th width="40px"><?php echo esc_html__( 'Expire', $this->get_name_parent() ); ?> </th>
+			<th width=""><?php echo esc_html__( 'URL', $this->get_name_parent() ); ?></th>
+			<th width="100px"><?php echo esc_html__( 'Actions', $this->get_name_parent() ); ?> </th>
 		</tr>
 	</thead>
-
-	<tfoot>
-		<tr>
-			<th>ID</th>
-			<th>time_update</th>
-			<th>time_expire</th>
-			<th>expire</th>
-			<th>url</th>
-			<th>Actions</th>
-		</tr>
-	</tfoot>
 </table>
 
 					<?php

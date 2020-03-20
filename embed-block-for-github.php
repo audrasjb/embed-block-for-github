@@ -195,7 +195,10 @@ class Embed_Block_For_GitHub extends Plugin_Base {
 		wp_enqueue_script(
 			"embed_block_for_github_admin_ajax", 
 			$this->get_URL( 'admin/js/admin-ajax.js'), 
-			array('jquery'),
+			array(
+				'jquery', 
+				'wp-i18n',
+			),
 			$this->get_version_file('admin/js/admin-ajax.js'),
 		);
 	}

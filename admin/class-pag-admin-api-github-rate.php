@@ -81,10 +81,10 @@ class Pag_Admin_API_GitHub_Rate extends Page_Base implements IPage {
 			<h1><?php echo esc_html__( 'API GitHub Rate Limit - Embed Block for GitHub', $this->get_name_parent() ); ?></h1>
 
 			<h2><?php echo esc_html__( 'Rate Status', $this->get_name_parent() ); ?></h2>
-			<div id="embed_block_for_github_admin_api_github_rate_info_rate">Loading...</div>
+			<div id="embed_block_for_github_admin_api_github_rate_info_rate"><?php echo esc_html__( 'Loading...', $this->get_name_parent() ); ?></div>
 
 			<h2><?php echo esc_html__( 'Resources Status', $this->get_name_parent() ); ?></h2>
-			<div id="embed_block_for_github_admin_api_github_rate_info_resources">Loading...</div>			
+			<div id="embed_block_for_github_admin_api_github_rate_info_resources"><?php echo esc_html__( 'Loading...', $this->get_name_parent() ); ?></div>			
 		</div>
 		<?php
 	}

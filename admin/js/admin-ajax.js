@@ -1,6 +1,6 @@
 jQuery(document).ready( function () {
     embed_block_for_github_admin            = new Embed_Block_For_GitHub();
-    embed_block_for_github_admin.debug      = true;
+    //embed_block_for_github_admin.debug      = true;
     embed_block_for_github_admin.pagenow    = pagenow;
     if (typeof embed_block_for_github__ajax_var !== 'undefined') {
         embed_block_for_github_admin.ajax_var = embed_block_for_github__ajax_var;
@@ -8,9 +8,7 @@ jQuery(document).ready( function () {
     embed_block_for_github_admin.run_sec();
 });
 
-//TODO: Pending i18n
 //TODO: Pending Style Table
-
 
 class Embed_Block_For_GitHub {
     
@@ -18,6 +16,7 @@ class Embed_Block_For_GitHub {
         this._debug = false;
         this._ajax_var = null;
         this._timer_datatable_refres;
+        this.i18n = window.wp.i18n;
     }
 
     get debug() {
@@ -116,6 +115,7 @@ class Embed_Block_For_GitHub {
 
     api_github_rate_update_info() {
         var self = this;
+        var i18n = this.i18n;
 
         if ( this.ajax_var_is_null ) {
             console.log("admin-ajax > Embed_Block_For_GitHub > api_github_rate_update_info() > ajax_var_is_null = TRUE !!");
@@ -151,10 +151,16 @@ class Embed_Block_For_GitHub {
                 var remaining = result.rate.remaining;
                 var rest = (limit - remaining);
                 var porcent_rest = ((100 / limit) * remaining).toFixed(0);
-                var html = `<p>Rate: ${remaining}/${limit} (${porcent_rest}% remaining)</p>`;
+                var html = '<p>' + sprintf( i18n.__( 'Rate: %1$s/%2$s (%3$s%% remaining)' ), remaining, limit, porcent_rest) + '</p>';
                 
-                
-                var head_array = ["resources", "limit", "remaining", "rest", "porcent_rest", ""];
+                var head_array = [
+                    i18n.__( 'Resources' ),
+                    i18n.__( 'Query Limit' ),
+                    i18n.__( 'Query Remaining' ),
+                    i18n.__( 'Query Used' ),
+                    i18n.__( 'Percentage Remaining' ), 
+                    "",
+                ];
                 var table = '<table>';
                 table += '<tbody>';
                 table += '<tr>';
@@ -170,9 +176,9 @@ class Embed_Block_For_GitHub {
                     table += '<tr>';
                     table += '<td width="200px">' + key + '</td>';
                     table += '<td width="100px">' + limit + '</td>';
-                    table += '<td width="100px">' + remaining + '</td>';
-                    table += '<td width="50px">' + rest + '</td>';
-                    table += '<td width="100px">' + porcent_rest + '%</td>';
+                    table += '<td width="150px">' + remaining + '</td>';
+                    table += '<td width="100px">' + rest + '</td>';
+                    table += '<td width="200px">' + porcent_rest + '%</td>';
                     table += '<td width="auto"></td>';
                     table += '</tr>';
                 });
@@ -191,8 +197,8 @@ class Embed_Block_For_GitHub {
             },
             error: function(result) {
                 var array_data = [];
-                array_data['#' + id_info_rate]      = "Error: " + result.statusText;
-                array_data['#' + id_info_resources] = "Error: " + result.statusText;
+                array_data['#' + id_info_rate]      = sprintf( i18n.__( 'Error: %1$s' ), result.statusText);
+                array_data['#' + id_info_resources] = sprintf( i18n.__( 'Error: %1$s' ), result.statusText);
                 self.update_html( array_data );
 
                 if ( self.debug ) {
@@ -206,24 +212,11 @@ class Embed_Block_For_GitHub {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     cache_info_update() {
         //https://datatables.net/examples/ajax/null_data_source.html
 
         var self = this;
+        var i18n = this.i18n;
 
         if ( this.ajax_var_is_null ) {
             console.log("admin-ajax > Embed_Block_For_GitHub > cache_info_update() > ajax_var_is_null = TRUE !!");
@@ -260,7 +253,7 @@ class Embed_Block_For_GitHub {
                 {data:"url"},
                 {
                     data: null,
-                    defaultContent: '<button>Delete</button>'
+                    defaultContent: '<button>' + i18n.__( 'Delete' ) + '</button>'
                 }
             ],
     
@@ -282,7 +275,7 @@ class Embed_Block_For_GitHub {
     
             clearInterval(self._timer_datatable_refres);
     
-            var r = confirm("Are you sure you wish to remove this record (" + id_remove + ")?");
+            var r = confirm( sprintf( i18n.__( 'Are you sure you wish to remove this record (%1$s)?' ), id_remove) );
             if (r == true) {
                 jQuery.ajax({
                     type: "POST",
@@ -310,7 +303,7 @@ class Embed_Block_For_GitHub {
                             console.log("admin-ajax > Embed_Block_For_GitHub > cache_info_update() > REMOVE ERR!!");
                             console.log(result);
                         }
-                        alert("Error:" + result.statusText);
+                        alert( sprintf( i18n.__( 'Error: %1$s' ), result.statusText) );
                     }
                 });
             }
@@ -332,7 +325,3 @@ class Embed_Block_For_GitHub {
     }
 
 }
-
-
-
-
