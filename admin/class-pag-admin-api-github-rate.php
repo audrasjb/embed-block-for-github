@@ -48,10 +48,14 @@ class Pag_Admin_API_GitHub_Rate extends Page_Base implements IPage {
 	 * 
 	 */
 	public function action_admin_enqueue_scripts() {
-		wp_localize_script( 'embed_block_for_github_admin_ajax', 'ajax_var', array(
+		wp_localize_script( 'embed_block_for_github_admin_ajax', 'embed_block_for_github__ajax_var', array(
 			'url'    		=> admin_url( 'admin-ajax.php' ),
 			'action' 		=> $this->js_acction['ajax_get'],
-			'check_nonce' 	=> $this->wp_create_nonce( 'check_nonce-'.$this->js_acction['ajax_get'] )
+			'check_nonce' 	=> $this->wp_create_nonce( 'check_nonce-'.$this->js_acction['ajax_get'] ),
+			'css_id'		=> array (
+				'info_rate' 	 => "embed_block_for_github_admin_api_github_rate_info_rate",
+        		'info_resources' => "embed_block_for_github_admin_api_github_rate_info_resources",
+			),
 		) );
 	}
 
