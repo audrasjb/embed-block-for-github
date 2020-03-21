@@ -54,7 +54,8 @@ class Pag_Admin_API_GitHub_Rate extends Page_Base implements IPage {
 			'check_nonce' 	=> $this->wp_create_nonce( 'check_nonce-'.$this->js_acction['ajax_get'] ),
 			'css_id'		=> array (
 				'info_rate' 	 => "embed_block_for_github_admin_api_github_rate_info_rate",
-        		'info_resources' => "embed_block_for_github_admin_api_github_rate_info_resources",
+				'info_resources' => "embed_block_for_github_admin_api_github_rate_info_resources",
+				'info_refres'	 => "embed_block_for_github_admin_info_count_refres",
 			),
 		) );
 	}
@@ -79,6 +80,8 @@ class Pag_Admin_API_GitHub_Rate extends Page_Base implements IPage {
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html__( 'API GitHub Rate Limit - Embed Block for GitHub', $this->get_name_parent() ); ?></h1>
+
+			<p id="embed_block_for_github_admin_info_count_refres"><?php echo esc_html__( 'Loading...', $this->get_name_parent() ); ?></p>
 
 			<h2><?php echo esc_html__( 'Rate Status', $this->get_name_parent() ); ?></h2>
 			<div id="embed_block_for_github_admin_api_github_rate_info_rate"><?php echo esc_html__( 'Loading...', $this->get_name_parent() ); ?></div>

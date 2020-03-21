@@ -59,6 +59,7 @@ class Pag_Admin_Cache extends Page_Base implements IPage {
 			'locate'				=> "es-ES",
 			'css_id'		=> array (
 				'info_table' 	 => "embed_block_for_github_admin_cache_table",
+				'info_refres'	 => "embed_block_for_github_admin_info_count_refres",
 			),
 		) );
 
@@ -109,7 +110,8 @@ class Pag_Admin_Cache extends Page_Base implements IPage {
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html__( 'Cache Manager - Embed Block for GitHub', $this->get_name_parent() ); ?></h1>
-			<br />
+			
+			<p id="embed_block_for_github_admin_info_count_refres"><?php echo esc_html__( 'Loading...', $this->get_name_parent() ); ?></p>
 			
 			<?php
 				if ( get_class($this->parent->cache) !== "EmbedBlockForGithub\Cache\Cache_Store_Table" ) {
