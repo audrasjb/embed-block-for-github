@@ -127,7 +127,7 @@ class Embed_Block_For_GitHub {
             if (self.count_refres === 0) {
                 array_data['#' + id] = i18n.__( 'Updating...' );
             } else {
-                array_data['#' + id] = sprintf( i18n.__( 'Refres in %1$s seconsd' ), self.count_refres);
+                array_data['#' + id] = sprintf( i18n.__( 'Refres in %1$s second' ), self.count_refres);
             }
             self.update_html( array_data );
 
