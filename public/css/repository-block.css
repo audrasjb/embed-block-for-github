@@ -1,0 +1,337 @@
+.ebg-br-wrapper {
+	margin: 0px 0px 0px 0px;
+	padding: 0;
+}
+
+
+/*
+	CSS > TOOLS
+*/
+.ebg-br-wrapper .ebg-br-editmode {
+	display: none;
+}
+
+.ebg-br-wrapper .ebg-br-hide {
+	display: none !important;
+}
+
+
+/*
+	CSS > Body
+*/
+.ebg-br-wrapper .ebg-br-border {
+	margin: 1em 0 1.5em 0;
+	padding: 1em;
+	box-shadow: 10px 10px 15px 0px rgba(0,0,0,0.75);
+	border-radius: .5em;
+}
+
+.ebg-br-wrapper .ebg-br-body {
+	position: relative;
+	display: flex;
+}
+
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-off .ebg-br-border {
+	border: 1px solid #eee;
+}
+
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-on .ebg-br-border {
+	border: 1px solid rgba(94,9,9,1);
+}
+
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-off .ebg-br-background-color {
+	background-color: whitesmoke;
+	/*color: black;*/
+}
+
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-on .ebg-br-background-color {
+	background-color: #333333;
+	/*color: whitesmoke;*/
+}
+
+
+/*
+	CSS > Icon and Logo GitHub
+*/
+
+.ebg-br-wrapper .ebg-br-logo.ebg-br-icon-github,
+.ebg-br-wrapper .ebg-br-logo.fab.fa-github {
+	position: absolute;
+	top: 0.5em;
+	right: 0.5em;
+	font-size: 20px;
+}
+
+.ebg-br-wrapper .ebg-br-logo.ebg-br-icon-github {
+	background-repeat: no-repeat;
+	background-position: top left;
+	background-size: 100% auto;
+	display: inline-block;
+	float: none;
+	width: 20px;
+}
+
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-off .ebg-br-icon,
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-off .ebg-br-logo.fab.fa-github {
+	color: black;
+}
+
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-on .ebg-br-icon,
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-on .ebg-br-logo.fab.fa-github {
+	color: white;
+}
+
+.ebg-br-wrapper .ebg-br-icon-github {
+	background-image: url('../images/github.svg');
+}
+
+.ebg-br-wrapper .ebg-br-icon-subscribers {
+	background-image: url('../images/subscribe.svg');
+}
+
+.ebg-br-wrapper .ebg-br-icon-watchers {
+	background-image: url('../images/watch.svg');
+}
+
+.ebg-br-wrapper .ebg-br-icon-forks {
+	background-image: url('../images/fork.svg');
+}
+
+.ebg-br-wrapper .ebg-br-icon-link {
+	background-image: url('../images/link.svg');
+}
+
+.ebg-br-wrapper .ebg-br-icon-location {
+	background-image: url('../images/location.svg');
+}
+
+.ebg-br-wrapper .ebg-br-icon-email {
+	background-image: url('../images/email.svg');
+}
+
+.ebg-br-wrapper .ebg-br-icon-company {
+	background-image: url('../images/building.svg');
+}
+
+.ebg-br-wrapper .ebg-br-icon-create {
+	/*background-image: url('../images/create.svg');*/
+	background-image: url('../images/clock.svg');
+}
+
+.ebg-br-wrapper .ebg-br-icon-public_repo {
+	background-image: url('../images/public_repo.svg');
+}
+
+.ebg-br-wrapper .ebg-br-icon-public_gists {
+	background-image: url('../images/code.svg');
+}
+
+.ebg-br-wrapper .ebg-br-icon-followers {
+	background-image: url('../images/team.svg');
+}
+
+.ebg-br-wrapper .ebg-br-icon-following {
+	background-image: url('../images/team.svg');
+}
+
+
+/*
+	CSS > Columns Sidebar, Main
+*/
+.ebg-br-wrapper .ebg-br-col {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+}
+
+.ebg-br-wrapper .ebg-br-col.ebg-br-col-sidebar {
+	min-width: 150px;
+}
+
+.ebg-br-wrapper .ebg-br-col.ebg-br-col-main {
+	width: 100%;
+}
+
+
+/*
+	CSS > Avatar
+*/
+.ebg-br-wrapper .ebg-br-col.ebg-br-col-sidebar {
+	margin: 0 1em 0 0;
+}
+
+.ebg-br-wrapper .ebg-br-header-avatar {
+	max-width: 150px;
+	border-radius: 50%;
+	box-shadow: 10px 10px 15px 0px rgba(0,0,0,0.75);
+}
+
+
+/*
+	CSS > All Template
+*/
+.ebg-br-wrapper .ebg-br-col-main .ebg-br-title {
+	margin: 0;
+	padding: 0;
+	line-height: 1.2em;
+}
+
+.ebg-br-wrapper .ebg-br-col-main .ebg-br-title strong {
+	display: block;
+	font-size: 1.5em;
+}
+
+.ebg-br-wrapper .ebg-br-col-main .ebg-br-title em {
+	display: block;
+	font-size: .8em;
+	padding-top: 0.25em;
+}
+
+.ebg-br-wrapper .ebg-br-col-main a,
+.ebg-br-wrapper .ebg-br-col-main a:hover, 
+.ebg-br-wrapper .ebg-br-col-main a:focus, 
+.ebg-br-wrapper .ebg-br-col-main a:active {
+	text-decoration:  none;
+}
+
+.ebg-br-wrapper .ebg-br-col-main .ebg-br-description {
+	margin: .5em 0 0;
+	padding: 0;
+	font-size: 0.9em;
+	line-height: 1.2em;
+}
+
+.ebg-br-wrapper .ebg-br-icon.ebg-br-cfg-icon-type-source-file {
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 100% auto;
+	display: inline-block;
+	float: none;
+	width: 15px;
+}
+
+.ebg-br-wrapper .ebg-br-inverter-color,
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-on .ebg-br-img-color-auto {
+    -webkit-filter: invert(100%);
+    -moz-filter: invert(100%);
+    -o-filter: invert(100%);
+    -ms-filter: invert(100%);
+    filter: invert(100%);
+}
+
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-off .ebg-br-img-color-auto {
+    -webkit-filter: invert(0);
+    -moz-filter: invert(0);
+    -o-filter: invert(0);
+    -ms-filter: invert(0);
+	filter: invert(0);
+}
+
+.ebg-br-wrapper .screen-reader-text {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	word-wrap: normal !important;
+}
+
+/*
+	CSS > Template Error
+*/
+.ebg-br-wrapper .ebg-br-template-error .ebg-br-col.ebg-br-col-sidebar {
+	display: none !important;
+}
+
+.ebg-br-wrapper .ebg-br-template-error .ebg-br-col.ebg-br-col-main {
+	padding-left: 60px;
+	padding-top: 0.5em;
+	background-image: url('../images/logo-error.png');
+	background-repeat: no-repeat;
+	background-size: auto 50px;
+	background-position: left top;
+}
+
+
+/*
+	CSS > Template Repo
+*/
+.ebg-br-wrapper .ebg-br-template-repo .ebg-br-description {
+	font-size: 1.1em;
+}
+
+.ebg-br-wrapper .ebg-br-template-repo .ebg-br-footer {
+	margin: 1em 0 0;
+	padding: 0;
+	padding-left: 1.5em;
+	line-height: 1.2em;
+}
+
+.ebg-br-wrapper .ebg-br-template-repo .ebg-br-footer > span {
+	margin-right: 0.5em;
+	font-size: 0.9em;
+}
+
+.ebg-br-wrapper .ebg-br-template-repo .ebg-br-footer .ebg-br-link {
+	display: block;
+	margin: .5em 0 0;
+}
+
+.ebg-br-wrapper .ebg-br-template-repo .ebg-br-footer .ebg-br-icon.ebg-br-cfg-icon-type-source-font_awesome {
+	font-size: 1em;
+}
+
+
+/*
+	CSS > Template User
+*/
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-description {
+	font-size: 1.1em;
+}
+
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-box-ul {
+	padding-top: 0.5em;
+	padding-left: 1em;
+	width: calc(90% - 1em);
+	vertical-align: middle;
+}
+
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-box-ul ul {
+	margin: 0;
+	margin-bottom: 10px;
+	padding: 0.5em;
+	overflow: hidden;
+	list-style-type: none;
+	
+	box-shadow: 10px 10px 15px 0px rgba(0,0,0,0.75);
+	border-radius: .5em;
+}
+
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-box-ul ul > li {
+	display: inline-block;
+	margin-right: 0.5em;
+	padding-top: 0.5em;
+	padding-left: 0.5em;
+}
+
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-box-ul ul > li > i {
+	padding-right: 0.25em;
+}
+
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-off.ebg-br-template-user .ebg-br-box-ul ul {
+	border: 1px solid #eee;
+	background-color: white;
+}
+
+.ebg-br-wrapper .ebg-br-cfg-dark-theme-on.ebg-br-template-user .ebg-br-box-ul ul {
+	border: 1px solid rgba(94,9,9,1);
+	background-color: #1d201d;
+}
+
+.ebg-br-wrapper .ebg-br-template-user .ebg-br-icon.ebg-br-cfg-icon-type-source-file {
+	width: 12px !important;
+}
