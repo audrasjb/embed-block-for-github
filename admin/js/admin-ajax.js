@@ -1,3 +1,12 @@
+/**
+ * 
+ * Author:            VSC55
+ * Author URI:        https://github.com/vsc55/embed-block-for-github
+ * License:           GPL-2.0+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * 
+ */
+
 jQuery(document).ready( function () {
     embed_block_for_github_admin            = new Embed_Block_For_GitHub();
     //embed_block_for_github_admin.debug      = true;
@@ -21,6 +30,8 @@ class Embed_Block_For_GitHub {
         this._call_update = null;
 
         this._timer_count = null;
+
+        this._def_id_wrap = "embed_block_for_github_admin_wrap";
     }
 
     get debug() {
@@ -55,32 +66,17 @@ class Embed_Block_For_GitHub {
     }
 
     get ajax_url() {
-        var data_return = null;
-        if ( ! this.ajax_var_is_null ) {
-            if (typeof this.ajax_var.url !== 'undefined') {
-                data_return = this.ajax_var.url;
-            }
-        }
+        var data_return = this.get_ajax_var("url", null);
         return data_return;
     }
 
     get ajax_security() {
-        var data_return = null;
-        if ( ! this.ajax_var_is_null ) {
-            if (typeof this.ajax_var.check_nonce !== 'undefined') {
-                data_return = this.ajax_var.check_nonce;
-            }
-        }
+        var data_return = this.get_ajax_var("check_nonce", null);
         return data_return;
     }
 
     get ajax_action() {
-        var data_return = null;
-        if ( ! this.ajax_var_is_null ) {
-            if (typeof this.ajax_var.action !== 'undefined') {
-                data_return = this.ajax_var.action;
-            }
-        }
+        var data_return = this.get_ajax_var("action", null);
         return data_return;
     }
 
@@ -90,6 +86,16 @@ class Embed_Block_For_GitHub {
 
     set count_refres(x) {
         this._count_refres = x;
+    }
+
+    get_ajax_var(opt, def_return) {
+        var data_return = def_return;
+        if ( ! this.ajax_var_is_null ) {
+            if ( this.ajax_var.hasOwnProperty(opt) ) {
+                data_return = this.ajax_var[opt];
+            }
+        }
+        return data_return;
     }
 
     count_refres_next() {
@@ -174,6 +180,10 @@ class Embed_Block_For_GitHub {
 
         if ( this.ajax_var_is_null ) {
             console.log("admin-ajax > Embed_Block_For_GitHub > api_github_rate_update_info() > ajax_var_is_null = TRUE !!");
+            var array_data = {
+                ['#' + this._def_id_wrap] : i18n.__( 'Error: Ajax var is Null!!!' ),
+            };
+            self.update_html( array_data );
             return;
         }
 
@@ -205,7 +215,7 @@ class Embed_Block_For_GitHub {
                 var limit = result.rate.limit;
                 var remaining = result.rate.remaining;
                 var rest = (limit - remaining);
-                var porcent_rest = ((100 / limit) * remaining).toFixed(0);
+                var porcent_rest = ((100 / limit) * remaining).toFixed(2);
                 var html = '<p>' + sprintf( i18n.__( 'Rate: %1$s/%2$s (%3$s%% remaining)' ), remaining, limit, porcent_rest) + '</p>';
                 
                 var head_array = [
@@ -240,9 +250,10 @@ class Embed_Block_For_GitHub {
                 table += '</tbody>';
                 table += '</table>';
 
-                var array_data = [];
-                array_data['#' + id_info_rate]      = html;
-                array_data['#' + id_info_resources] = table;
+                var array_data = {
+                    ['#' + id_info_rate]        : html,
+                    ['#' + id_info_resources]   : table,
+                };
                 self.update_html( array_data );
 
                 if ( self.debug ) {
@@ -253,16 +264,16 @@ class Embed_Block_For_GitHub {
                 self.refres_count(id_info_refres);
             },
             error: function(result) {
-                var array_data = [];
-                array_data['#' + id_info_rate]      = sprintf( i18n.__( 'Error: %1$s' ), result.statusText);
-                array_data['#' + id_info_resources] = sprintf( i18n.__( 'Error: %1$s' ), result.statusText);
-                self.update_html( array_data );
-
                 if ( self.debug ) {
                     console.log("admin-ajax > Embed_Block_For_GitHub > api_github_rate_update_info() > UPDATE ERR!!");
                     console.log(result);
                 }
 
+                var array_data = {
+                    ['#' + id_info_rate]       : sprintf( i18n.__( 'Error: %1$s' ), result.statusText),
+                    ['#' + id_info_resources]  : sprintf( i18n.__( 'Error: %1$s' ), result.statusText),
+                };
+                self.update_html( array_data );
                 self.count_refres = 15;
                 self.refres_count(id_info_refres);
             }
@@ -280,6 +291,10 @@ class Embed_Block_For_GitHub {
 
         if ( this.ajax_var_is_null ) {
             console.log("admin-ajax > Embed_Block_For_GitHub > cache_info_update() > ajax_var_is_null = TRUE !!");
+            var array_data = {
+                ['#' + this._def_id_wrap] : i18n.__( 'Error: Ajax var is Null!!!' ),
+            };
+            self.update_html( array_data );
             return;
         }
 
@@ -287,13 +302,13 @@ class Embed_Block_For_GitHub {
         var id_info_refres  = this.ajax_var.css_id.info_refres;
         
         var data_url        = this.ajax_url;
-        var data_action     = this.ajax_var.action_list;
-        var data_security   = this.ajax_var.check_nonce_list;
-        var data_locate     = this.ajax_var.locate;
+        var data_action     = this.get_ajax_var("action_list", null);
+        var data_security   = this.get_ajax_var("check_nonce_list", null);
+        var data_locate     = this.get_ajax_var("locate", "en-US");
 
-        var delete_action     = this.ajax_var.action_remove;
-        var delete_security   = this.ajax_var.check_nonce_remove;
-        
+        var delete_action   = this.get_ajax_var("action_remove", null);
+        var delete_security = this.get_ajax_var("check_nonce_remove", null);
+
         if (typeof args !== 'undefined') {
             var datatable = args;
             datatable.ajax.reload().draw();

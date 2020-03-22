@@ -33,8 +33,14 @@ class Pag_Admin_Cache extends Page_Base implements IPage {
 		$this->set_function 	( array($this, 'create_page') );
 		
 		$this->js_acction['root'] 			= str_ireplace("-", "_", $this->get_menu_slug() );
-		$this->js_acction['ajax_get'] 		= $this->js_acction['root']."-get_ajax";
-		$this->js_acction['ajax_remove_id'] = $this->js_acction['root']."-remove_id_ajax";
+		$this->js_acction['ajax_get'] 		= $this->js_acction['root'] . "-get_ajax";
+		$this->js_acction['ajax_remove_id'] = $this->js_acction['root'] . "-remove_id_ajax";
+
+		$this->css_id = array (
+			'wrap' 	 		 => "embed_block_for_github_admin_wrap",
+			'info_table' 	 => "embed_block_for_github_admin_cache_table",
+			'info_refres'	 => "embed_block_for_github_admin_info_count_refres",
+		);
 
 		if ($auto_action) {
 			$this->add_action_all();
@@ -57,14 +63,18 @@ class Pag_Admin_Cache extends Page_Base implements IPage {
 			'check_nonce_remove'	=> $this->wp_create_nonce( 'check_nonce-'.$this->js_acction['ajax_remove_id'] ),
 			//'locate'				=> "en-US",
 			'locate'				=> "es-ES",
-			'css_id'		=> array (
-				'info_table' 	 => "embed_block_for_github_admin_cache_table",
-				'info_refres'	 => "embed_block_for_github_admin_info_count_refres",
-			),
+			'css_id'				=> $this->css_id,
 		) );
 
-		wp_enqueue_script( 'jquery-datatables-js', $this->parent->get_URL( 'admin/js/jquery.dataTables.js'), array('jquery') );
-		wp_register_style( 'jquery-datatables-css', $this->parent->get_URL('admin/css/jquery.dataTables.css'), array() );
+		if ( 1 === 2) {
+			// DEBUG
+			wp_enqueue_script( 'jquery-datatables-js', $this->parent->get_URL( 'admin/js/jquery.dataTables.js'), array('jquery') );
+			wp_register_style( 'jquery-datatables-css', $this->parent->get_URL('admin/css/jquery.dataTables.css'), array() );
+		} else {
+			// NORMAL
+			wp_enqueue_script( 'jquery-datatables-js', $this->parent->get_URL( 'admin/js/jquery.dataTables.min.js'), array('jquery') );
+			wp_register_style( 'jquery-datatables-css', $this->parent->get_URL('admin/css/jquery.dataTables.min.css'), array() );
+		}
 		wp_enqueue_style( 'jquery-datatables-css' );
 	}
 
@@ -106,12 +116,15 @@ class Pag_Admin_Cache extends Page_Base implements IPage {
 	}
 
     public function create_page() {
+
+		$msg_loading = esc_html__( 'Loading...', $this->get_name_parent() );
+
 		//TODO: Pending implement WP_List_Table
 		?>
-		<div class="wrap">
+		<div id="<?php echo $this->css_id['wrap']; ?>" class="wrap">
 			<h1><?php echo esc_html__( 'Cache Manager - Embed Block for GitHub', $this->get_name_parent() ); ?></h1>
 			
-			<p id="embed_block_for_github_admin_info_count_refres"><?php echo esc_html__( 'Loading...', $this->get_name_parent() ); ?></p>
+			<p id="<?php echo $this->css_id['info_refres']; ?>"><?php echo $msg_loading; ?></p>
 			
 			<?php
 				if ( get_class($this->parent->cache) !== "EmbedBlockForGithub\Cache\Cache_Store_Table" ) {
@@ -121,7 +134,7 @@ class Pag_Admin_Cache extends Page_Base implements IPage {
 					//echo '<div id="embed_block_for_github_admin_cache_table">Loading...</div>';
 					?>
 
-<table id="embed_block_for_github_admin_cache_table" class="display" cellspacing="0" width="100%">
+<table id="<?php echo $this->css_id['info_table']; ?>" class="display" cellspacing="0" width="100%">
 	<thead>
 		<tr>
 			<th width="40px"><?php echo esc_html__( 'ID', $this->get_name_parent() ); ?></th>

@@ -23,6 +23,7 @@ use EmbedBlockForGithub\Pages\Page_Base;
 class Pag_Admin_API_GitHub_Rate extends Page_Base implements IPage {
 
 	private $js_acction;
+	private $css_id = array();
 
 	public function __construct($parent = null, $auto_action = false) {
 		parent::__construct( $parent );
@@ -33,11 +34,18 @@ class Pag_Admin_API_GitHub_Rate extends Page_Base implements IPage {
 		$this->set_function 	( array($this, 'create_page') );
 
 		$this->js_acction['root'] 		= str_ireplace("-", "_", $this->get_menu_slug() );
-		$this->js_acction['ajax_get'] 	= $this->js_acction['root']."-get_ajax";
+		$this->js_acction['ajax_get'] 	= $this->js_acction['root'] . "-get_ajax";
 
 		if ($auto_action) {
 			$this->add_action_all();
 		}
+
+		$this->css_id = array (
+			'wrap' 	 		 => "embed_block_for_github_admin_wrap",
+			'info_rate' 	 => "embed_block_for_github_admin_api_github_rate_info_rate",
+			'info_resources' => "embed_block_for_github_admin_api_github_rate_info_resources",
+			'info_refres'	 => "embed_block_for_github_admin_info_count_refres",
+		);
 
 		add_action( 'wp_ajax_'.$this->js_acction['ajax_get'], array($this, 'ajax_json_data') );
 		//add_action( 'wp_ajax_nopriv_'.$this->js_acction['ajax_get'], array($this, 'ajax_json_data') );
@@ -52,11 +60,7 @@ class Pag_Admin_API_GitHub_Rate extends Page_Base implements IPage {
 			'url'    		=> admin_url( 'admin-ajax.php' ),
 			'action' 		=> $this->js_acction['ajax_get'],
 			'check_nonce' 	=> $this->wp_create_nonce( 'check_nonce-'.$this->js_acction['ajax_get'] ),
-			'css_id'		=> array (
-				'info_rate' 	 => "embed_block_for_github_admin_api_github_rate_info_rate",
-				'info_resources' => "embed_block_for_github_admin_api_github_rate_info_resources",
-				'info_refres'	 => "embed_block_for_github_admin_info_count_refres",
-			),
+			'css_id'		=> $this->css_id,
 		) );
 	}
 
@@ -77,17 +81,20 @@ class Pag_Admin_API_GitHub_Rate extends Page_Base implements IPage {
 	 * 
 	 */
     public function create_page() {
+
+		$msg_loading = esc_html__( 'Loading...', $this->get_name_parent() );
+
 		?>
-		<div class="wrap">
+		<div id="<?php echo $this->css_id['wrap']; ?>" class="wrap">
 			<h1><?php echo esc_html__( 'API GitHub Rate Limit - Embed Block for GitHub', $this->get_name_parent() ); ?></h1>
 
-			<p id="embed_block_for_github_admin_info_count_refres"><?php echo esc_html__( 'Loading...', $this->get_name_parent() ); ?></p>
+			<p id="<?php echo $this->css_id['info_refres']; ?>"><?php echo $msg_loading; ?></p>
 
 			<h2><?php echo esc_html__( 'Rate Status', $this->get_name_parent() ); ?></h2>
-			<div id="embed_block_for_github_admin_api_github_rate_info_rate"><?php echo esc_html__( 'Loading...', $this->get_name_parent() ); ?></div>
+			<div id="<?php echo $this->css_id['info_rate']; ?>"><?php echo $msg_loading; ?></div>
 
 			<h2><?php echo esc_html__( 'Resources Status', $this->get_name_parent() ); ?></h2>
-			<div id="embed_block_for_github_admin_api_github_rate_info_resources"><?php echo esc_html__( 'Loading...', $this->get_name_parent() ); ?></div>			
+			<div id="<?php echo $this->css_id['info_resources']; ?>"><?php echo $msg_loading; ?></div>
 		</div>
 		<?php
 	}
