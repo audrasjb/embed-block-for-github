@@ -357,14 +357,16 @@ class Embed_Block_For_GitHub extends Plugin_Base {
 		// https://api.github.com/users/vsc55
 		// https://api.github.com/repos/vsc55/embed-block-for-github
 
+		$wp_data_format = get_option( 'date_format' );
+
 		$name_file = 'info-'.strtolower($data_all->type).'.php';
 		$content = $this::template_file_require($name_file, $data_all->data);
 		if ( ( ! is_null($content) ) && ( ! empty($content) ) ) {
 			switch( strtolower($data_all->type) ) {
 				case "user":
-					$a_remplace['%%_CUSTOM_DATA_USER_CREATED_AT_ONLY_DATE_%%'] = date_format( date_create( $data_all->data->created_at ), 'd/m/Y');
+					$a_remplace['%%_CUSTOM_DATA_USER_CREATED_AT_ONLY_DATE_%%'] = date_format( date_create( $data_all->data->created_at ), $wp_data_format);
 					$a_remplace['%%_CUSTOM_DATA_USER_CREATED_AT_ONLY_DATE_%_CLASS_HIDE_IS_NULL_%%'] = (empty($data_all->data->created_at) ? "ebg-br-hide": "");
-					$a_remplace['%%_CUSTOM_DATA_USER_UPDATED_AT_ONLY_DATE_%%'] = date_format( date_create( $data_all->data->updated_at ), 'd/m/Y');
+					$a_remplace['%%_CUSTOM_DATA_USER_UPDATED_AT_ONLY_DATE_%%'] = date_format( date_create( $data_all->data->updated_at ), $wp_data_format);
 					$a_remplace['%%_CUSTOM_DATA_USER_UPDATED_AT_ONLY_DATE_%_CLASS_HIDE_IS_NULL_%%'] = (empty($data_all->data->updated_at) ? "ebg-br-hide": "");
 					break;
 				case "repo":
