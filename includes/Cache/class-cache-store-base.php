@@ -15,7 +15,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-class CacheStoreBase {
+class Cache_Store_Base {
 
 	private static $instance;
 
@@ -39,9 +39,9 @@ class CacheStoreBase {
 		$this->expiration	= 0;
 		$this->version		= 0;
 		$this->parent 		= (object)array();
-		if (! is_null($parent)) {
-			$this->parent = $parent;
-			$this->version = $parent->getPluginData('Version');
+		if ( ! is_null($parent) ) {
+			$this->parent  = $parent;
+			$this->version = $parent->get_plugin_data('Version');
 		}
 	}
 
@@ -50,9 +50,9 @@ class CacheStoreBase {
 	 * For example if plugin version not equal of the storage version the clean and 
 	 * regenerate the cache storage.
 	 */
-	public function controlCacheStorage() {
-		if (! $this->checkCacheVersion()) {
-			$this->cleanCache();
+	public function control_cache_storage() {
+		if ( ! $this->check_cache_version() ) {
+			$this->clean_cache();
 		}
 	}
 	
@@ -61,16 +61,16 @@ class CacheStoreBase {
 	 * 
 	 * @return bool True version equal, False diferent version.
 	 */
-	public function checkCacheVersion () {
+	public function check_cache_version() {
 		$return_data = true;
-		if (! $this->isCacheExist()) {
+		if ( ! $this->is_cache_exist() ) {
 			$return_data = false;
 		} else {
-			$cache_version = get_option( $this->getOptionNameToCacheVersion(), "");
-			if (empty($cache_version) ) {
+			$cache_version = get_option( $this->get_option_name_to_cache_version(), "");
+			if ( empty($cache_version) ) {
 				$return_data = false;
 			} else {
-				if ($cache_version !=  $this->getVersion()) {
+				if ( $cache_version !=  $this->get_version() ) {
 					$return_data = false;
 				}
 			}
@@ -84,10 +84,10 @@ class CacheStoreBase {
 	 * @param bool $only_version	True only number version, False NameClass + version
 	 * @return string 
 	 */
-	public function getVersion($only_version = false) {
+	public function get_version($only_version = false) {
 		$return_data = $this->version;
-		if (! $only_version) {
-			$return_data = get_class($this)."_".$return_data;
+		if ( ! $only_version ) {
+			$return_data = get_class($this) . "_" . $return_data;
 		} 
 		return $return_data;
 	}
@@ -97,7 +97,7 @@ class CacheStoreBase {
 	 * 
 	 * @param string $new_version
 	 */
-	public function setVersion($new_version) {
+	public function set_version($new_version) {
 		$this->version = $new_version;
 	}
 
@@ -106,7 +106,7 @@ class CacheStoreBase {
 	 * 
 	 * @return bool True enabled, False disabled.
 	 */
-	public function getStatus() {
+	public function get_status() {
 		return $this->status;
 	}
 
@@ -115,7 +115,7 @@ class CacheStoreBase {
 	 * 
 	 * @param bool $new_status
 	 */
-	public function setStatus(bool $new_status) {
+	public function set_status(bool $new_status) {
 		$this->status = $new_status;
 	}
 
@@ -124,7 +124,7 @@ class CacheStoreBase {
 	 * 
 	 * @return string URL Cache
 	 */
-	public function getUrl() {
+	public function get_URL() {
 		return $this->url;
 	}
 
@@ -133,19 +133,19 @@ class CacheStoreBase {
 	 * 
 	 * @param string $url
 	 */
-	public function setUrl(string $url) {
+	public function set_URL(string $url) {
 		$this->url = $url;
 	}
 
 	/**
 	 * Check if url is defined
 	 * 
-	 * @param string $url Optional, if it is not used, it will be obtained with the "getUrl" option.
+	 * @param string $url Optional, if it is not used, it will be obtained with the "get_URL" option.
 	 * @return bool
 	 */
-	public function isUrlNull($url = null) {
+	public function is_URL_null($url = null) {
 		if ( is_null($url) ) {
-			$url = $this->getUrl();
+			$url = $this->get_URL();
 		}
 		return empty( $url );
 	}
@@ -155,7 +155,7 @@ class CacheStoreBase {
 	 * 
 	 * @return int
 	 */
-	public function getExpiration() {
+	public function get_expiration() {
 		return $this->expiration;
 	}
 
@@ -164,7 +164,8 @@ class CacheStoreBase {
 	 * 
 	 * @param int $new_expiration
 	 */
-	public function setExpiration($new_expiration) {
+	public function set_expiration($new_expiration) {
 		$this->expiration = $new_expiration;
 	}
+
 }

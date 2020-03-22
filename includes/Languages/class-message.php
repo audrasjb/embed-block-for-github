@@ -17,9 +17,9 @@ if ( ! defined( 'WPINC' ) ) {
 
 class Message {
 
-    public static function getMessage($message, $arg = array()) {
+    public static function get_message($message, $arg = array()) {
         $msg_return = "";
-		switch($message) {
+		switch( $message ) {
 			case "url_is_null":
 				$msg_return = '<p>' . esc_html__( 'Use the Sidebar to add the URL of the GitHub Repository to embed.', 'embed-block-for-github' ) . '</p>';
 			break;

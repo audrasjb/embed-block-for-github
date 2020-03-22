@@ -20,8 +20,8 @@ class Config {
     private $parent = null;
     private static $instance;
 
-    public $prefix = "";
-    public $group = "";
+    public $prefix  = "";
+    public $group   = "";
 
     private $list_options;
 
@@ -35,10 +35,10 @@ class Config {
     protected function __construct($parent = null) {
         $this->list_options = array();
         $this->parent = (object)array();
-		if (! is_null($parent)) {
+		if ( ! is_null( $parent ) ) {
 			$this->parent = $parent;
         }
-        add_action( 'admin_init', array( $this, 'registerOptions' ) );
+        add_action( 'admin_init', array( $this, 'register_options' ) );
     }
 
     /**
@@ -46,8 +46,8 @@ class Config {
      * 
      * @return int
      */
-    public function count () {
-        return count($list_options);
+    public function count() {
+        return count( $list_options );
     }
 
     /**
@@ -60,13 +60,13 @@ class Config {
      *                              example a tokern or a sensitive security data.
      * 
      */
-    public function addOption($name, $type, $default = null, $only_admin = false) {
+    public function add_option($name, $type, $default = null, $only_admin = false) {
         $this->list_options[$name] = array (
-            'type' => $type,
-            'default' => $default,
-            'only_admin' => $only_admin,
-            'full_name' => $this->getNameOptionFull($name),
-            'register' => false,
+            'type'          => $type,
+            'default'       => $default,
+            'only_admin'    => $only_admin,
+            'full_name'     => $this->get_name_option_full($name),
+            'register'      => false,
         );
     }
 
@@ -76,19 +76,19 @@ class Config {
      * @param string $option        Option name
      * @return bool                 True ok, False not exist option.
      */
-    public function delOption($option) {
-        if ( $this->isExistOption($option) ) {
-            if ($this->list_options[$option]['register']) {
+    public function del_option($option) {
+        $return_data = false;
+        if ( $this->is_exist_option( $option ) ) {
+            if ( $this->list_options[$option]['register'] ) {
                 unregister_setting(
                     $this->group,
-                    $this->getNameOptionFull($key)
+                    $this->get_name_option_full($key)
                 );
             }
-            unset($this->list_options[$option]);
-        } else {
-            return false;
+            unset( $this->list_options[$option] );
+            $return_data = true;
         }
-        return true;
+        return $return_data;
     }
 
 
@@ -98,8 +98,8 @@ class Config {
      * @param string 
      * @return bool True exists, False not exists.
      */
-    public function isExistOption($option) {
-        if (array_key_exists($option, $this->list_options)) {
+    public function is_exist_option($option) {
+        if ( array_key_exists($option, $this->list_options) ) {
             return true;
         }
         return false;
@@ -110,17 +110,17 @@ class Config {
      * Register in wordpress all the options we have added.
      * https://developer.wordpress.org/reference/functions/register_setting/
      */
-    public function registerOptions() {
-        foreach ($this->list_options as $key => &$val) {
-            if ($val['register']) {
+    public function register_options() {
+        foreach ( $this->list_options as $key => &$val ) {
+            if ( $val['register'] ) {
                 continue;
             }
             register_setting(
                 $this->group,
                 $val['full_name'],
                 array(
-                    'type' =>  $val['type'],
-                    'default' => $val['default'],
+                    'type'      => $val['type'],
+                    'default'   => $val['default'],
                 )
             );
             $val['register'] = true;
@@ -135,13 +135,13 @@ class Config {
      *                      to be returned, by default it is "true".
      * @return array        array with values saved
      */
-    public function getOptions($all = false, $html = true){
+    public function get_options($all = false, $html = true) {
         $return_data = array();
-        foreach ($this->list_options as $key => $val) {
-            if ( (! $all) && ($val['only_admin']) ) {
+        foreach ( $this->list_options as $key => $val ) {
+            if ( (! $all) && ( $val['only_admin']) ) {
                 continue;
             }
-            $return_data[$key] = $this->getOption($key, $html);
+            $return_data[$key] = $this->get_option($key, $html);
         }
 		return $return_data;
     }
@@ -155,8 +155,8 @@ class Config {
      *                              to the text to be returned, by default it is "true".
      * @return mixed                value saved
      */
-    public function getOption($option, $html = true) {
-        if ( $this->isExistOption($option) ) {
+    public function get_option($option, $html = true) {
+        if ( $this->is_exist_option($option) ) {
             $data_option = $this->list_options[$option];
             $return_data = get_option($data_option['full_name'], $data_option['default']);
             if ($html) {
@@ -174,7 +174,7 @@ class Config {
      * @param string  $option       Option name
      * @return string               Full option name
      */
-    public function getNameOptionFull($option) {
-        return $this->prefix.'_-_'.$option;
+    public function get_name_option_full($option) {
+        return $this->prefix . '_-_' . $option;
     }
 }
